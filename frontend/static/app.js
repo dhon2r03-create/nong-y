@@ -311,11 +311,20 @@
 
     const sectionImageSource = document.getElementById('sectionImageSource');
     const sectionPreviewDiagnose = document.getElementById('sectionPreviewDiagnose');
+    const retakeBtn = document.getElementById('retakeBtn');
+
+    if (retakeBtn) {
+      if (activeTab === 'upload') {
+        retakeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> 📁 Chọn ảnh khác`;
+      } else {
+        retakeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg> 📸 Chụp lại ảnh khác`;
+      }
+    }
 
     const reader = new FileReader();
     reader.onload = (e) => {
       previewImg.src = e.target.result;
-      previewFileName.textContent = file.name || 'Ảnh lá cây vừa tải lên';
+      previewFileName.textContent = file.name || 'Ảnh lá cây vừa chọn';
 
       viewCamera.style.display = 'none';
       viewUpload.style.display = 'none';
@@ -364,7 +373,15 @@
     }
   }
 
-  retakeBtn.addEventListener('click', resetToCapture);
+  retakeBtn.addEventListener('click', () => {
+    if (activeTab === 'upload') {
+      const galleryInput = document.getElementById('galleryInput');
+      if (galleryInput) galleryInput.click();
+    } else {
+      resetToCapture();
+    }
+  });
+
   if (retryNonPlantBtn) {
     retryNonPlantBtn.addEventListener('click', () => {
       resetToCapture();
@@ -372,8 +389,14 @@
     });
   }
 
-  galleryInput.addEventListener('change', (e) => handleFileSelected(e.target.files[0]));
-  fallbackCameraInput.addEventListener('change', (e) => handleFileSelected(e.target.files[0]));
+  galleryInput.addEventListener('change', (e) => {
+    activeTab = 'upload';
+    handleFileSelected(e.target.files[0]);
+  });
+  fallbackCameraInput.addEventListener('change', (e) => {
+    activeTab = 'camera';
+    handleFileSelected(e.target.files[0]);
+  });
 
   // 5. Drag & Drop
   ['dragenter', 'dragover'].forEach((evName) => {
@@ -1391,14 +1414,28 @@
       window.triggerParticleWarp();
     }
 
-    if (workspaceModal) {
-      workspaceModal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    }
+    activeTab = targetMode;
+
+    const modalTitle = document.getElementById('workspaceModalTitle');
+    const modalSubtitle = document.getElementById('workspaceModalSubtitle');
+    const sectionTitle = document.getElementById('imageSourceSectionTitle');
+    const sectionDesc = document.getElementById('imageSourceSectionDesc');
+    const retakeBtn = document.getElementById('retakeBtn');
+    const sectionImageSource = document.getElementById('sectionImageSource');
+    const sectionPreviewDiagnose = document.getElementById('sectionPreviewDiagnose');
+
+    if (sectionImageSource) sectionImageSource.style.display = 'block';
+    if (sectionPreviewDiagnose) sectionPreviewDiagnose.style.display = 'none';
 
     if (targetMode === 'camera') {
-      const modeCameraBtn = document.getElementById('modeCameraBtn');
-      if (modeCameraBtn) modeCameraBtn.click();
+      if (modalTitle) modalTitle.textContent = 'Khám Bệnh Live Camera';
+      if (modalSubtitle) modalSubtitle.textContent = 'Quét trực tiếp qua webcam/camera & chẩn đoán mầm bệnh';
+      if (sectionTitle) sectionTitle.textContent = 'Chụp ảnh lá cây trực tiếp';
+      if (sectionDesc) sectionDesc.textContent = 'Căn chỉnh lá cây vào khung ngắm và bấm nút chụp ảnh bên dưới';
+      if (retakeBtn) retakeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg> 📸 Chụp lại ảnh khác`;
+
+      viewCamera.style.display = 'block';
+      viewUpload.style.display = 'none';
 
       // Bật ngay stream Camera trực tiếp không để chờ
       setTimeout(() => {
@@ -1409,18 +1446,26 @@
         }
       }, 100);
 
-      if (tabLiveCameraBtn) {
-        tabLiveCameraBtn.classList.add('active');
-        if (tabUploadBtn) tabUploadBtn.classList.remove('active');
-      }
+      if (tabLiveCameraBtn) tabLiveCameraBtn.classList.add('active');
+      if (tabUploadBtn) tabUploadBtn.classList.remove('active');
     } else if (targetMode === 'upload') {
-      const modeUploadBtn = document.getElementById('modeUploadBtn');
-      if (modeUploadBtn) modeUploadBtn.click();
+      if (modalTitle) modalTitle.textContent = 'Khám Bệnh Tải Ảnh Lá Cây';
+      if (modalSubtitle) modalSubtitle.textContent = 'Tải ảnh lá cây từ thiết bị & chẩn đoán bệnh tức thì';
+      if (sectionTitle) sectionTitle.textContent = 'Tải ảnh lá cây từ thiết bị';
+      if (sectionDesc) sectionDesc.textContent = 'Kéo thả ảnh hoặc chọn ảnh từ thư viện thiết bị';
+      if (retakeBtn) retakeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> 📁 Chọn ảnh khác`;
 
-      if (tabUploadBtn) {
-        tabUploadBtn.classList.add('active');
-        if (tabLiveCameraBtn) tabLiveCameraBtn.classList.remove('active');
-      }
+      stopCamera();
+      viewCamera.style.display = 'none';
+      viewUpload.style.display = 'block';
+
+      if (tabUploadBtn) tabUploadBtn.classList.add('active');
+      if (tabLiveCameraBtn) tabLiveCameraBtn.classList.remove('active');
+    }
+
+    if (workspaceModal) {
+      workspaceModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
     }
   };
 
