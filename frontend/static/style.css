@@ -38,16 +38,17 @@
 
 html, body {
   min-height: 100vh;
-  background-color: #0b261b;
-  background-image: 
-    radial-gradient(ellipse at 50% -10%, rgba(16, 185, 129, 0.18), transparent 60%),
-    radial-gradient(ellipse at 85% 40%, rgba(5, 150, 105, 0.1), transparent 50%),
-    linear-gradient(180deg, #09261a 0%, #0d3826 350px, #f1f5f2 700px, #f8fafc 100%);
+  min-height: 100dvh;
+  background-color: #071f15;
+  background: #071f15 linear-gradient(180deg, #071f15 0%, #0a2d1f 35%, #0d3826 75%, #071f15 100%);
   background-attachment: fixed;
   color: var(--text-main);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 body {
@@ -3311,15 +3312,16 @@ html {
 .doctor-3d-hero {
   position: relative;
   width: 100%;
-  min-height: 96vh;
-  background: linear-gradient(180deg, #071f15 0%, #0a2d1f 40%, #0d3826 80%, #09261a 100%);
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: transparent;
   color: #ffffff;
-  padding: 84px 20px 40px;
+  padding: 68px 16px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  justify-content: space-between;
+  overflow-x: hidden;
   box-sizing: border-box;
 }
 
@@ -3363,92 +3365,28 @@ html {
 .doctor-hero-container {
   position: relative;
   z-index: 10;
-  max-width: 1100px;
+  max-width: 860px;
   width: 100%;
-  margin: 0 auto;
+  margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
-}
-
-/* Badge */
-.doctor-hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  backdrop-filter: blur(8px);
-  padding: 7px 18px;
-  border-radius: 9999px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
-}
-
-.doctor-hero-badge .pulse-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 10px #10b981;
-  animation: pulse-dot 2s infinite ease-in-out;
-}
-
-.doctor-hero-badge .badge-text {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  color: #a7f3d0;
-  text-transform: uppercase;
-}
-
-/* Hero Title & Subtitle */
-.doctor-hero-title {
-  font-size: clamp(32px, 5vw, 56px);
-  font-weight: 800;
-  line-height: 1.18;
-  letter-spacing: -0.8px;
-  color: #ffffff;
-  margin-bottom: 14px;
-  max-width: 860px;
-}
-
-.doctor-hero-title .title-gradient {
-  display: block;
-  background: linear-gradient(135deg, #34d399 0%, #a7f3d0 60%, #ffffff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-top: 4px;
-}
-
-.doctor-hero-title .title-gradient-inline {
-  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.doctor-hero-subtitle {
-  font-size: clamp(14px, 1.8vw, 17px);
-  font-weight: 400;
-  line-height: 1.65;
-  color: rgba(226, 232, 240, 0.85);
-  max-width: 760px;
-  margin: 0 auto 32px;
+  box-sizing: border-box;
 }
 
 /* 3D Stage & Card */
 .doctor-3d-stage-wrapper {
-  perspective: 1200px;
   width: 100%;
-  max-width: 860px;
-  margin: 0 auto 34px;
+  max-width: 800px;
+  margin: 0 auto 10px;
 }
 
 .doctor-3d-card {
   position: relative;
   width: 100%;
-  border-radius: 24px;
+  border-radius: 22px;
   background: rgba(10, 42, 29, 0.6);
   border: 1.5px solid rgba(16, 185, 129, 0.3);
   box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.5), 0 0 20px rgba(16, 185, 129, 0.12);
@@ -3457,10 +3395,10 @@ html {
 .doctor-3d-image-container {
   position: relative;
   width: 100%;
-  border-radius: 22px;
+  border-radius: 20px;
   overflow: hidden;
   aspect-ratio: 16 / 9;
-  max-height: 480px;
+  max-height: min(440px, 48vh);
   background: #061f14;
 }
 
@@ -3549,24 +3487,24 @@ html {
   position: absolute;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 18px;
+  gap: 10px;
+  padding: 10px 16px;
   background: rgba(7, 31, 21, 0.92);
   border: 1.5px solid rgba(16, 185, 129, 0.4);
-  border-radius: 16px;
+  border-radius: 14px;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
   transform: translate3d(0, 0, 0);
   z-index: 10;
 }
 
 .chip-left {
-  top: 24px;
-  left: -20px;
+  top: 18px;
+  left: -14px;
 }
 
 .chip-right {
-  bottom: 28px;
-  right: -20px;
+  bottom: 20px;
+  right: -14px;
 }
 
 @media (max-width: 768px) {
@@ -3580,17 +3518,17 @@ html {
   .chip-left {
     left: 8px;
     top: 8px;
-    padding: 8px 12px;
+    padding: 6px 10px;
   }
   .chip-right {
     right: 8px;
     bottom: 8px;
-    padding: 8px 12px;
+    padding: 6px 10px;
   }
 }
 
 .chip-icon {
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .chip-info {
@@ -3600,14 +3538,14 @@ html {
 }
 
 .chip-title {
-  font-size: 11px;
+  font-size: 10.5px;
   color: #94a3b8;
   font-weight: 500;
   text-transform: uppercase;
 }
 
 .chip-val {
-  font-size: 14px;
+  font-size: 13.5px;
   color: #34d399;
   font-weight: 700;
 }
@@ -3619,18 +3557,19 @@ html {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  background: rgba(7, 31, 21, 0.88);
+  background: rgba(7, 31, 21, 0.92);
   border: 1.5px solid rgba(16, 185, 129, 0.45);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   padding: 8px 18px;
   border-radius: 9999px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 20px rgba(16, 185, 129, 0.15);
-  margin: 14px auto 14px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35), 0 0 18px rgba(16, 185, 129, 0.15);
+  margin: 10px auto 14px;
   max-width: 90%;
   z-index: 12;
   position: relative;
   transition: all 0.25s ease;
+  box-sizing: border-box;
 }
 
 .hero-plant-filter-bar:hover {
@@ -3646,7 +3585,7 @@ html {
 }
 
 .hero-filter-label {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 700;
   color: #a7f3d0;
   white-space: nowrap;
@@ -3665,9 +3604,9 @@ html {
   background: rgba(16, 185, 129, 0.18);
   border: 1px solid rgba(52, 211, 153, 0.45);
   color: #ffffff;
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 700;
-  padding: 8px 36px 8px 14px;
+  padding: 7px 34px 7px 12px;
   border-radius: 9999px;
   cursor: pointer;
   outline: none;
@@ -3691,26 +3630,26 @@ html {
 .hero-filter-select-wrap::after {
   content: "▾";
   position: absolute;
-  right: 14px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   color: #34d399;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
   pointer-events: none;
 }
 
 @media (max-width: 640px) {
   .hero-plant-filter-bar {
-    flex-direction: column;
-    align-items: stretch;
-    border-radius: 20px;
-    padding: 12px 16px;
+    width: 100%;
+    max-width: 360px;
+    padding: 7px 14px;
     gap: 8px;
-    width: 90%;
+    margin: 8px auto 10px;
   }
   .hero-plant-select {
-    width: 100%;
+    font-size: 12.5px;
+    padding: 6px 28px 6px 10px;
   }
 }
 
@@ -3721,19 +3660,20 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
   width: 100%;
-  max-width: 600px;
-  margin: 6px auto 26px;
+  max-width: 560px;
+  margin: 0 auto;
   z-index: 12;
   position: relative;
+  box-sizing: border-box;
 }
 
 .btn-hero-action {
   display: inline-flex;
   align-items: center;
-  gap: 14px;
-  padding: 13px 26px;
+  gap: 12px;
+  padding: 12px 22px;
   border-radius: 9999px;
   font-family: inherit;
   cursor: pointer;
@@ -3742,7 +3682,7 @@ html {
   position: relative;
   border: 1px solid transparent;
   flex: 1 1 0;
-  min-width: 190px;
+  min-width: 180px;
   box-sizing: border-box;
 }
 
@@ -3860,16 +3800,27 @@ html {
 }
 
 @media (max-width: 640px) {
+  .doctor-3d-hero {
+    padding: 58px 12px 14px;
+  }
+  .doctor-3d-stage-wrapper {
+    margin: 0 auto 8px;
+  }
+  .doctor-3d-image-container {
+    aspect-ratio: 16 / 10;
+    max-height: 240px;
+  }
   .doctor-hero-actions {
     flex-direction: column;
-    gap: 10px;
-    padding: 0 16px;
-    margin-bottom: 16px;
+    gap: 8px;
+    padding: 0 4px;
+    width: 100%;
+    max-width: 360px;
   }
   .btn-hero-action {
     width: 100%;
     min-width: 0;
-    padding: 12px 20px;
+    padding: 11px 18px;
   }
 }
 
