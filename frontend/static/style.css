@@ -1273,33 +1273,81 @@ button {
 
 
 /* =====================================================================
-   DASHBOARD STYLES
+   DASHBOARD STYLES (TRỰC QUAN & RÕ NÉT)
    ===================================================================== */
+.dashboard-main {
+  padding-top: 88px;
+  max-width: 1200px;
+  margin: 0 auto 48px;
+  box-sizing: border-box;
+}
+
+.dashboard-page-header {
+  margin-bottom: 24px;
+}
+
+.dash-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.dash-page-title {
+  font-size: clamp(24px, 3.5vw, 36px);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.6px;
+  font-family: 'Plus Jakarta Sans', var(--font-sans);
+}
+
+.live-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  color: #a7f3d0;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
   margin-bottom: 24px;
 }
 
 .stat-card {
   background: #ffffff;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 18px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 18px;
+  padding: 20px 22px;
   display: flex;
   align-items: center;
   gap: 16px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.25);
 }
 
 .stat-icon-wrap {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-sm);
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .stat-blue { background: #e0f2fe; color: #0284c7; }
@@ -1307,16 +1355,18 @@ button {
 .stat-green { background: #dcfce7; color: #16a34a; }
 
 .stat-value {
-  font-size: 26px;
+  font-size: 30px;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.1;
+  font-family: 'Plus Jakarta Sans', var(--font-sans);
 }
 
 .stat-label {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: #64748b;
+  margin-top: 3px;
 }
 
 .dash-grid {
@@ -1327,10 +1377,10 @@ button {
 
 .panel {
   background: #ffffff;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 20px;
-  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
 }
 
 .panel-full {
@@ -1341,36 +1391,37 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .panel-title {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: #0f172a;
+  font-family: 'Plus Jakarta Sans', var(--font-sans);
 }
 
 .panel-badge {
-  font-size: 11.5px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   background: #f1f5f9;
   color: #475569;
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: var(--radius-full);
 }
 
 .bar-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
+  gap: 14px;
+  margin-bottom: 12px;
 }
 
 .bar-label {
-  width: 140px;
-  font-size: 13px;
+  width: 150px;
+  font-size: 13.5px;
   font-weight: 600;
-  color: #334155;
+  color: #1e293b;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1392,11 +1443,12 @@ button {
 }
 
 .bar-count {
-  width: 32px;
+  width: 36px;
   text-align: right;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: #0f172a;
+  font-family: 'Plus Jakarta Sans', var(--font-sans);
 }
 
 /* =====================================================================

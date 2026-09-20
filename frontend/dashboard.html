@@ -3,18 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Thống kê - Nông Y AI</title>
+  <title>Thống Kê Dịch Bệnh - Nông Y</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/style.css?v=15" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css?v=35" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="wide-layout">
 
-<header class="topnav">
-  <div class="nav-container">
-    <a class="brand" href="/">
+<!-- Top Glass Header (Đồng bộ, Tinh gọn) -->
+<header class="app-top-header dashboard-header">
+  <div class="top-header-container">
+    <a class="brand" href="/" title="Trang chủ Nông Y">
       <div class="brand-icon">
         <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M6 26C6 14 14 6 26 6C26 18 18 26 6 26Z" fill="url(#leafGradDash)"/>
@@ -33,32 +34,32 @@
       </div>
     </a>
 
-    <nav class="nav-links">
-      <a href="/" class="nav-link">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Chẩn đoán
+    <div class="top-header-actions">
+      <a href="/" class="btn-top-util" title="Quay lại phòng khám chẩn đoán">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span>Phòng khám</span>
       </a>
-      <a href="/dashboard" class="nav-link active">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-        Thống kê
-      </a>
-      <button class="btn btn-phone-connect" id="openPhoneModalBtn" title="Mở trên điện thoại">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+      <button type="button" class="btn-top-util btn-top-phone" id="openPhoneModalBtn" title="Quét mã QR mở trên điện thoại">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
         <span>Mở trên điện thoại</span>
       </button>
-    </nav>
+    </div>
   </div>
 </header>
 
-<main class="main-content wide-content">
-  <section class="hero-section">
-    <div class="hero-badge">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-      Tổng hợp dữ liệu dịch hại cây trồng
+<main class="main-content wide-content dashboard-main">
+  <!-- Tiêu đề thống kê trực quan, rõ nét -->
+  <div class="dashboard-page-header">
+    <div class="dash-title-row">
+      <h1 class="dash-page-title">
+        Thống Kê <span class="title-gradient-inline">Dịch Bệnh Cây Trồng</span>
+      </h1>
+      <span class="live-status-badge">
+        <span class="live-dot"></span>
+        Dữ liệu thời gian thực
+      </span>
     </div>
-    <h1 class="hero-title">Báo cáo & Thống kê tình hình bệnh hại</h1>
-    <p class="hero-desc">Theo dõi phân bố các loại cây trồng, tần suất bệnh phổ biến và diễn biến các ca chẩn đoán theo thời gian thực.</p>
-  </section>
+  </div>
 
   <div class="stat-grid" id="statGrid">
     <div class="stat-card">
@@ -215,6 +216,6 @@
   </div>
 </div>
 
-<script src="/static/dashboard.js?v=15"></script>
+<script src="/static/dashboard.js?v=35"></script>
 </body>
 </html>
