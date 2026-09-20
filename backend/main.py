@@ -18,14 +18,19 @@ import uuid
 from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
+import re
 import sys
 from typing import Optional
 
-# Tu dong nap backend dir va site-packages tu .venv
+# Tu dong nap backend dir va site-packages tu .venv va vendor
 _BACKEND_DIR = Path(__file__).resolve().parent
 _ROOT_DIR = _BACKEND_DIR.parent
 if str(_BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(_BACKEND_DIR))
+
+_VENDOR_DIR = _BACKEND_DIR / "vendor"
+if _VENDOR_DIR.exists() and str(_VENDOR_DIR) not in sys.path:
+    sys.path.insert(0, str(_VENDOR_DIR))
 
 for _candidate in [
     _ROOT_DIR / ".venv" / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages",
@@ -37,7 +42,7 @@ for _candidate in [
 import torch
 from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
 
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from PIL import Image
 from sqlalchemy import func
@@ -455,22 +460,7 @@ def network_info():
                 pass
 
     active_url = public_url if public_url else f"http://{ip}:{port}"
-
-    svg_qr = None
-    try:
-        import qrcode
-        import qrcode.image.svg
-
-        factory = qrcode.image.svg.SvgPathImage
-        qr = qrcode.QRCode(image_factory=factory, border=2)
-        qr.add_data(active_url)
-        qr.make(fit=True)
-        img = qr.make_image()
-        buf = io.BytesIO()
-        img.save(buf)
-        svg_qr = buf.getvalue().decode("utf-8")
-    except Exception:
-        pass
+    svg_qr = generate_qr_svg(active_url)
 
     return {
         "local_ip": ip,
@@ -480,6 +470,58 @@ def network_info():
         "is_public": bool(public_url),
         "qr_svg": svg_qr,
     }
+
+
+def generate_qr_svg(active_url: str) -> str:
+    """Tạo chuỗi SVG mã QR chuẩn, sắc nét, có nền trắng và căn chỉnh hoàn hảo cho mobile."""
+    if not active_url:
+        return ""
+    try:
+        import qrcode
+        import qrcode.image.svg
+
+        class CrispSvgImage(qrcode.image.svg.SvgPathImage):
+            background = "#ffffff"
+            QR_PATH_STYLE = {
+                "fill": "#0f172a",
+                "fill-opacity": "1",
+                "fill-rule": "nonzero",
+                "stroke": "none",
+            }
+
+        qr = qrcode.QRCode(
+            version=None,
+            error_correction=qrcode.constants.ERROR_CORRECT_M,
+            box_size=10,
+            border=2,
+            image_factory=CrispSvgImage,
+        )
+        qr.add_data(active_url)
+        qr.make(fit=True)
+        img = qr.make_image()
+        buf = io.BytesIO()
+        img.save(buf)
+        raw_svg = buf.getvalue().decode("utf-8")
+
+        # Bỏ <?xml ...?> và ép width="100%" height="100%" để responsive
+        clean_svg = re.sub(r"<\?xml[^>]*\?>\s*", "", raw_svg).strip()
+        clean_svg = re.sub(r'width="\d+mm"', 'width="100%"', clean_svg)
+        clean_svg = re.sub(r'height="\d+mm"', 'height="100%"', clean_svg)
+        return clean_svg
+    except Exception as e:
+        print(f"⚠️ [QR Error] Không thể tạo QR SVG: {e}")
+        return ""
+
+
+@app.get("/api/qr-code")
+def get_qr_code(url: Optional[str] = None):
+    """Phục vụ ảnh SVG QR code trực tiếp cho URL bất kỳ hoặc LAN URL hiện tại."""
+    target_url = url
+    if not target_url:
+        info = network_info()
+        target_url = info["lan_url"]
+    svg_data = generate_qr_svg(target_url)
+    return Response(content=svg_data, media_type="image/svg+xml")
 
 
 
