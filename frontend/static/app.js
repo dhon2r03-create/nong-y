@@ -1287,13 +1287,14 @@
 
       let isHeroInView = true;
       let isAnimRunning = false;
+      let isModalOpen = false;
       let lastFrameTime = 0;
       const targetFPSInterval = 1000 / 30; // Giới hạn 30 FPS siêu mượt & nhẹ máy
 
       const renderParticles = (currentTime) => {
-        if (!isHeroInView || document.hidden) {
+        if (!isHeroInView || document.hidden || isModalOpen) {
           isAnimRunning = false;
-          return; // Dừng hẳn vòng lặp, KHÔNG gọi requestAnimationFrame vô ích
+          return; // Dừng hẳn vòng lặp khi đang mở popup hoặc chuyển tab
         }
 
         requestAnimationFrame(renderParticles);
@@ -1325,10 +1326,18 @@
       };
 
       const startAnimLoop = () => {
-        if (!isAnimRunning && isHeroInView && !document.hidden) {
+        if (!isAnimRunning && isHeroInView && !document.hidden && !isModalOpen) {
           isAnimRunning = true;
           requestAnimationFrame(renderParticles);
         }
+      };
+
+      window.stopBgAnimForModal = () => {
+        isModalOpen = true;
+      };
+      window.resumeBgAnimAfterModal = () => {
+        isModalOpen = false;
+        startAnimLoop();
       };
 
       if ('IntersectionObserver' in window && heroSection) {
@@ -1353,7 +1362,6 @@
     }
   }
 
-  // 3. Smooth Tab Switching & Seamless Transition into Capture Section
   // 3. Smooth Modal Popup & Seamless Diagnosis Workspace Activation
   const workspaceModal = document.getElementById('diagnoseWorkspaceModal');
   const closeWorkspaceBtn = document.getElementById('closeDiagnoseWorkspaceBtn');
@@ -1362,8 +1370,8 @@
   const navDiagnoseBtn = document.getElementById('navDiagnoseBtn');
 
   const openDiagnoseWorkspace = (targetMode = 'camera') => {
-    if (typeof window.triggerParticleWarp === 'function') {
-      window.triggerParticleWarp();
+    if (typeof window.stopBgAnimForModal === 'function') {
+      window.stopBgAnimForModal();
     }
 
     activeTab = targetMode;
@@ -1425,6 +1433,10 @@
     if (workspaceModal) {
       workspaceModal.style.display = 'none';
       document.body.style.overflow = '';
+    }
+
+    if (typeof window.resumeBgAnimAfterModal === 'function') {
+      window.resumeBgAnimAfterModal();
     }
 
     const stopLiveCameraBtn = document.getElementById('stopLiveCameraBtn');
