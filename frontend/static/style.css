@@ -1311,50 +1311,26 @@ button {
    ===================================================================== */
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
 }
 
-@media (max-width: 960px) {
-  .stat-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 540px) {
-  .stat-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 .stat-card {
   background: #ffffff;
-  border: 1px solid rgba(21, 20, 15, 0.08);
-  border-radius: 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
   padding: 18px 20px;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
-}
-
-.stat-card-top {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
 }
 
 .stat-icon-wrap {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1363,52 +1339,18 @@ button {
 .stat-blue { background: #e0f2fe; color: #0284c7; }
 .stat-amber { background: #fef3c7; color: #d97706; }
 .stat-green { background: #dcfce7; color: #16a34a; }
-.stat-purple { background: #f3e8ff; color: #9333ea; }
-
-.stat-delta-pill {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: var(--radius-full);
-  letter-spacing: 0.2px;
-}
-
-.delta-good {
-  background: #ecfdf5;
-  color: #059669;
-  border: 1px solid rgba(5, 150, 105, 0.2);
-}
-
-.delta-warn {
-  background: #fffbeb;
-  color: #d97706;
-  border: 1px solid rgba(217, 119, 6, 0.2);
-}
-
-.delta-neutral {
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #cbd5e1;
-}
-
-.stat-info {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
 
 .stat-value {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
-  color: #15140f;
+  color: #0f172a;
   line-height: 1.1;
-  letter-spacing: -0.5px;
 }
 
 .stat-label {
   font-size: 12.5px;
   font-weight: 600;
-  color: #5a5448;
+  color: var(--text-muted);
 }
 
 .dash-grid {
