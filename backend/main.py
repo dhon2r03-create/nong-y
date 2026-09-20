@@ -534,12 +534,20 @@ app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR / "static")), name="
 
 @app.get("/")
 def serve_index():
-    return FileResponse(str(FRONTEND_DIR / "index.html"))
+    response = FileResponse(str(FRONTEND_DIR / "index.html"))
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 
 @app.get("/dashboard")
 def serve_dashboard():
-    return FileResponse(str(FRONTEND_DIR / "dashboard.html"))
+    response = FileResponse(str(FRONTEND_DIR / "dashboard.html"))
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 
 if __name__ == "__main__":

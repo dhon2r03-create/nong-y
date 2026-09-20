@@ -1092,5 +1092,95 @@
       if (e.target === prescriptionModal) closePrescriptionModal();
     });
   }
+
+  // =====================================================================
+  // ATELIER HERO & MOBILE MENU CONTROLLER
+  // =====================================================================
+  const atelierHamburgerBtn = document.getElementById('atelierHamburgerBtn');
+  const atelierCloseMenuBtn = document.getElementById('atelierCloseMenuBtn');
+  const atelierMobileMenu = document.getElementById('atelierMobileMenu');
+  const atelierReachOutBtn = document.getElementById('atelierReachOutBtn');
+  const atelierMobileReachOutBtn = document.getElementById('atelierMobileReachOutBtn');
+  const atelierWatchReelBtn = document.getElementById('atelierWatchReelBtn');
+  const atelierBgVideo = document.getElementById('atelierBgVideo');
+  const reelBtnText = document.getElementById('reelBtnText');
+
+  function openAtelierMobileMenu() {
+    if (!atelierMobileMenu) return;
+    atelierMobileMenu.classList.add('is-open');
+    if (atelierHamburgerBtn) {
+      atelierHamburgerBtn.classList.add('is-open');
+      atelierHamburgerBtn.setAttribute('aria-expanded', 'true');
+    }
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeAtelierMobileMenu() {
+    if (!atelierMobileMenu) return;
+    atelierMobileMenu.classList.remove('is-open');
+    if (atelierHamburgerBtn) {
+      atelierHamburgerBtn.classList.remove('is-open');
+      atelierHamburgerBtn.setAttribute('aria-expanded', 'false');
+    }
+    document.body.style.overflow = '';
+  }
+
+  if (atelierHamburgerBtn) {
+    atelierHamburgerBtn.addEventListener('click', () => {
+      if (atelierMobileMenu && atelierMobileMenu.classList.contains('is-open')) {
+        closeAtelierMobileMenu();
+      } else {
+        openAtelierMobileMenu();
+      }
+    });
+  }
+
+  if (atelierCloseMenuBtn) {
+    atelierCloseMenuBtn.addEventListener('click', closeAtelierMobileMenu);
+  }
+
+  if (atelierMobileMenu) {
+    const mobileLinks = atelierMobileMenu.querySelectorAll('a');
+    mobileLinks.forEach((link) => {
+      link.addEventListener('click', () => {
+        closeAtelierMobileMenu();
+      });
+    });
+  }
+
+  // Kết nối Reach Out với modal mở trên điện thoại (QR code)
+  const handleReachOutClick = (e) => {
+    if (e) e.preventDefault();
+    closeAtelierMobileMenu();
+    const openPhoneModalBtn = document.getElementById('openPhoneModalBtn');
+    if (openPhoneModalBtn) {
+      openPhoneModalBtn.click();
+    } else {
+      window.location.href = '#diagnoseCard';
+    }
+  };
+
+  if (atelierReachOutBtn) atelierReachOutBtn.addEventListener('click', handleReachOutClick);
+  if (atelierMobileReachOutBtn) atelierMobileReachOutBtn.addEventListener('click', handleReachOutClick);
+
+  // Watch Reel: Chuyển đổi bật/tắt âm thanh video nền
+  if (atelierWatchReelBtn && atelierBgVideo) {
+    atelierWatchReelBtn.addEventListener('click', () => {
+      if (atelierBgVideo.muted) {
+        atelierBgVideo.muted = false;
+        atelierBgVideo.play().catch(() => {});
+        if (reelBtnText) reelBtnText.textContent = 'Mute Reel';
+        if (typeof showToast === 'function') {
+          showToast('🔊 Đã bật âm thanh video giới thiệu', 'success');
+        }
+      } else {
+        atelierBgVideo.muted = true;
+        if (reelBtnText) reelBtnText.textContent = 'Watch Reel';
+        if (typeof showToast === 'function') {
+          showToast('🔇 Đã tắt âm thanh video giới thiệu', 'info');
+        }
+      }
+    });
+  }
 })();
 
