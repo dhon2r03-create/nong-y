@@ -1366,10 +1366,8 @@
       if (sectionDesc) sectionDesc.textContent = 'Căn chỉnh lá cây vào khung ngắm và bấm nút chụp ảnh bên dưới';
       if (retakeBtn) retakeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg> 📸 Chụp lại ảnh khác`;
 
-      setChibiMessage('Đang mở camera, bạn hướng ống kính vào phần lá bị bệnh rồi bấm chụp nhé! 📸');
-
-      viewCamera.style.display = 'block';
-      viewUpload.style.display = 'none';
+      if (viewCamera) viewCamera.style.display = 'block';
+      if (viewUpload) viewUpload.style.display = 'none';
 
       // Khởi động Camera trực tiếp
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -1385,11 +1383,9 @@
       if (sectionDesc) sectionDesc.textContent = 'Kéo thả ảnh hoặc chọn ảnh từ thư viện thiết bị';
       if (retakeBtn) retakeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> 📁 Chọn ảnh khác`;
 
-      setChibiMessage('Hãy chọn ảnh chụp lá cây rõ nét từ thiết bị để mình chẩn đoán chính xác nhất nhé! 🌿');
-
       stopCamera();
-      viewCamera.style.display = 'none';
-      viewUpload.style.display = 'block';
+      if (viewCamera) viewCamera.style.display = 'none';
+      if (viewUpload) viewUpload.style.display = 'block';
 
       if (tabUploadBtn) tabUploadBtn.classList.add('active');
       if (tabLiveCameraBtn) tabLiveCameraBtn.classList.remove('active');
