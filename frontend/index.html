@@ -116,6 +116,21 @@
       </div>
     </div>
 
+    <!-- Bộ chọn loài cây trực tiếp trên giao diện chính -->
+    <div class="hero-plant-filter-bar">
+      <div class="hero-filter-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <label class="hero-filter-label" for="plantFilterSelect">Loài cây cần khám:</label>
+      <div class="hero-filter-select-wrap">
+        <select id="plantFilterSelect" class="hero-plant-select">
+          <option value="auto">🌱 Tự động nhận diện (Tất cả 14 loài cây)</option>
+        </select>
+      </div>
+    </div>
+
     <!-- Khu vực nút hành động tinh gọn & hiện đại -->
     <div class="doctor-hero-actions">
       <button type="button" class="btn-hero-action btn-hero-primary" id="tabLiveCameraBtn" title="Khám bệnh trực tiếp bằng camera">
@@ -175,26 +190,10 @@
       <!-- VÙNG CHỤP ẢNH & UPLOAD CHÍNH -->
       <section id="diagnoseCard" class="diagnose-card-container scroll-mt-20">
         
-        <!-- PHẦN 1: BỘ LỌC LOÀI CÂY -->
-        <div class="workspace-section-card">
-          <div class="section-card-header">
-            <div class="section-card-step">1</div>
-            <div class="section-card-titles">
-              <h4 class="section-card-title">Chọn loài cây cần khám</h4>
-              <p class="section-card-desc">Lọc chuyên biệt theo từng loại cây giúp tăng tối đa độ chính xác (hoặc để tự động nhận diện)</p>
-            </div>
-          </div>
-          <div class="plant-select-wrapper">
-            <select id="plantFilterSelect" class="plant-select-dropdown">
-              <option value="auto">🌱 Tự động nhận diện (Tất cả 14 loài cây)</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- PHẦN 2: CHỌN NGUỒN ẢNH (LIVE CAMERA HOẶC TẢI LÊN) -->
+        <!-- PHẦN 1: CHỌN NGUỒN ẢNH (LIVE CAMERA HOẶC TẢI LÊN) -->
         <div class="workspace-section-card" id="sectionImageSource">
           <div class="section-card-header">
-            <div class="section-card-step">2</div>
+            <div class="section-card-step">1</div>
             <div class="section-card-titles">
               <h4 class="section-card-title">Nguồn hình ảnh lá cây</h4>
               <p class="section-card-desc">Chụp trực tiếp bằng camera hoặc chọn tệp ảnh sẵn có từ thiết bị</p>
@@ -294,10 +293,10 @@
           </div>
         </div>
 
-        <!-- PHẦN 3: XEM TRƯỚC ẢNH & TIẾN HÀNH KHÁM BỆNH (Hiện khi đã có ảnh) -->
+        <!-- PHẦN 2: XEM TRƯỚC ẢNH & TIẾN HÀNH KHÁM BỆNH (Hiện khi đã có ảnh) -->
         <div class="workspace-section-card" id="sectionPreviewDiagnose" style="display:none;">
           <div class="section-card-header">
-            <div class="section-card-step">3</div>
+            <div class="section-card-step">2</div>
             <div class="section-card-titles">
               <h4 class="section-card-title">Xem trước ảnh & Khám bệnh</h4>
               <p class="section-card-desc">Kiểm tra ảnh lá cây trước khi gửi cho bác sĩ AI chẩn đoán</p>

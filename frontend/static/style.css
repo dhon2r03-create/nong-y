@@ -3622,6 +3622,108 @@ html {
 }
 
 /* =====================================================================
+   HERO PLANT FILTER BAR (CHỌN LOÀI CÂY TRỰC TIẾP NGOÀI TRANG CHỦ)
+   ===================================================================== */
+.hero-plant-filter-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(7, 31, 21, 0.88);
+  border: 1.5px solid rgba(16, 185, 129, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 8px 18px;
+  border-radius: 9999px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 20px rgba(16, 185, 129, 0.15);
+  margin: 14px auto 14px;
+  max-width: 90%;
+  z-index: 12;
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+.hero-plant-filter-bar:hover {
+  border-color: rgba(52, 211, 153, 0.7);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), 0 0 25px rgba(52, 211, 153, 0.25);
+}
+
+.hero-filter-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #34d399;
+}
+
+.hero-filter-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #a7f3d0;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+
+.hero-filter-select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hero-plant-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 8px 36px 8px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.hero-plant-select:hover,
+.hero-plant-select:focus {
+  background: rgba(16, 185, 129, 0.3);
+  border-color: #34d399;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.25);
+}
+
+.hero-plant-select option {
+  background: #09261a;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.hero-filter-select-wrap::after {
+  content: "▾";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #34d399;
+  font-size: 14px;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .hero-plant-filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    border-radius: 20px;
+    padding: 12px 16px;
+    gap: 8px;
+    width: 90%;
+  }
+  .hero-plant-select {
+    width: 100%;
+  }
+}
+
+/* =====================================================================
    HERO ACTIONS (TINH GỌN & HIỆN ĐẠI)
    ===================================================================== */
 .doctor-hero-actions {
@@ -3631,7 +3733,7 @@ html {
   gap: 16px;
   width: 100%;
   max-width: 600px;
-  margin: 8px auto 26px;
+  margin: 6px auto 26px;
   z-index: 12;
   position: relative;
 }
