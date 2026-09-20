@@ -20,7 +20,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=29" />
+  <link rel="stylesheet" href="/static/style.css?v=30" />
 </head>
 <body>
 
@@ -41,32 +41,31 @@
     <!-- Top Badge -->
     <div class="doctor-hero-badge">
       <span class="pulse-dot"></span>
-      <span class="badge-text">TRÍ TUỆ NHÂN TẠO NÔNG NGHIỆP 4.0 · MÔ HÌNH DEEP LEARNING</span>
+      <span class="badge-text">BÁC SĨ CÂY TRỒNG CHIBI 3D · AI CHẨN ĐOÁN TỨC THÌ</span>
     </div>
 
     <!-- Main Title & Subtitle -->
     <h1 class="doctor-hero-title">
-      Bác Sĩ Cây Trồng Thông Minh
-      <span class="title-gradient">Khám Bệnh Chuẩn Xác Từng Chiếc Lá</span>
+      Bác Sĩ Cây Trồng <span class="title-gradient">Chibi AI 3D</span>
     </h1>
     <p class="doctor-hero-subtitle">
-      Đồng hành cùng nhà nông: Tự động soi quét tổn thương, phân tích bản đồ nhiệt Grad-CAM thời gian thực và cung cấp phác đồ điều trị nông học chi tiết cho 14 loài cây trồng.
+      Khám bệnh lá cây thông minh, trực quan và chuẩn xác. Bật camera hoặc tải ảnh lên để Bác sĩ Chibi AI phát hiện sâu bệnh và kê đơn điều trị tức thì cho 14 loài cây trồng.
     </p>
 
-    <!-- 3D Interactive Stage: Bác sĩ khám cây trồng -->
+    <!-- 3D Interactive Stage: Bác sĩ Chibi khám cây trồng -->
     <div class="doctor-3d-stage-wrapper" id="doctor3dStageWrapper">
       <div class="doctor-3d-card" id="doctor3dCard">
         <!-- 3D Doctor Illustration with Parallax Depth -->
         <div class="doctor-3d-image-container">
           <img
             src="/static/doctor-3d.jpg"
-            alt="Ông Bác Sĩ Khám Cây Trồng AI"
+            alt="Bác Sĩ Cây Trồng Chibi 3D"
             class="doctor-3d-main-img"
             loading="eager"
           />
           <!-- 3D Scanning Laser Beam Sweep -->
           <div class="laser-scanner-beam"></div>
-          <!-- Scanning Target Crosshairs -->
+          <!-- Scanning Target Crosshairs aligned with leaf -->
           <div class="scan-target-box">
             <div class="target-corner tl"></div>
             <div class="target-corner tr"></div>
@@ -125,6 +124,27 @@
           <small class="btn-hero-sub">Kéo thả hoặc chọn tệp</small>
         </span>
       </button>
+    </div>
+
+    <!-- 3 Bước Khám Bệnh Trực Quan Nhanh -->
+    <div class="doctor-quick-steps">
+      <div class="quick-step-item">
+        <span class="step-num">1</span>
+        <span class="step-icon">📸</span>
+        <span class="step-text">Chụp / Tải ảnh lá</span>
+      </div>
+      <div class="quick-step-arrow">→</div>
+      <div class="quick-step-item">
+        <span class="step-num">2</span>
+        <span class="step-icon">🤖</span>
+        <span class="step-text">Bác sĩ AI chẩn đoán</span>
+      </div>
+      <div class="quick-step-arrow">→</div>
+      <div class="quick-step-item">
+        <span class="step-num">3</span>
+        <span class="step-icon">💊</span>
+        <span class="step-text">Nhận phác đồ điều trị</span>
+      </div>
     </div>
 
   </div>
@@ -672,6 +692,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=29"></script>
+<script src="/static/app.js?v=30"></script>
 </body>
 </html>
