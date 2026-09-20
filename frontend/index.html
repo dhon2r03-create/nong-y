@@ -20,7 +20,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=43" />
+  <link rel="stylesheet" href="/static/style.css?v=44" />
 </head>
 <body>
 
@@ -58,6 +58,10 @@
       </a>
 
       <div class="top-header-actions">
+        <a href="https://zalo.me/0981975851" target="_blank" rel="noopener noreferrer" class="btn-top-util btn-top-zalo" title="Liên hệ Zalo tư vấn: 0981975851">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.07L2 22l5.14-1.35C8.55 21.49 10.23 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+          <span>Zalo: 0981.975.851</span>
+        </a>
         <a href="/dashboard" class="btn-top-util" title="Xem biểu đồ và thống kê dịch bệnh">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
           <span>Thống kê</span>
@@ -72,7 +76,7 @@
     <!-- 3D Interactive Stage: Bác sĩ khám cây trồng -->
     <div class="doctor-3d-stage-wrapper" id="doctor3dStageWrapper">
       <div class="doctor-3d-card" id="doctor3dCard">
-        <!-- 3D Doctor Illustration with Parallax Depth -->
+        <!-- 3D Doctor Illustration with Interactive Depth -->
         <div class="doctor-3d-image-container">
           <img
             src="/static/doctor-3d.jpg"
@@ -90,23 +94,6 @@
             <div class="target-corner br"></div>
             <div class="target-line"></div>
             <span class="target-label">AI SCANNING LEAF</span>
-          </div>
-        </div>
-
-        <!-- Floating 3D Holographic Status Chips -->
-        <div class="hologram-chip chip-left">
-          <div class="chip-icon">🔬</div>
-          <div class="chip-info">
-            <span class="chip-title">Độ chính xác AI</span>
-            <strong class="chip-val">98.4% Top-1</strong>
-          </div>
-        </div>
-
-        <div class="hologram-chip chip-right">
-          <div class="chip-icon">🌱</div>
-          <div class="chip-info">
-            <span class="chip-title">Cây khám tự động</span>
-            <strong class="chip-val">14 Loài Cây Chủ Lực</strong>
           </div>
         </div>
       </div>
@@ -166,30 +153,7 @@
 <div class="diagnose-workspace-modal" id="diagnoseWorkspaceModal" style="display: none;">
   <div class="workspace-backdrop" id="diagnoseWorkspaceBackdrop"></div>
 
-  <div class="workspace-modal-layout">
-    <!-- BÁC SĨ CÂY TRỒNG CHIBI 3D ĐỨNG BÊN CẠNH POPUP -->
-    <aside class="modal-chibi-companion" id="modalChibiCompanion" aria-label="Bác sĩ Cây Trồng Chibi AI">
-      <div class="chibi-companion-speech" id="chibiCompanionSpeech">
-        <div class="chibi-speech-header">
-          <span class="chibi-status-dot"></span>
-          <span class="chibi-speech-tag">Dr. Cây Trồng AI</span>
-        </div>
-        <p class="chibi-speech-text" id="chibiSpeechText">Chào bạn! Mình đã sẵn sàng hỗ trợ khám bệnh và kê đơn cho cây 🌱</p>
-      </div>
-
-      <div class="chibi-character-figure">
-        <div class="chibi-avatar-frame">
-          <img src="/static/doctor-3d.jpg" alt="Bác Sĩ Cây Trồng Chibi 3D" class="chibi-companion-img" />
-          <div class="chibi-glow-ring"></div>
-        </div>
-        <div class="chibi-badge-name">
-          <span class="badge-title">Bác Sĩ Cây Trồng</span>
-          <span class="badge-subtitle">Trực tuyến 24/7 🌿</span>
-        </div>
-      </div>
-    </aside>
-
-    <div class="workspace-dialog">
+  <div class="workspace-dialog">
       <div class="workspace-header">
         <div class="workspace-title-group">
           <div class="workspace-title-icon">
@@ -536,7 +500,6 @@
     </div>
   </section>
 </main>
-    </div>
   </div>
 </div>
 
@@ -667,6 +630,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=43"></script>
+<script src="/static/app.js?v=44"></script>
 </body>
 </html>

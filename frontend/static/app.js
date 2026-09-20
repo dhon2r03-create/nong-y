@@ -93,17 +93,7 @@
   let currentOriginalImgUrl = '';
   let currentHeatmapImgUrl = '';
 
-  // Chibi Doctor Companion Speech Controller
-  const chibiSpeechText = document.getElementById('chibiSpeechText');
-  function setChibiMessage(text) {
-    if (!chibiSpeechText) return;
-    chibiSpeechText.style.transition = 'opacity 0.15s ease';
-    chibiSpeechText.style.opacity = '0';
-    setTimeout(() => {
-      chibiSpeechText.textContent = text;
-      chibiSpeechText.style.opacity = '1';
-    }, 150);
-  }
+
 
   // 0. Nạp danh mục loài cây vào Dropdown
   async function loadSupportedPlants() {
@@ -337,8 +327,6 @@
       if (sectionImageSource) sectionImageSource.style.display = 'none';
       if (sectionPreviewDiagnose) sectionPreviewDiagnose.style.display = 'block';
 
-      setChibiMessage('Ảnh lá cây đã sẵn sàng! Bấm nút "Phân tích bệnh cây trồng" bên dưới nhé ✨');
-
       // Tự động mở Workspace Modal chuyển thẳng vào màn hình Xem trước ảnh & Chẩn đoán
       const workspaceModal = document.getElementById('diagnoseWorkspaceModal');
       if (workspaceModal && (workspaceModal.style.display === 'none' || !workspaceModal.style.display)) {
@@ -472,7 +460,6 @@
     submitBtn.disabled = true;
     btnSpinner.style.display = 'inline-block';
     submitBtnText.textContent = 'Đang phân tích hình ảnh...';
-    setChibiMessage('Đang soi kính hiển vi AI và đối chiếu 38 bệnh cây... Đợi xíu nhé! 🔬');
     hideAllResults();
     hideStatus();
 
@@ -490,7 +477,6 @@
 
       if (!res.ok) {
         showStatus(data.detail || 'Có lỗi xảy ra khi phân tích ảnh.', 'error');
-        setChibiMessage('Có lỗi xảy ra khi phân tích ảnh. Bạn thử lại nhé! ⚠️');
         return;
       }
 
@@ -503,7 +489,6 @@
         if (retakeRequirementText && data.suggested_action) {
           retakeRequirementText.innerHTML = data.suggested_action;
         }
-        setChibiMessage('Ôi không! Ảnh này không phải lá cây trồng, bạn chụp lại giúp mình nhé! 🧐');
         nonPlantAlert.style.display = 'flex';
         nonPlantAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         return;
@@ -527,11 +512,9 @@
       if (isHealthy) {
         plantHealthPill.className = 'diagnosis-status-pill healthy';
         plantHealthLabel.textContent = 'Cây khỏe mạnh';
-        setChibiMessage(`Tuyệt vời! Cây ${data.plant_name} của bạn phát triển rất khỏe mạnh và xanh tốt 🌱`);
       } else {
         plantHealthPill.className = 'diagnosis-status-pill';
         plantHealthLabel.textContent = 'Phát hiện bệnh hại';
-        setChibiMessage(`Phát hiện: ${data.disease_name} trên cây ${data.plant_name}. Hãy xem phác đồ & toa thuốc bên dưới nhé! 🩺`);
       }
 
       if (resultSeverityBadge) {
@@ -1167,12 +1150,10 @@
       }
     });
   }
-})();
 
-/* =====================================================================
-   3D PLANT DOCTOR INTERACTIVE HERO CONTROLLER
-   ===================================================================== */
-(function initDoctor3DHero() {
+  /* =====================================================================
+     3D PLANT DOCTOR HERO & DIAGNOSIS WORKSPACE CONTROLLER
+     ===================================================================== */
   const heroSection = document.getElementById('doctorHero');
   const stageWrapper = document.getElementById('doctor3dStageWrapper');
   const card3d = document.getElementById('doctor3dCard');
@@ -1180,8 +1161,6 @@
 
   const tabLiveCameraBtn = document.getElementById('tabLiveCameraBtn');
   const tabUploadBtn = document.getElementById('tabUploadBtn');
-  const tabPhoneBtn = document.getElementById('tabPhoneBtn');
-  const scrollIndicator = document.getElementById('doctorScrollIndicator');
 
   // Kiểm tra thiết bị cấu hình thấp hoặc điện thoại di động
   const isLowEndOrMobile =
@@ -1191,15 +1170,47 @@
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
     window.innerWidth <= 768;
 
-  // 1. Giữ thẻ ảnh bác sĩ 3D tĩnh 100% (Đã tắt hiệu ứng di chuột nghiêng 3D để chống lag hoàn toàn)
-  if (card3d) {
-    card3d.style.transform = 'none';
+  // 1. Tương tác ảnh 3D mượt mà, không gây lag (100% GPU via requestAnimationFrame)
+  if (card3d && stageWrapper && !isLowEndOrMobile) {
+    let targetRotX = 0;
+    let targetRotY = 0;
+    let isHovering = false;
+    let rAfTilt = null;
+
+    const renderCardTilt = () => {
+      if (isHovering) {
+        card3d.style.transform = `perspective(1000px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(1.015, 1.015, 1.015)`;
+      } else {
+        card3d.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+      }
+      rAfTilt = null;
+    };
+
+    stageWrapper.addEventListener('pointermove', (e) => {
+      const rect = stageWrapper.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+      targetRotX = -py * 8; // Max 4 deg tilt
+      targetRotY = px * 8;
+      isHovering = true;
+      if (!rAfTilt) {
+        rAfTilt = requestAnimationFrame(renderCardTilt);
+      }
+    }, { passive: true });
+
+    stageWrapper.addEventListener('pointerleave', () => {
+      isHovering = false;
+      targetRotX = 0;
+      targetRotY = 0;
+      if (!rAfTilt) {
+        rAfTilt = requestAnimationFrame(renderCardTilt);
+      }
+    }, { passive: true });
   }
 
-  // 2. Bioluminescent 3D Floating Particles (Tối ưu cực đại, dừng hẳn khi không xem)
+  // 2. Bioluminescent 3D Floating Particles (Tối ưu cực đại, dừng hẳn khi mở modal)
   if (canvas) {
     if (isLowEndOrMobile) {
-      // Tắt hoàn toàn Canvas trên máy yếu / điện thoại để tiết kiệm 100% CPU/GPU
       canvas.style.display = 'none';
     } else {
       const ctx = canvas.getContext('2d', { alpha: true });
@@ -1213,7 +1224,7 @@
       }, { passive: true });
 
       const particles = [];
-      const particleCount = 10; // Chỉ 10 hạt cực nhẹ
+      const particleCount = 10;
 
       for (let i = 0; i < particleCount; i++) {
         particles.push({
@@ -1232,12 +1243,12 @@
       let isAnimRunning = false;
       let isModalOpen = false;
       let lastFrameTime = 0;
-      const targetFPSInterval = 1000 / 30; // Giới hạn 30 FPS siêu mượt & nhẹ máy
+      const targetFPSInterval = 1000 / 30;
 
       const renderParticles = (currentTime) => {
         if (!isHeroInView || document.hidden || isModalOpen) {
           isAnimRunning = false;
-          return; // Dừng hẳn vòng lặp khi đang mở popup hoặc chuyển tab
+          return;
         }
 
         requestAnimationFrame(renderParticles);
@@ -1260,7 +1271,6 @@
           if (p.x < -10) p.x = width + 10;
           if (p.x > width + 10) p.x = -10;
 
-          // Vẽ hạt trực tiếp 1 lần
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(${p.color}, ${p.alpha.toFixed(2)})`;
@@ -1428,7 +1438,6 @@
       }
     });
 
-    // Kéo thả trực tiếp ảnh vào nút trên trang chủ
     tabUploadBtn.addEventListener('dragover', (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -1451,20 +1460,6 @@
       if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
         handleFileSelected(e.dataTransfer.files[0]);
       }
-    });
-  }
-
-  if (tabPhoneBtn) {
-    tabPhoneBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      openDiagnoseWorkspace('camera');
-    });
-  }
-
-  if (scrollIndicator) {
-    scrollIndicator.addEventListener('click', (e) => {
-      e.preventDefault();
-      openDiagnoseWorkspace('camera');
     });
   }
 
