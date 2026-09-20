@@ -537,6 +537,8 @@
     } catch (err) {
       console.error('Không thể tải dữ liệu dashboard', err);
     }
+  }
+
   initTimelineEvents();
   loadDashboard();
 })();

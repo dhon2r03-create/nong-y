@@ -3378,6 +3378,55 @@ html {
   box-sizing: border-box;
 }
 
+/* Doctor Hero Intro (Tiêu đề & Slogan Web App) */
+.doctor-hero-intro {
+  margin-bottom: 16px;
+  text-align: center;
+  max-width: 760px;
+  animation: heroIntroFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.doctor-hero-title {
+  font-size: clamp(22px, 3.8vw, 34px);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
+  font-family: 'Plus Jakarta Sans', var(--font-sans);
+  margin-bottom: 6px;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
+}
+
+.doctor-hero-title .highlight-gradient {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 60%, #6ee7b7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  text-shadow: none;
+  filter: drop-shadow(0 2px 10px rgba(16, 185, 129, 0.35));
+}
+
+.doctor-hero-subtitle {
+  font-size: clamp(13px, 1.7vw, 15.5px);
+  font-weight: 500;
+  color: #cbd5e1;
+  line-height: 1.5;
+  letter-spacing: 0.1px;
+  opacity: 0.95;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes heroIntroFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* 3D Stage & Card */
 .doctor-3d-stage-wrapper {
   width: 100%;
@@ -3816,6 +3865,19 @@ html {
   .doctor-3d-hero {
     padding: 58px 12px 14px;
   }
+  .doctor-hero-intro {
+    margin-bottom: 10px;
+    padding: 0 6px;
+  }
+  .doctor-hero-title {
+    font-size: 20px;
+    line-height: 1.25;
+    margin-bottom: 4px;
+  }
+  .doctor-hero-subtitle {
+    font-size: 12px;
+    line-height: 1.4;
+  }
   .doctor-3d-stage-wrapper {
     margin: 0 auto 8px;
   }
@@ -3933,18 +3995,18 @@ html {
   z-index: 1;
 }
 
-/* Top Header Zalo Button */
+/* Top Header Zalo Button - Đồng bộ màu xanh ngọc với toàn bộ hệ thống */
 .btn-top-zalo {
-  background: rgba(0, 104, 255, 0.15) !important;
-  border-color: rgba(0, 104, 255, 0.45) !important;
-  color: #60a5fa !important;
+  background: rgba(16, 185, 129, 0.14) !important;
+  border-color: rgba(52, 211, 153, 0.28) !important;
+  color: #e2e8f0 !important;
 }
 
 .btn-top-zalo:hover {
-  background: rgba(0, 104, 255, 0.3) !important;
-  border-color: #3b82f6 !important;
+  background: rgba(16, 185, 129, 0.28) !important;
+  border-color: #10b981 !important;
   color: #ffffff !important;
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.45) !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25) !important;
   transform: translateY(-1px);
 }
 

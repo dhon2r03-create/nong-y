@@ -210,11 +210,24 @@
     }
 
     if (stream) {
-      stopCamera();
+      if (cameraStream) {
+        cameraStream.getTracks().forEach((track) => track.stop());
+      }
       cameraStream = stream;
       cameraVideo.srcObject = cameraStream;
+      cameraVideo.setAttribute('playsinline', 'true');
+      cameraVideo.setAttribute('webkit-playsinline', 'true');
+      cameraVideo.setAttribute('autoplay', 'true');
+      cameraVideo.setAttribute('muted', 'true');
+      try {
+        await cameraVideo.play();
+      } catch (playErr) {
+        console.warn('Camera video play error:', playErr);
+      }
       currentFacingMode = facingMode;
 
+      const cameraErrorBox = document.getElementById('cameraErrorBox');
+      if (cameraErrorBox) cameraErrorBox.style.display = 'none';
       if (cameraPermHint) cameraPermHint.style.display = 'none';
       cameraStandbyBox.style.display = 'none';
       cameraLiveBox.style.display = 'flex';
@@ -229,24 +242,21 @@
 
     let errMsg = 'Không thể bật camera.';
     if (lastErr && (lastErr.name === 'NotAllowedError' || lastErr.name === 'PermissionDeniedError')) {
-      errMsg = '⚠️ Trình duyệt đang chặn quyền Camera. Vui lòng bấm vào biểu tượng Ổ khóa / Camera trên thanh địa chỉ của trình duyệt để cấp quyền "Cho phép" (Allow) rồi bấm lại nút Bật Camera.';
+      errMsg = '⚠️ Trình duyệt đang chặn quyền Camera. Vui lòng bấm vào biểu tượng Ổ khóa / Camera trên thanh địa chỉ của trình duyệt để cấp quyền "Cho phép" (Allow) rồi bấm lại "Bật Camera Ngay", hoặc bấm "Chụp từ thiết bị".';
     } else if (lastErr && (lastErr.name === 'NotFoundError' || lastErr.name === 'DevicesNotFoundError')) {
-      errMsg = '⚠️ Không tìm thấy webcam / camera trên máy tính. Vui lòng chuyển sang tab "Tải ảnh từ máy" bên cạnh.';
+      errMsg = '⚠️ Không tìm thấy webcam / camera trên thiết bị. Bạn hãy bấm nút "Chụp từ thiết bị" hoặc "Tải ảnh từ máy".';
     } else if (!window.isSecureContext && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-      errMsg = '⚠️ Trình duyệt chỉ cho phép bật Live Camera qua kết nối HTTPS hoặc http://localhost. Vui lòng truy cập qua localhost hoặc dùng tab "Tải ảnh từ máy".';
+      errMsg = '⚠️ Trình duyệt chỉ cho phép bật Live Stream qua HTTPS hoặc localhost. Bạn hãy bấm nút "Chụp từ thiết bị" để mở máy ảnh của điện thoại/máy tính.';
     } else {
-      errMsg = '⚠️ Không thể mở camera: ' + (lastErr?.message || 'Thiết bị bận hoặc chưa được cấp quyền');
+      errMsg = '⚠️ Không thể mở camera: ' + (lastErr?.message || 'Thiết bị bận hoặc chưa được cấp quyền') + '. Hãy bấm nút "Chụp từ thiết bị".';
     }
 
-    showStatus(errMsg, 'error');
-
-    // TUYỆT ĐỐI KHÔNG tự động click fallbackCameraInput trên Máy tính Desktop (tránh bung cửa sổ Finder thư mục)
-    // Chỉ fallback trên điện thoại di động
-    if (isMobile && lastErr && lastErr.name !== 'NotAllowedError') {
-      setTimeout(() => {
-        fallbackCameraInput.click();
-      }, 800);
+    const cameraErrorBox = document.getElementById('cameraErrorBox');
+    if (cameraErrorBox) {
+      cameraErrorBox.innerHTML = errMsg;
+      cameraErrorBox.style.display = 'block';
     }
+    showToast(errMsg, 'error');
   }
 
   function stopCamera() {
@@ -262,13 +272,21 @@
   }
 
   startLiveCameraBtn.addEventListener('click', () => {
+    const cameraErrorBox = document.getElementById('cameraErrorBox');
+    if (cameraErrorBox) cameraErrorBox.style.display = 'none';
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       startCamera(currentFacingMode);
     } else {
-      if (isMobileDevice()) {
+      const isMobile = isMobileDevice();
+      if (isMobile) {
         fallbackCameraInput.click();
       } else {
-        showStatus('⚠️ Trình duyệt không hỗ trợ Live Camera hoặc đang chạy qua HTTP không bảo mật. Vui lòng chuyển sang tab "Tải ảnh từ máy".', 'error');
+        const msg = '⚠️ Trình duyệt không hỗ trợ Live Stream trên kết nối này. Hãy bấm "Chụp từ thiết bị" bên cạnh.';
+        if (cameraErrorBox) {
+          cameraErrorBox.innerHTML = msg;
+          cameraErrorBox.style.display = 'block';
+        }
+        showToast(msg, 'error');
       }
     }
   });
@@ -1341,8 +1359,8 @@
     if (sectionPreviewDiagnose) sectionPreviewDiagnose.style.display = 'none';
 
     if (targetMode === 'camera') {
-      if (modalTitle) modalTitle.textContent = 'Khám Bệnh Live Camera';
-      if (modalSubtitle) modalSubtitle.textContent = 'Quét trực tiếp qua webcam/camera & chẩn đoán mầm bệnh';
+      if (modalTitle) modalTitle.textContent = 'Phòng Khám Bác Sĩ Cây Trồng';
+      if (modalSubtitle) modalSubtitle.textContent = 'Chẩn đoán mầm bệnh & kê đơn điều trị tức thì';
       if (sectionTitle) sectionTitle.textContent = 'Chụp ảnh lá cây trực tiếp';
       if (sectionDesc) sectionDesc.textContent = 'Căn chỉnh lá cây vào khung ngắm và bấm nút chụp ảnh bên dưới';
       if (retakeBtn) retakeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg> 📸 Chụp lại ảnh khác`;
@@ -1352,14 +1370,10 @@
       viewCamera.style.display = 'block';
       viewUpload.style.display = 'none';
 
-      // Bật ngay stream Camera trực tiếp không để chờ
-      setTimeout(() => {
-        const startLiveCameraBtn = document.getElementById('startLiveCameraBtn');
-        const cameraLiveBox = document.getElementById('cameraLiveBox');
-        if (startLiveCameraBtn && (!cameraLiveBox || cameraLiveBox.style.display === 'none')) {
-          startLiveCameraBtn.click();
-        }
-      }, 100);
+      // Khởi động Camera trực tiếp
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        startCamera(currentFacingMode);
+      }
 
       if (tabLiveCameraBtn) tabLiveCameraBtn.classList.add('active');
       if (tabUploadBtn) tabUploadBtn.classList.remove('active');
@@ -1417,11 +1431,22 @@
     });
   }
 
-  // Nút 1: Khám Live Camera -> Mở modal và BẬT NGAY Live Camera stream
+  // Nút 1: Camera -> Mở modal và kích hoạt Camera
   if (tabLiveCameraBtn) {
     tabLiveCameraBtn.addEventListener('click', (e) => {
       e.preventDefault();
       openDiagnoseWorkspace('camera');
+      const cameraErrorBox = document.getElementById('cameraErrorBox');
+      if (cameraErrorBox) cameraErrorBox.style.display = 'none';
+
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        startCamera(currentFacingMode);
+      } else {
+        if (cameraErrorBox) {
+          cameraErrorBox.innerHTML = '💡 Trình duyệt đang chạy qua kết nối HTTP (IP) hoặc thiết bị cần chọn ảnh trực tiếp. Bạn hãy bấm nút <strong>"Chụp từ thiết bị"</strong> bên dưới để mở máy ảnh.';
+          cameraErrorBox.style.display = 'block';
+        }
+      }
     });
   }
 
