@@ -20,7 +20,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=28" />
+  <link rel="stylesheet" href="/static/style.css?v=29" />
 </head>
 <body>
 
@@ -96,83 +96,36 @@
       </div>
     </div>
 
-    <!-- Các Nút Chuyển Tab Tương Tác & Liên Kết Chụp Ảnh -->
-    <!-- Nút Bấm Khám Bệnh Chính (Xuất Hiện Bằng 1 Nút Nhấn) -->
-    <div class="doctor-hero-cta-wrap">
-      <button type="button" class="btn-hero-launch-diagnose" id="heroLaunchDiagnoseBtn">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <span>Mở Bác Sĩ Khám Bệnh Cây Trồng</span>
-        <svg class="cta-arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </button>
-    </div>
-
-    <!-- Các Nút Chuyển Tab Tương Tác & Liên Kết Chụp Ảnh -->
-    <div class="doctor-tabs-dock" id="doctorTabsDock">
-      <!-- Tab 1: Live Camera -->
-      <button type="button" class="doctor-tab-btn active" id="tabLiveCameraBtn" title="Khám bệnh trực tiếp bằng camera">
-        <div class="tab-btn-icon-wrap icon-camera">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <!-- Khu vực nút hành động tinh gọn & hiện đại -->
+    <div class="doctor-hero-actions">
+      <button type="button" class="btn-hero-action btn-hero-primary" id="tabLiveCameraBtn" title="Khám bệnh trực tiếp bằng camera">
+        <span class="btn-hero-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
             <circle cx="12" cy="13" r="4"/>
           </svg>
-          <span class="tab-pulse-beacon"></span>
-        </div>
-        <div class="tab-btn-text">
-          <strong>Khám Live Camera</strong>
-          <span>Mở webcam quét ngay</span>
-        </div>
+          <span class="pulse-beacon"></span>
+        </span>
+        <span class="btn-hero-text">
+          <strong class="btn-hero-title">Khám Live Camera</strong>
+          <small class="btn-hero-sub">Quét tức thì qua webcam</small>
+        </span>
       </button>
 
-      <!-- Tab 2: Upload File -->
-      <button type="button" class="doctor-tab-btn" id="tabUploadBtn" title="Tải ảnh lá cây từ thiết bị">
-        <div class="tab-btn-icon-wrap icon-upload">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button type="button" class="btn-hero-action btn-hero-secondary" id="tabUploadBtn" title="Tải ảnh lá cây từ thiết bị">
+        <span class="btn-hero-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
             <polyline points="17 8 12 3 7 8"/>
             <line x1="12" y1="3" x2="12" y2="15"/>
           </svg>
-        </div>
-        <div class="tab-btn-text">
-          <strong>Tải ảnh lá cây</strong>
-          <span>Kéo thả / chọn tệp</span>
-        </div>
-      </button>
-
-      <!-- Tab 3: Thống Kê -->
-      <a href="/dashboard" class="doctor-tab-btn" id="tabStatsBtn" title="Xem biểu đồ và thống kê dịch bệnh">
-        <div class="tab-btn-icon-wrap icon-stats">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 20V10M12 20V4M6 20v-6"/>
-          </svg>
-        </div>
-        <div class="tab-btn-text">
-          <strong>Thống kê dịch bệnh</strong>
-          <span>Biểu đồ thời gian thực</span>
-        </div>
-      </a>
-
-      <!-- Tab 4: Mở Trên Điện Thoại -->
-      <button type="button" class="doctor-tab-btn" id="tabPhoneBtn" title="Quét mã QR mở trên điện thoại">
-        <div class="tab-btn-icon-wrap icon-phone">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-            <line x1="12" y1="18" x2="12.01" y2="18"/>
-          </svg>
-        </div>
-        <div class="tab-btn-text">
-          <strong>Mở trên điện thoại</strong>
-          <span>Quét mã QR nhanh</span>
-        </div>
+        </span>
+        <span class="btn-hero-text">
+          <strong class="btn-hero-title">Tải Ảnh Lá Cây</strong>
+          <small class="btn-hero-sub">Kéo thả hoặc chọn tệp</small>
+        </span>
       </button>
     </div>
-
-    <!-- Mũi tên trượt chuyển cảnh mượt mà -->
-    <button type="button" class="doctor-scroll-indicator" id="doctorScrollIndicator" aria-label="Mở phòng khám cây">
-      <span class="indicator-label">Bấm nút để mở phòng khám bệnh lá cây</span>
-      <div class="mouse-scroll-icon">
-        <div class="wheel-scroll"></div>
-      </div>
-    </button>
 
   </div>
 </section>
@@ -719,6 +672,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=28"></script>
+<script src="/static/app.js?v=29"></script>
 </body>
 </html>

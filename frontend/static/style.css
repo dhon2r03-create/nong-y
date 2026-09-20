@@ -3489,97 +3489,108 @@ html {
   font-weight: 700;
 }
 
-/* Tabs Dock */
-.doctor-tabs-dock {
+/* =====================================================================
+   HERO ACTIONS (TINH GỌN & HIỆN ĐẠI)
+   ===================================================================== */
+.doctor-hero-actions {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 16px;
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto 28px;
-  background: rgba(9, 38, 26, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 10px 14px;
-  border-radius: 9999px;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+  max-width: 600px;
+  margin: 8px auto 26px;
+  z-index: 12;
+  position: relative;
 }
 
-@media (max-width: 640px) {
-  .doctor-tabs-dock {
-    border-radius: 20px;
-    padding: 12px;
-    gap: 8px;
-  }
-}
-
-.doctor-tab-btn {
+.btn-hero-action {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 20px;
+  gap: 14px;
+  padding: 13px 26px;
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #e2e8f0;
-  text-decoration: none;
   font-family: inherit;
   cursor: pointer;
+  text-decoration: none;
   transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-  flex: 1 1 auto;
-  min-width: 160px;
-  max-width: 220px;
+  position: relative;
+  border: 1px solid transparent;
+  flex: 1 1 0;
+  min-width: 190px;
+  box-sizing: border-box;
 }
 
-@media (max-width: 640px) {
-  .doctor-tab-btn {
-    min-width: calc(50% - 6px);
-    max-width: 100%;
-    padding: 10px 14px;
-  }
-}
-
-.doctor-tab-btn:hover {
-  background: rgba(16, 185, 129, 0.18);
-  border-color: rgba(16, 185, 129, 0.4);
+/* Primary Action: Live Camera */
+.btn-hero-primary {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #ffffff;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.38), 0 0 20px rgba(52, 211, 153, 0.22);
 }
 
-.doctor-tab-btn.active {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.35) 0%, rgba(5, 150, 105, 0.45) 100%);
+.btn-hero-primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+  box-shadow: 0 14px 34px rgba(16, 185, 129, 0.5), 0 0 28px rgba(52, 211, 153, 0.4);
+}
+
+/* Secondary Action: Tải ảnh */
+.btn-hero-secondary {
+  background: rgba(15, 45, 33, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: rgba(52, 211, 153, 0.28);
+  color: #e2e8f0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.btn-hero-secondary:hover {
+  transform: translateY(-2px) scale(1.02);
+  background: rgba(16, 185, 129, 0.18);
+  border-color: rgba(52, 211, 153, 0.6);
+  color: #ffffff;
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.25);
+}
+
+.btn-hero-secondary.active {
+  background: rgba(16, 185, 129, 0.25);
   border-color: #10b981;
   color: #ffffff;
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.2);
 }
 
-.tab-btn-icon-wrap {
+/* Icon wrap */
+.btn-hero-icon {
   position: relative;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.08);
-  color: #34d399;
   flex-shrink: 0;
   transition: transform 0.25s ease;
 }
 
-.doctor-tab-btn:hover .tab-btn-icon-wrap {
-  transform: scale(1.1);
-  background: rgba(16, 185, 129, 0.3);
+.btn-hero-primary .btn-hero-icon {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }
 
-.tab-pulse-beacon {
+.btn-hero-secondary .btn-hero-icon {
+  background: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+}
+
+.btn-hero-action:hover .btn-hero-icon {
+  transform: scale(1.08);
+}
+
+/* Pulse beacon */
+.pulse-beacon {
   position: absolute;
-  top: 2px;
-  right: 2px;
+  top: 1px;
+  right: 1px;
   width: 8px;
   height: 8px;
   background: #ef4444;
@@ -3588,69 +3599,24 @@ html {
   animation: pulse-dot 1.5s infinite ease-in-out;
 }
 
-.tab-btn-text {
+/* Text */
+.btn-hero-text {
   display: flex;
   flex-direction: column;
   text-align: left;
   line-height: 1.25;
 }
 
-.tab-btn-text strong {
-  font-size: 13.5px;
+.btn-hero-title {
+  font-size: 14.5px;
   font-weight: 700;
   color: #ffffff;
 }
 
-.tab-btn-text span {
+.btn-hero-sub {
   font-size: 11px;
-  color: rgba(226, 232, 240, 0.65);
+  color: rgba(226, 232, 240, 0.72);
   margin-top: 2px;
-}
-
-/* Scroll Indicator */
-.doctor-scroll-indicator {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  color: rgba(226, 232, 240, 0.7);
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-  transition: all 0.2s ease;
-  margin-top: 4px;
-}
-
-.doctor-scroll-indicator:hover {
-  color: #34d399;
-  transform: translateY(2px);
-}
-
-.mouse-scroll-icon {
-  width: 22px;
-  height: 34px;
-  border: 2px solid rgba(226, 232, 240, 0.4);
-  border-radius: 12px;
-  position: relative;
-  display: flex;
-  justify-content: center;
-}
-
-.wheel-scroll {
-  width: 3px;
-  height: 6px;
-  background: #34d399;
-  border-radius: 2px;
-  position: absolute;
-  top: 6px;
-  animation: mouse-wheel 2s infinite ease-in-out;
-}
-
-@keyframes mouse-wheel {
-  0% { transform: translateY(0); opacity: 1; }
-  60% { transform: translateY(12px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 0; }
 }
 
 /* Warp Transition Flash */
@@ -3668,42 +3634,18 @@ html {
   opacity: 1;
 }
 
-/* =====================================================================
-   HERO LAUNCH BUTTON & DIAGNOSE WORKSPACE MODAL
-   ===================================================================== */
-.doctor-hero-cta-wrap {
-  margin-bottom: 22px;
-  z-index: 12;
-}
-
-.btn-hero-launch-diagnose {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 15px 32px;
-  border-radius: 9999px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 700;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4), 0 0 20px rgba(52, 211, 153, 0.3);
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.btn-hero-launch-diagnose:hover {
-  transform: translateY(-3px) scale(1.02);
-  background: linear-gradient(135deg, #34d399 0%, #059669 100%);
-  box-shadow: 0 16px 40px rgba(16, 185, 129, 0.55), 0 0 30px rgba(52, 211, 153, 0.5);
-}
-
-.btn-hero-launch-diagnose .cta-arrow-icon {
-  transition: transform 0.25s ease;
-}
-
-.btn-hero-launch-diagnose:hover .cta-arrow-icon {
-  transform: translateX(4px);
+@media (max-width: 640px) {
+  .doctor-hero-actions {
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 16px;
+    margin-bottom: 20px;
+  }
+  .btn-hero-action {
+    width: 100%;
+    min-width: 0;
+    padding: 12px 20px;
+  }
 }
 
 /* Modal Container */
