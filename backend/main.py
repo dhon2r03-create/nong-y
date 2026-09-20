@@ -21,9 +21,12 @@ from pathlib import Path
 import sys
 from typing import Optional
 
-# Tu dong nap site-packages tu .venv neu chay truc tiep bang python3 mac dinh cua he thong
+# Tu dong nap backend dir va site-packages tu .venv
 _BACKEND_DIR = Path(__file__).resolve().parent
 _ROOT_DIR = _BACKEND_DIR.parent
+if str(_BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(_BACKEND_DIR))
+
 for _candidate in [
     _ROOT_DIR / ".venv" / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages",
     _ROOT_DIR / ".venv" / "lib" / "python3.9" / "site-packages",
