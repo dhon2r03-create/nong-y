@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Nông Y - Chẩn đoán bệnh cây trồng bằng AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css?v=10" />
+</head>
+<body>
+
+<header class="topnav">
+  <div class="nav-container">
+    <a class="brand" href="/">
+      <div class="brand-icon">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 26C6 14 14 6 26 6C26 18 18 26 6 26Z" fill="url(#leafGradient)"/>
+          <path d="M6 26C10 22 16 16 26 6" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.8"/>
+          <defs>
+            <linearGradient id="leafGradient" x1="6" y1="26" x2="26" y2="6" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#10b981"/>
+              <stop offset="1" stop-color="#059669"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">Nông Y</span>
+        <span class="brand-subtitle">Bác sĩ cây trồng</span>
+      </div>
+    </a>
+
+    <nav class="nav-links">
+      <a href="/" class="nav-link active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Chẩn đoán
+      </a>
+      <a href="/dashboard" class="nav-link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        Thống kê
+      </a>
+      <button class="btn btn-phone-connect" id="openPhoneModalBtn" title="Mở trên điện thoại">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        <span>Mở trên điện thoại</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main class="main-content">
+  <section class="hero-section">
+    <div class="hero-badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+      Công nghệ Trí tuệ nhân tạo Nông nghiệp
+    </div>
+    <h1 class="hero-title">Chụp ảnh lá cây, nhận kết quả chẩn đoán tức thì</h1>
+    <p class="hero-desc">Bật camera trực tiếp để chụp lá cây hoặc tải ảnh có sẵn để nhận diện bệnh hại và nhận phác đồ điều trị nông nghiệp chuẩn xác.</p>
+  </section>
+
+  <!-- VUNG CHỤP ẢNH & UPLOAD CHÍNH -->
+  <section class="diagnose-card">
+    <!-- Bộ chọn loài cây (Khắc phục lỗi chẩn đoán nhầm loài cây) -->
+    <div class="plant-filter-container">
+      <div class="plant-filter-label">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Loài cây cần khám:</span>
+      </div>
+      <div class="plant-select-wrapper">
+        <select id="plantFilterSelect" class="plant-select-dropdown">
+          <option value="auto">🌱 Tự động nhận diện (Tất cả 14 loài cây)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Mode Tabs -->
+    <div class="mode-selector">
+      <button type="button" class="mode-btn active" id="modeCameraBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        Chụp trực tiếp (Live Camera)
+      </button>
+      <button type="button" class="mode-btn" id="modeUploadBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Tải ảnh từ máy
+      </button>
+    </div>
+
+    <!-- 1. LIVE CAMERA PANEL -->
+    <div class="view-panel" id="viewCamera">
+      <!-- Standby: Khi chua bat camera -->
+      <div class="camera-standby-box" id="cameraStandbyBox">
+        <div class="camera-standby-icon">
+          <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <h3 class="standby-title">Mở Camera trực tiếp để chụp ảnh lá cây</h3>
+        <p class="standby-desc">Bấm nút bên dưới để bật webcam máy tính hoặc camera điện thoại xem trước trực tiếp.</p>
+        <button type="button" class="btn btn-hero-camera" id="startLiveCameraBtn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/></svg>
+          Bật Live Camera Ngay
+        </button>
+        <div class="camera-permission-hint" id="cameraPermHint" style="display:none;">
+          💡 Vui lòng bấm <strong>"Cho phép" (Allow)</strong> khi trình duyệt hỏi quyền truy cập Camera.
+        </div>
+      </div>
+
+      <!-- Live Stream: Khi camera dang chay -->
+      <div class="camera-live-box" id="cameraLiveBox" style="display:none;">
+        <div class="camera-stream-wrapper">
+          <video id="cameraVideo" autoplay playsinline muted></video>
+          <canvas id="cameraCanvas" style="display:none;"></canvas>
+
+          <!-- Frame Overlay -->
+          <div class="stream-overlay">
+            <div class="live-tag">
+              <span class="live-dot"></span> LIVE
+            </div>
+            <div class="corner-bracket top-left"></div>
+            <div class="corner-bracket top-right"></div>
+            <div class="corner-bracket bottom-left"></div>
+            <div class="corner-bracket bottom-right"></div>
+            <div class="leaf-target-guide">
+              <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.4">
+                <path d="M12 2C6.5 2 2 6.5 2 12c0 5 4 9 9 10 5.5 0 10-4.5 10-10C21 6.5 16.5 2 12 2z"/>
+                <path d="M12 2c0 10-4 15-10 15"/>
+              </svg>
+            </div>
+            <div class="stream-guide-badge">Căn chỉnh lá cây vào khung và bấm nút chụp bên dưới</div>
+          </div>
+        </div>
+
+        <!-- Camera Controls Toolbar -->
+        <div class="camera-live-controls">
+          <button type="button" class="btn-live-util" id="flipLiveCameraBtn" title="Đổi camera trước/sau">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+            <span>Đổi camera</span>
+          </button>
+
+          <button type="button" class="btn-live-capture" id="takeSnapshotBtn">
+            <div class="shutter-circle"></div>
+            <span>CHỤP ẢNH NÀY</span>
+          </button>
+
+          <button type="button" class="btn-live-util" id="stopLiveCameraBtn" title="Tắt camera">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+            <span>Tắt camera</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. UPLOAD FILE PANEL -->
+    <div class="view-panel" id="viewUpload" style="display:none;">
+      <div class="dropzone" id="dropzone">
+        <div class="upload-icon-circle">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <div class="dropzone-text">
+          <span class="dropzone-prompt">Kéo thả ảnh vào đây</span>
+          <span class="dropzone-sub">hoặc bấm nút bên dưới để tải ảnh có sẵn từ máy</span>
+        </div>
+        <label class="btn btn-gallery-trigger" for="galleryInput">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Chọn ảnh từ thư viện
+        </label>
+      </div>
+    </div>
+
+    <!-- 3. IMAGE PREVIEW PANEL (Hien thi khi da co anh chup hoac tai len) -->
+    <div class="view-panel" id="viewPreview" style="display:none;">
+      <div class="preview-card-wrap">
+        <div class="preview-header-bar">
+          <span class="preview-filename-badge" id="previewFileName">anh-chup.jpg</span>
+          <button type="button" class="btn-retake" id="retakeBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+            Chụp lại / Đổi ảnh khác
+          </button>
+        </div>
+        <div class="preview-image-box">
+          <img id="previewImg" alt="Ảnh lá cây xem trước" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden file inputs -->
+    <input type="file" id="galleryInput" accept="image/*" style="display:none;" />
+    <input type="file" id="fallbackCameraInput" accept="image/*" capture="environment" style="display:none;" />
+
+    <!-- Status Banner -->
+    <div class="status-banner" id="statusBanner"></div>
+
+    <!-- Submit Action Bar -->
+    <div class="submit-action-bar">
+      <button class="btn btn-submit-analyze" id="submitBtn" disabled>
+        <span class="btn-spinner" id="btnSpinner" style="display:none;"></span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        <span id="submitBtnText">Phân tích bệnh cây trồng</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- KET QUA 1: CANH BAO KHONG PHAI CAY TRONG -->
+  <section class="result-card result-warning-card" id="nonPlantAlert" style="display:none;">
+    <div class="warning-badge-icon">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    </div>
+    <div class="warning-content">
+      <div class="warning-top-row">
+        <h2 class="warning-title">Không phải là cây trồng!</h2>
+        <span class="detected-object-badge" id="detectedObjectBadge">Phát hiện: Đối tượng lạ</span>
+      </div>
+      <p class="warning-desc" id="nonPlantMessage">Hình ảnh bạn tải lên chứa con người, xe cộ, đồ vật hoặc phong cảnh không liên quan đến cây trồng.</p>
+
+      <div class="retake-requirement-box">
+        <div class="req-title">⚠️ YÊU CẦU CHỤP LẠI:</div>
+        <p class="req-desc" id="retakeRequirementText">Hệ thống Nông Y chỉ phân tích lá và bệnh cây trồng. Vui lòng bấm nút <strong>"Chụp lại ảnh lá cây"</strong> bên dưới để chẩn đoán chính xác.</p>
+      </div>
+
+      <div class="shooting-tips-box">
+        <div class="tips-title">💡 Hướng dẫn chụp ảnh đạt chuẩn:</div>
+        <ul class="tips-list">
+          <li><strong>Cận cảnh mặt lá:</strong> Chụp rõ một chiếc lá hoặc bộ phận cây nghi ngờ bị bệnh.</li>
+          <li><strong>Đủ ánh sáng:</strong> Tránh chụp quá tối hoặc bị bóng râm che khuất.</li>
+          <li><strong>Tuyệt đối tránh:</strong> Không chụp con người, xe cộ, thú cưng, màn hình điện thoại hoặc nền gạch/phòng ốc.</li>
+        </ul>
+      </div>
+
+      <div class="warning-action">
+        <button type="button" class="btn btn-warning-retake" id="retryNonPlantBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          Chụp lại ảnh lá cây ngay
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- KET QUA 2: CHAN DOAN THANH CONG CAY TRONG -->
+  <section class="result-card result-success-card" id="plantResultCard" style="display:none;">
+    <div class="result-top-bar">
+      <div class="status-badge-group">
+        <div class="diagnosis-status-pill" id="plantHealthPill">
+          <span class="health-icon">🌿</span>
+          <span class="health-label" id="plantHealthLabel">Phát hiện bệnh hại</span>
+        </div>
+        <div class="severity-badge severity-medium" id="resultSeverityBadge">
+          Mức gây hại: Trung bình
+        </div>
+      </div>
+      <div class="confidence-badge">
+        <span class="conf-label">Độ tin cậy AI</span>
+        <span class="conf-value" id="resultConfidence">98.5%</span>
+      </div>
+    </div>
+
+    <div class="disease-meta-wrap">
+      <h2 class="disease-title" id="resultDisease">Bệnh sương mai</h2>
+      <div class="plant-chips-row">
+        <div class="plant-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <span id="resultPlant">Cây: Cà chua</span>
+        </div>
+        <div class="plant-species-chip" id="plantSpeciesChip" style="display:none;">
+          <span>Độ tin cậy loài cây: <strong id="speciesConfidenceVal">90%</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thanh do do tin cay -->
+    <div class="confidence-meter-container">
+      <div class="confidence-track">
+        <div class="confidence-fill" id="confidenceBarFill" style="width: 0%;"></div>
+      </div>
+    </div>
+
+    <!-- KHUNG XEM ANH NHIET AI (GRAD-CAM HEATMAP) -->
+    <div class="heatmap-visual-box" id="heatmapVisualBox" style="display:none;">
+      <div class="heatmap-header">
+        <div class="heatmap-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <span>Bản đồ nhiệt AI (Explainable AI - Grad-CAM)</span>
+        </div>
+        <div class="heatmap-view-toggle">
+          <button type="button" class="btn-toggle-view active" id="viewOriginalImgBtn">Ảnh gốc</button>
+          <button type="button" class="btn-toggle-view" id="viewHeatmapImgBtn">Vùng bệnh (AI chú ý)</button>
+        </div>
+      </div>
+      <div class="heatmap-image-frame">
+        <img id="displayDiagnoseImg" src="" alt="Ảnh chẩn đoán" />
+        <div class="heatmap-guide-caption" id="heatmapCaption" style="display:none;">
+          🔥 Vùng màu đỏ - vàng cam là khu vực mô hình AI nhận diện đốm nấm hoặc tổn thương tế bào lá.
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP 3 CHAN DOAN KHA DI -->
+    <div class="top-predictions-box" id="topPredictionsBox">
+      <div class="top-pred-header-wrap">
+        <div class="top-pred-header">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+          <span>Top 3 Chẩn đoán có khả năng cao nhất</span>
+        </div>
+        <div class="top-pred-subnote">
+          <span>🎯 <b>%</b>: Độ tin cậy của mô hình AI</span>
+          <span>•</span>
+          <span>🏷️ <b>Mức hại</b>: Mức độ nguy hiểm của bệnh đối với cây</span>
+        </div>
+      </div>
+      <div class="top-pred-list" id="topPredictionsList">
+        <!-- Render tu js -->
+      </div>
+    </div>
+
+    <!-- PHAC DO DIEU TRI 4 NGAN CO CAU TRUC -->
+    <div class="treatment-section">
+      <div class="treatment-header">
+        <div class="treatment-icon-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <h3 class="treatment-heading">Phác đồ điều trị & Canh tác nông nghiệp chuẩn hóa</h3>
+      </div>
+
+      <div class="treatment-summary-box" id="resultTreatmentSummary">
+        Đang nạp phác đồ xử lý...
+      </div>
+
+      <div class="treatment-cards-grid">
+        <!-- Card 1: Khan cap -->
+        <div class="treatment-card card-emergency">
+          <div class="t-card-header">
+            <span class="t-icon">🚨</span>
+            <h4>Biện pháp khẩn cấp (24h)</h4>
+          </div>
+          <p class="t-card-body" id="treatmentEmergency">Đang tải...</p>
+        </div>
+
+        <!-- Card 2: Sinh hoc -->
+        <div class="treatment-card card-biological">
+          <div class="t-card-header">
+            <span class="t-icon">🌿</span>
+            <h4>Biện pháp sinh học & Canh tác</h4>
+          </div>
+          <p class="t-card-body" id="treatmentBiological">Đang tải...</p>
+        </div>
+
+        <!-- Card 3: Hoa hoc -->
+        <div class="treatment-card card-chemical">
+          <div class="t-card-header">
+            <span class="t-icon">🧪</span>
+            <h4>Thuốc BVTV & Hoạt chất hóa học</h4>
+          </div>
+          <p class="t-card-body" id="treatmentChemical">Đang tải...</p>
+        </div>
+
+        <!-- Card 4: Phong ngua -->
+        <div class="treatment-card card-prevention">
+          <div class="t-card-header">
+            <span class="t-icon">🛡️</span>
+            <h4>Phòng ngừa lâu dài</h4>
+          </div>
+          <p class="t-card-body" id="treatmentPrevention">Đang tải...</p>
+        </div>
+      </div>
+
+      <!-- ACTION BAR: XUAT TOA THUOC & CHIA SE ZALO -->
+      <div class="prescription-action-bar" id="prescriptionActionBar">
+        <div class="prescription-action-title">
+          <div class="p-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </div>
+          <div class="p-text-group">
+            <h4>Cần mua thuốc tại đại lý hoặc tư vấn thêm?</h4>
+            <p>Xuất phiếu toa thuốc dạng ảnh sắc nét hoặc gửi nhanh qua Zalo để chủ tiệm lấy đúng hoạt chất.</p>
+          </div>
+        </div>
+        <div class="prescription-btn-group">
+          <button type="button" class="btn-prescription btn-export-slip" id="btnOpenPrescription">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            <span>Xuất Toa Thuốc (Ảnh / In)</span>
+          </button>
+          <button type="button" class="btn-prescription btn-share-zalo" id="btnSharePrescription">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.07L2 22l5.14-1.35C8.55 21.49 10.23 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+            <span>Chia sẻ qua Zalo</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- MODAL: MO TREN DIEN THOAI (QR CODE & LAN IP) -->
+<div class="modal-backdrop" id="phoneModal" style="display:none;">
+  <div class="phone-modal-card">
+    <div class="phone-modal-header">
+      <div class="phone-header-title">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        Dùng ứng dụng trên điện thoại
+      </div>
+      <button type="button" class="btn-modal-close" id="closePhoneModalBtn">✕</button>
+    </div>
+
+    <div class="phone-modal-body">
+      <p class="phone-modal-desc">Sử dụng camera điện thoại để chẩn đoán cây trồng trực tiếp tại ruộng vườn.</p>
+
+      <div class="qr-box" id="qrContainer">
+        <div class="qr-loading">Đang nạp mã QR...</div>
+      </div>
+
+      <div class="lan-url-box">
+        <div class="lan-url-label">Hoặc nhập địa chỉ sau vào trình duyệt Safari / Chrome trên điện thoại:</div>
+        <div class="lan-url-input-wrap">
+          <input type="text" id="lanUrlInput" readonly value="http://..." />
+          <button type="button" class="btn-copy-url" id="copyUrlBtn">Sao chép</button>
+        </div>
+      </div>
+
+      <div class="wifi-tip-badge" id="networkTipBadge">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+        <span>Lưu ý: Điện thoại cần kết nối <strong>chung mạng Wi-Fi</strong> với máy tính này.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: TOA THUOC VA PHIEU CHAN DOAN NONG NGHIEP -->
+<div class="modal-backdrop" id="prescriptionModal" style="display:none;">
+  <div class="prescription-modal-dialog">
+    <div class="prescription-modal-header">
+      <div class="prescription-modal-title">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>Phiếu Toa Thuốc Bảo Vệ Thực Vật</span>
+      </div>
+      <button type="button" class="btn-modal-close" id="closePrescriptionModalBtn">✕</button>
+    </div>
+
+    <!-- KHUNG XEM TRUOC TOA THUOC -->
+    <div class="prescription-paper-container">
+      <div class="prescription-paper" id="prescriptionPaper">
+        <!-- Header Toa -->
+        <div class="rx-header">
+          <div class="rx-brand-wrap">
+            <div class="rx-logo-icon">🌿</div>
+            <div>
+              <h3 class="rx-brand-name">HỆ THỐNG NÔNG Y AI</h3>
+              <p class="rx-brand-sub">Chẩn đoán bệnh thực vật & Kê đơn kỹ thuật số</p>
+            </div>
+          </div>
+          <div class="rx-meta-right">
+            <span class="rx-id" id="rxPrescriptionId">#NY-2026-X01</span>
+            <span class="rx-date" id="rxDate">19/09/2026 22:50</span>
+          </div>
+        </div>
+
+        <div class="rx-divider"></div>
+
+        <!-- Thong tin chan doan -->
+        <div class="rx-patient-info">
+          <div class="rx-info-item">
+            <span class="rx-label">Cây trồng:</span>
+            <strong class="rx-val" id="rxPlantName">Cây Lúa</strong>
+          </div>
+          <div class="rx-info-item">
+            <span class="rx-label">Bệnh hại:</span>
+            <strong class="rx-val rx-val-disease" id="rxDiseaseName">Bệnh đốm nâu</strong>
+          </div>
+          <div class="rx-info-item">
+            <span class="rx-label">Độ tin cậy AI:</span>
+            <span class="rx-badge rx-badge-conf" id="rxConfidence">99.38%</span>
+          </div>
+          <div class="rx-info-item">
+            <span class="rx-label">Mức gây hại:</span>
+            <span class="rx-badge rx-badge-sev" id="rxSeverity">Trung bình</span>
+          </div>
+        </div>
+
+        <!-- Hinh anh doi chieu -->
+        <div class="rx-images-grid">
+          <div class="rx-img-box">
+            <div class="rx-img-tag">Ảnh thực tế hiện trường</div>
+            <div class="rx-img-wrapper">
+              <img id="rxOriginalImg" src="" alt="Ảnh thực tế" />
+            </div>
+          </div>
+          <div class="rx-img-box">
+            <div class="rx-img-tag">Bản đồ nhiệt tổn thương (Grad-CAM)</div>
+            <div class="rx-img-wrapper">
+              <img id="rxHeatmapImg" src="" alt="Ảnh nhiệt nấm bệnh" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Danh muc thuoc & Hoat chat BVTV -->
+        <div class="rx-section-title">
+          <span class="rx-symbol">Rx</span>
+          <span>CHỈ ĐỊNH THUỐC BVTV & BIỆN PHÁP ĐIỀU TRỊ</span>
+        </div>
+
+        <div class="rx-treatment-block rx-chemical-block">
+          <div class="rx-block-head">🧪 Thuốc BVTV & Hoạt chất hóa học đặc trị:</div>
+          <div class="rx-block-content" id="rxChemicalContent">Đang tải...</div>
+        </div>
+
+        <div class="rx-treatment-block rx-emergency-block">
+          <div class="rx-block-head">🚨 Xử lý khẩn cấp (trong vòng 24 giờ):</div>
+          <div class="rx-block-content" id="rxEmergencyContent">Đang tải...</div>
+        </div>
+
+        <div class="rx-treatment-block rx-biological-block">
+          <div class="rx-block-head">🌿 Chế phẩm sinh học & Phục hồi cây trồng:</div>
+          <div class="rx-block-content" id="rxBiologicalContent">Đang tải...</div>
+        </div>
+
+        <!-- Nguyen tac 4 dung -->
+        <div class="rx-footer-rules">
+          <div class="rx-rule-title">🛡️ NGUYÊN TẮC VÀNG 4 ĐÚNG KHI SỬ DỤNG THUỐC BVTV:</div>
+          <div class="rx-rules-grid">
+            <div class="rx-rule-item"><strong>1. Đúng thuốc</strong>: Đúng hoạt chất trị nấm/khuẩn</div>
+            <div class="rx-rule-item"><strong>2. Đúng lúc</strong>: Phun sáng sớm hoặc chiều mát</div>
+            <div class="rx-rule-item"><strong>3. Đúng nồng độ</strong>: Pha đúng tỷ lệ hướng dẫn</div>
+            <div class="rx-rule-item"><strong>4. Đúng cách</strong>: Phun đều tán, cách ly an toàn</div>
+          </div>
+        </div>
+
+        <div class="rx-disclaimer">
+          * Đơn thuốc điện tử hỗ trợ kỹ thuật số do Nông Y AI cung cấp. Vui lòng tham khảo ý kiến đại lý BVTV trước khi phối trộn nhiều loại thuốc.
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL ACTIONS BAR -->
+    <div class="prescription-modal-actions">
+      <button type="button" class="btn-modal-action btn-download-png" id="btnDownloadPng">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Tải Ảnh Toa Thuốc (.PNG)</span>
+      </button>
+      <button type="button" class="btn-modal-action btn-copy-summary" id="btnCopyPrescriptionText">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Sao chép đơn gửi Zalo</span>
+      </button>
+      <button type="button" class="btn-modal-action btn-print-rx" id="btnPrintPrescription">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        <span>In Toa</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="/static/app.js?v=10"></script>
+</body>
+</html>

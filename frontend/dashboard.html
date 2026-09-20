@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Thống kê - Nông Y AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css?v=8" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="wide-layout">
+
+<header class="topnav">
+  <div class="nav-container">
+    <a class="brand" href="/">
+      <div class="brand-icon">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 26C6 14 14 6 26 6C26 18 18 26 6 26Z" fill="url(#leafGradDash)"/>
+          <path d="M6 26C10 22 16 16 26 6" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.8"/>
+          <defs>
+            <linearGradient id="leafGradDash" x1="6" y1="26" x2="26" y2="6" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#10b981"/>
+              <stop offset="1" stop-color="#059669"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">Nông Y</span>
+        <span class="brand-subtitle">Bác sĩ cây trồng</span>
+      </div>
+    </a>
+
+    <nav class="nav-links">
+      <a href="/" class="nav-link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Chẩn đoán
+      </a>
+      <a href="/dashboard" class="nav-link active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        Thống kê
+      </a>
+      <button class="btn btn-phone-connect" id="openPhoneModalBtn" title="Mở trên điện thoại">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        <span>Mở trên điện thoại</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main class="main-content wide-content">
+  <section class="hero-section">
+    <div class="hero-badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      Tổng hợp dữ liệu dịch hại cây trồng
+    </div>
+    <h1 class="hero-title">Báo cáo & Thống kê tình hình bệnh hại</h1>
+    <p class="hero-desc">Theo dõi phân bố các loại cây trồng, tần suất bệnh phổ biến và diễn biến các ca chẩn đoán theo thời gian thực.</p>
+  </section>
+
+  <div class="stat-grid" id="statGrid">
+    <div class="stat-card">
+      <div class="stat-icon-wrap stat-blue">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-value" id="statTotal">–</div>
+        <div class="stat-label">Tổng ca chẩn đoán</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon-wrap stat-amber">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-value" id="statSick">–</div>
+        <div class="stat-label">Ca nghi mắc bệnh</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon-wrap stat-green">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-value" id="statHealthy">–</div>
+        <div class="stat-label">Cây khỏe mạnh</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-grid">
+    <div class="panel">
+      <div class="panel-header">
+        <h2 class="panel-title">Phân bố theo loại cây</h2>
+        <span class="panel-badge">Tất cả</span>
+      </div>
+      <div class="panel-body" id="byPlantChart"><div class="empty-state">Chưa có dữ liệu</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <h2 class="panel-title">Top bệnh xuất hiện nhiều nhất</h2>
+        <span class="panel-badge">Top 10</span>
+      </div>
+      <div class="panel-body" id="byDiseaseChart"><div class="empty-state">Chưa có dữ liệu</div></div>
+    </div>
+
+    <div class="panel panel-full timeline-panel" id="timelinePanel">
+      <div class="panel-header timeline-header">
+        <div class="timeline-title-wrap">
+          <div class="timeline-title-row">
+            <h2 class="panel-title">Diễn biến số ca theo thời gian</h2>
+            <span class="live-pill">
+              <span class="live-dot"></span>
+              Thời gian thực
+            </span>
+          </div>
+          <p class="timeline-subtitle">Theo dõi số lượng ca bệnh và xu hướng phát sinh theo chu kỳ</p>
+        </div>
+
+        <div class="timeline-tabs" id="timelineRangeTabs">
+          <button type="button" class="timeline-tab active" data-range="7d">7 ngày qua</button>
+          <button type="button" class="timeline-tab" data-range="14d">14 ngày qua</button>
+          <button type="button" class="timeline-tab" data-range="30d">30 ngày qua</button>
+          <button type="button" class="timeline-tab" data-range="today">Hôm nay (theo giờ)</button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Strip -->
+      <div class="timeline-metrics-strip" id="timelineMetricsStrip">
+        <div class="timeline-metric-card">
+          <span class="metric-card-label">Tổng ca trong kỳ</span>
+          <span class="metric-card-val" id="metricTotal">0</span>
+        </div>
+        <div class="timeline-metric-card">
+          <span class="metric-card-label">
+            <span class="metric-card-dot dot-sick"></span>Ca nhiễm bệnh
+          </span>
+          <span class="metric-card-val text-amber" id="metricSick">0</span>
+        </div>
+        <div class="timeline-metric-card">
+          <span class="metric-card-label">
+            <span class="metric-card-dot dot-healthy"></span>Cây khỏe mạnh
+          </span>
+          <span class="metric-card-val text-green" id="metricHealthy">0</span>
+        </div>
+        <div class="timeline-metric-card">
+          <span class="metric-card-label">Ngày / giờ cao điểm</span>
+          <span class="metric-card-val metric-peak" id="metricPeak">--</span>
+        </div>
+      </div>
+
+      <!-- Chart Canvas Wrapper -->
+      <div class="timeline-chart-wrap" id="timelineChartWrap">
+        <canvas id="timelineChartCanvas"></canvas>
+        <div class="chart-empty-overlay" id="chartEmptyOverlay" style="display: none;">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <p>Chưa có dữ liệu chẩn đoán trong khoảng thời gian này</p>
+        </div>
+        <div class="chart-tooltip-floating" id="chartTooltip" style="display: none;"></div>
+      </div>
+
+      <!-- Custom Legend & Toggles -->
+      <div class="timeline-legend-bar">
+        <div class="legend-toggles">
+          <button type="button" class="legend-btn active" id="toggleSickBtn" title="Bật/tắt ca nhiễm bệnh">
+            <span class="legend-circle bg-amber"></span>
+            <span class="legend-name">Ca nhiễm bệnh</span>
+          </button>
+          <button type="button" class="legend-btn active" id="toggleHealthyBtn" title="Bật/tắt cây khỏe mạnh">
+            <span class="legend-circle bg-emerald"></span>
+            <span class="legend-name">Cây khỏe mạnh</span>
+          </button>
+        </div>
+        <div class="timeline-hint">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>Di chuột hoặc chạm vào mốc biểu đồ để xem chi tiết</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-full">
+      <div class="panel-header">
+        <h2 class="panel-title">Lịch sử chẩn đoán gần đây</h2>
+        <span class="panel-badge">20 ca mới nhất</span>
+      </div>
+      <ul class="case-list" id="caseList">
+        <li><div class="empty-state">Chưa có dữ liệu</div></li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<!-- MODAL: MO TREN DIEN THOAI -->
+<div class="modal-backdrop" id="phoneModal" style="display:none;">
+  <div class="phone-modal-card">
+    <div class="phone-modal-header">
+      <div class="phone-header-title">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        Dùng ứng dụng trên điện thoại
+      </div>
+      <button type="button" class="btn-modal-close" id="closePhoneModalBtn">✕</button>
+    </div>
+
+    <div class="phone-modal-body">
+      <p class="phone-modal-desc">Quét mã QR bằng điện thoại để xem trực tiếp báo cáo và chẩn đoán bệnh cây.</p>
+      <div class="qr-box" id="qrContainer">
+        <div class="qr-loading">Đang nạp mã QR...</div>
+      </div>
+      <div class="lan-url-box">
+        <div class="lan-url-label">Hoặc truy cập link sau:</div>
+        <div class="lan-url-input-wrap">
+          <input type="text" id="lanUrlInput" readonly value="http://..." />
+          <button type="button" class="btn-copy-url" id="copyUrlBtn">Sao chép</button>
+        </div>
+      </div>
+      <div class="wifi-tip-badge" id="networkTipBadge">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+        <span>Lưu ý: Điện thoại cần kết nối <strong>chung mạng Wi-Fi</strong> với máy tính này.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/static/dashboard.js?v=8"></script>
+</body>
+</html>
