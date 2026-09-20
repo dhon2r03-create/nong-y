@@ -309,6 +309,9 @@
     if (!file) return;
     selectedFile = file;
 
+    const sectionImageSource = document.getElementById('sectionImageSource');
+    const sectionPreviewDiagnose = document.getElementById('sectionPreviewDiagnose');
+
     const reader = new FileReader();
     reader.onload = (e) => {
       previewImg.src = e.target.result;
@@ -317,6 +320,9 @@
       viewCamera.style.display = 'none';
       viewUpload.style.display = 'none';
       viewPreview.style.display = 'block';
+
+      if (sectionImageSource) sectionImageSource.style.display = 'none';
+      if (sectionPreviewDiagnose) sectionPreviewDiagnose.style.display = 'block';
 
       // Tự động mở Workspace Modal chuyển thẳng vào màn hình Xem trước ảnh & Chẩn đoán
       const workspaceModal = document.getElementById('diagnoseWorkspaceModal');
@@ -339,6 +345,12 @@
     fallbackCameraInput.value = '';
     submitBtn.disabled = true;
     viewPreview.style.display = 'none';
+
+    const sectionImageSource = document.getElementById('sectionImageSource');
+    const sectionPreviewDiagnose = document.getElementById('sectionPreviewDiagnose');
+    if (sectionPreviewDiagnose) sectionPreviewDiagnose.style.display = 'none';
+    if (sectionImageSource) sectionImageSource.style.display = 'block';
+
     hideAllResults();
     hideStatus();
 
