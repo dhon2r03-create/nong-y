@@ -3481,25 +3481,26 @@ html {
   transform: translateZ(0);
 }
 
-/* 3D Laser Scanner Beam */
+/* 3D Laser Scanner Beam (GPU Accelerated - No Layout Thrashing) */
 .laser-scanner-beam {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, transparent 0%, rgba(16, 185, 129, 0.4) 20%, #34d399 50%, rgba(16, 185, 129, 0.4) 80%, transparent 100%);
-  box-shadow: 0 0 10px 2px rgba(52, 211, 153, 0.6);
-  animation: laser-scan 4.5s ease-in-out infinite;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(52, 211, 153, 0.4) 20%, #34d399 50%, rgba(52, 211, 153, 0.4) 80%, transparent 100%);
+  animation: laser-scan-gpu 4.5s ease-in-out infinite;
   pointer-events: none;
   z-index: 5;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
 }
 
-@keyframes laser-scan {
-  0% { top: 15%; opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { top: 85%; opacity: 0; }
+@keyframes laser-scan-gpu {
+  0% { transform: translateY(40px); opacity: 0; }
+  12% { opacity: 0.9; }
+  88% { opacity: 0.9; }
+  100% { transform: translateY(380px); opacity: 0; }
 }
 
 /* Scan Target Box */
@@ -3534,7 +3535,6 @@ html {
   width: 80%;
   height: 1px;
   background: rgba(52, 211, 153, 0.4);
-  box-shadow: 0 0 8px #34d399;
 }
 
 .target-label {
@@ -3546,29 +3546,26 @@ html {
   font-weight: 700;
   letter-spacing: 0.8px;
   color: #a7f3d0;
-  background: rgba(6, 31, 20, 0.8);
+  background: rgba(6, 31, 20, 0.92);
   padding: 2px 8px;
   border-radius: 4px;
   white-space: nowrap;
   border: 1px solid rgba(52, 211, 153, 0.3);
 }
 
-/* Floating 3D Hologram Chips */
+/* Floating 3D Hologram Chips (High Performance, No Heavy Continuous Blur Repaint) */
 .hologram-chip {
   position: absolute;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px 18px;
-  background: rgba(7, 31, 21, 0.85);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1.5px solid rgba(16, 185, 129, 0.35);
+  background: rgba(7, 31, 21, 0.92);
+  border: 1.5px solid rgba(16, 185, 129, 0.4);
   border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(16, 185, 129, 0.2);
-  transform: translateZ(40px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+  transform: translate3d(0, 0, 0);
   z-index: 10;
-  animation: float-chip 4s ease-in-out infinite alternate;
 }
 
 .chip-left {
@@ -3579,15 +3576,16 @@ html {
 .chip-right {
   bottom: 28px;
   right: -20px;
-  animation-delay: 2s;
-}
-
-@keyframes float-chip {
-  0% { transform: translateZ(40px) translateY(0); }
-  100% { transform: translateZ(40px) translateY(-8px); }
 }
 
 @media (max-width: 768px) {
+  .laser-scanner-beam {
+    display: none !important;
+  }
+  .doctor-3d-card {
+    transform: none !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+  }
   .chip-left {
     left: 8px;
     top: 8px;

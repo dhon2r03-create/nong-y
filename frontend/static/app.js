@@ -1198,8 +1198,16 @@
   const tabPhoneBtn = document.getElementById('tabPhoneBtn');
   const scrollIndicator = document.getElementById('doctorScrollIndicator');
 
-  // 1. 3D Parallax Tilt Effect with Mouse / Touch (Optimized On-Demand Render)
-  if (card3d && heroSection) {
+  // Kiểm tra thiết bị cấu hình thấp hoặc điện thoại di động
+  const isLowEndOrMobile =
+    ('hardwareConcurrency' in navigator && navigator.hardwareConcurrency <= 4) ||
+    ('deviceMemory' in navigator && navigator.deviceMemory <= 4) ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    window.innerWidth <= 768;
+
+  // 1. 3D Parallax Tilt (Chỉ chạy trên Desktop cấu hình tốt, tắt 100% trên Mobile để lướt siêu mượt)
+  if (card3d && heroSection && !isLowEndOrMobile) {
     let currentX = 0;
     let currentY = 0;
     let targetX = 0;
@@ -1207,8 +1215,8 @@
     let isTiltLoopRunning = false;
 
     const animateTilt = () => {
-      currentX += (targetX - currentX) * 0.15;
-      currentY += (targetY - currentY) * 0.15;
+      currentX += (targetX - currentX) * 0.12;
+      currentY += (targetY - currentY) * 0.12;
 
       card3d.style.transform = `translate3d(0,0,0) rotateX(${currentX.toFixed(2)}deg) rotateY(${currentY.toFixed(2)}deg)`;
 
@@ -1235,8 +1243,8 @@
       const normX = (e.clientX - cardCenterX) / (window.innerWidth / 2);
       const normY = (e.clientY - cardCenterY) / (window.innerHeight / 2);
 
-      targetY = Math.max(-10, Math.min(10, normX * 12));
-      targetX = Math.max(-10, Math.min(10, -normY * 12));
+      targetY = Math.max(-8, Math.min(8, normX * 8));
+      targetX = Math.max(-8, Math.min(8, -normY * 8));
       requestTiltUpdate();
     };
 
@@ -1246,111 +1254,109 @@
       targetY = 0;
       requestTiltUpdate();
     });
-
-    // Touch support for mobile parallax
-    heroSection.addEventListener('touchmove', (e) => {
-      if (e.touches && e.touches[0]) {
-        const touch = e.touches[0];
-        const rect = card3d.getBoundingClientRect();
-        const normX = (touch.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
-        const normY = (touch.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
-        targetY = Math.max(-7, Math.min(7, normX * 8));
-        targetX = Math.max(-7, Math.min(7, -normY * 8));
-        requestTiltUpdate();
-      }
-    }, { passive: true });
-
-    heroSection.addEventListener('touchend', () => {
-      targetX = 0;
-      targetY = 0;
-      requestTiltUpdate();
-    });
+  } else if (card3d) {
+    // Với máy yếu / mobile: Giữ tĩnh 100% để 0% lag
+    card3d.style.transform = 'translate3d(0,0,0)';
   }
 
-  // 2. Bioluminescent 3D Floating Particles Engine (Ultra-Lightweight, No shadowBlur)
+  // 2. Bioluminescent 3D Floating Particles (Tối ưu cực đại, dừng hẳn khi không xem)
   if (canvas) {
-    const ctx = canvas.getContext('2d');
-    let width = (canvas.width = canvas.offsetWidth || window.innerWidth);
-    let height = (canvas.height = canvas.offsetHeight || 600);
+    if (isLowEndOrMobile) {
+      // Tắt hoàn toàn Canvas trên máy yếu / điện thoại để tiết kiệm 100% CPU/GPU
+      canvas.style.display = 'none';
+    } else {
+      const ctx = canvas.getContext('2d', { alpha: true });
+      let width = (canvas.width = canvas.offsetWidth || window.innerWidth);
+      let height = (canvas.height = canvas.offsetHeight || 500);
 
-    window.addEventListener('resize', () => {
-      if (!canvas) return;
-      width = canvas.width = canvas.offsetWidth || window.innerWidth;
-      height = canvas.height = canvas.offsetHeight || 600;
-    }, { passive: true });
+      window.addEventListener('resize', () => {
+        if (!canvas) return;
+        width = canvas.width = canvas.offsetWidth || window.innerWidth;
+        height = canvas.height = canvas.offsetHeight || 500;
+      }, { passive: true });
 
-    const particles = [];
-    const particleCount = 18; // 18 particles run at smooth 60-120fps
-
-    for (let i = 0; i < particleCount; i++) {
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        radius: Math.random() * 2 + 1.2,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: -Math.random() * 0.6 - 0.2,
-        alpha: Math.random() * 0.5 + 0.3,
-        pulseSpeed: Math.random() * 0.02 + 0.01,
-        color: Math.random() > 0.3 ? '52, 211, 153' : '167, 243, 208'
-      });
-    }
-
-    let isHeroInView = true;
-    if ('IntersectionObserver' in window && heroSection) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          isHeroInView = entry.isIntersecting;
-        });
-      }, { threshold: 0.05 });
-      observer.observe(heroSection);
-    }
-
-    let warpSpeed = 1;
-    window.triggerParticleWarp = () => {
-      warpSpeed = 4;
-      setTimeout(() => { warpSpeed = 1; }, 500);
-    };
-
-    const renderParticles = () => {
-      // Pause animation if hero not in viewport to save 100% CPU/battery
-      if (!isHeroInView) {
-        requestAnimationFrame(renderParticles);
-        return;
-      }
-
-      ctx.clearRect(0, 0, width, height);
+      const particles = [];
+      const particleCount = 10; // Chỉ 10 hạt cực nhẹ
 
       for (let i = 0; i < particleCount; i++) {
-        const p = particles[i];
-        p.y += p.vy * warpSpeed;
-        p.x += p.vx;
-        p.alpha += Math.sin(Date.now() * p.pulseSpeed * 0.001) * 0.006;
-        if (p.alpha > 0.8) p.alpha = 0.8;
-        if (p.alpha < 0.2) p.alpha = 0.2;
-
-        if (p.y < -10) {
-          p.y = height + 10;
-          p.x = Math.random() * width;
-        }
-        if (p.x < -10) p.x = width + 10;
-        if (p.x > width + 10) p.x = -10;
-
-        // Draw soft concentric glow (100x faster than canvas shadowBlur)
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius * 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${p.color}, ${(p.alpha * 0.2).toFixed(2)})`;
-        ctx.fill();
-
-        // Draw particle core
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${p.color}, ${p.alpha.toFixed(2)})`;
-        ctx.fill();
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 1.8 + 1.0,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: -Math.random() * 0.5 - 0.15,
+          alpha: Math.random() * 0.4 + 0.3,
+          pulseSpeed: Math.random() * 0.02 + 0.01,
+          color: '52, 211, 153'
+        });
       }
 
-      requestAnimationFrame(renderParticles);
-    };
-    renderParticles();
+      let isHeroInView = true;
+      let isAnimRunning = false;
+      let lastFrameTime = 0;
+      const targetFPSInterval = 1000 / 30; // Giới hạn 30 FPS siêu mượt & nhẹ máy
+
+      const renderParticles = (currentTime) => {
+        if (!isHeroInView || document.hidden) {
+          isAnimRunning = false;
+          return; // Dừng hẳn vòng lặp, KHÔNG gọi requestAnimationFrame vô ích
+        }
+
+        requestAnimationFrame(renderParticles);
+
+        const delta = currentTime - lastFrameTime;
+        if (delta < targetFPSInterval) return;
+        lastFrameTime = currentTime - (delta % targetFPSInterval);
+
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < particleCount; i++) {
+          const p = particles[i];
+          p.y += p.vy;
+          p.x += p.vx;
+
+          if (p.y < -10) {
+            p.y = height + 10;
+            p.x = Math.random() * width;
+          }
+          if (p.x < -10) p.x = width + 10;
+          if (p.x > width + 10) p.x = -10;
+
+          // Vẽ hạt trực tiếp 1 lần
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${p.color}, ${p.alpha.toFixed(2)})`;
+          ctx.fill();
+        }
+      };
+
+      const startAnimLoop = () => {
+        if (!isAnimRunning && isHeroInView && !document.hidden) {
+          isAnimRunning = true;
+          requestAnimationFrame(renderParticles);
+        }
+      };
+
+      if ('IntersectionObserver' in window && heroSection) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            isHeroInView = entry.isIntersecting;
+            if (isHeroInView) {
+              startAnimLoop();
+            }
+          });
+        }, { threshold: 0.05 });
+        observer.observe(heroSection);
+      }
+
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && isHeroInView) {
+          startAnimLoop();
+        }
+      });
+
+      startAnimLoop();
+    }
   }
 
   // 3. Smooth Tab Switching & Seamless Transition into Capture Section
