@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/style.css?v=12" />
+  <link rel="stylesheet" href="/static/style.css?v=13" />
 </head>
 <body>
 
@@ -52,11 +52,56 @@
 <main class="main-content">
   <section class="hero-section">
     <div class="hero-badge">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-      Công nghệ Trí tuệ nhân tạo Nông nghiệp
+      <span class="hero-badge-dot"></span>
+      <span>Công nghệ Trí tuệ nhân tạo Nông nghiệp · Mô hình Deep Learning</span>
     </div>
-    <h1 class="hero-title">Chụp ảnh lá cây, nhận kết quả chẩn đoán tức thì</h1>
-    <p class="hero-desc">Bật camera trực tiếp để chụp lá cây hoặc tải ảnh có sẵn để nhận diện bệnh hại và nhận phác đồ điều trị nông nghiệp chuẩn xác.</p>
+    <h1 class="hero-title">Chẩn đoán bệnh cây trồng bằng AI chuẩn xác từng chiếc lá</h1>
+    <p class="hero-desc">Bật camera trực tiếp hoặc tải ảnh lá cây để phát hiện mầm bệnh tức thì, soi bản đồ nhiệt Grad-CAM và nhận phác đồ điều trị nông nghiệp chuẩn xác.</p>
+
+    <!-- METRICS STRIP -->
+    <div class="hero-stats-row">
+      <div class="hero-stat-pill">
+        <span class="stat-dot dot-emerald"></span>
+        <span><strong>14</strong> Loài cây trồng</span>
+      </div>
+      <div class="hero-stat-pill">
+        <span class="stat-dot dot-amber"></span>
+        <span><strong>67</strong> Loại bệnh hại</span>
+      </div>
+      <div class="hero-stat-pill">
+        <span class="stat-dot dot-cyan"></span>
+        <span><strong>97.7%</strong> Độ chính xác</span>
+      </div>
+      <div class="hero-stat-pill">
+        <span class="stat-dot dot-purple"></span>
+        <span><strong>&lt; 0.5s</strong> Nhận diện AI</span>
+      </div>
+    </div>
+
+    <!-- FEATURES HIGHLIGHTS -->
+    <div class="features-mini-grid">
+      <div class="f-mini-card">
+        <div class="f-mini-icon">⚡</div>
+        <div class="f-mini-body">
+          <strong>Khám bệnh tức thì</strong>
+          <span>Chụp lá tại ruộng vườn, kết quả hiển thị ngay</span>
+        </div>
+      </div>
+      <div class="f-mini-card">
+        <div class="f-mini-icon">🔬</div>
+        <div class="f-mini-body">
+          <strong>Bản đồ nhiệt Grad-CAM</strong>
+          <span>Minh bạch giải thích vùng lá AI chú ý</span>
+        </div>
+      </div>
+      <div class="f-mini-card">
+        <div class="f-mini-icon">📋</div>
+        <div class="f-mini-body">
+          <strong>Toa thuốc điện tử</strong>
+          <span>Phác đồ 4 bước & gửi đơn nhanh qua Zalo</span>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- VUNG CHỤP ẢNH & UPLOAD CHÍNH -->
@@ -538,6 +583,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=12"></script>
+<script src="/static/app.js?v=13"></script>
 </body>
 </html>
