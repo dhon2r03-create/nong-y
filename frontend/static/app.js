@@ -158,42 +158,73 @@
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   }
 
-  // 3. Quản lý Camera Stream trực tiếp
-  async function startCamera(facingMode = 'environment') {
+  let availableVideoDevices = [];
+  let currentDeviceIndex = 0;
+
+  async function updateVideoDeviceList() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return [];
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      availableVideoDevices = devices.filter((d) => d.kind === 'videoinput');
+      return availableVideoDevices;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // 3. Quản lý Camera Stream trực tiếp & Chuyển đổi Camera
+  async function startCamera(facingMode = 'environment', targetDeviceId = null) {
     if (cameraPermHint) cameraPermHint.style.display = 'block';
     hideStatus();
 
-    const isMobile = isMobileDevice();
+    // 1. DỪNG HẲN luồng camera cũ trước khi yêu cầu mở ống kính mới để giải phóng phần cứng
+    stopCameraTracksOnly();
 
-    // Danh sach constraints thu nghiem tu chi tiet den don gian nhat
+    // 2. Danh sách constraints thử nghiệm từ chi tiết đến linh hoạt nhất
     const constraintList = [];
 
-    if (isMobile) {
-      // Dien thoai: uu tien camera sau (environment) de chup ngoai vuon
+    // Nếu có chỉ định deviceId cụ thể (cho máy tính nhiều camera hoặc điện thoại nhiều ống kính)
+    if (targetDeviceId) {
       constraintList.push({
-        video: {
-          facingMode: { ideal: facingMode },
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-        },
+        video: { deviceId: { exact: targetDeviceId }, width: { ideal: 1280 }, height: { ideal: 720 } },
         audio: false,
       });
       constraintList.push({
-        video: { facingMode: facingMode },
-        audio: false,
-      });
-    } else {
-      // May tinh / Mac: Khong ep buoc facingMode vi Mac FaceTime Camera chi co 1 huong
-      constraintList.push({
-        video: {
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-        },
+        video: { deviceId: targetDeviceId },
         audio: false,
       });
     }
 
-    // Mức fallback co ban nhat luon chay duoc tren moi webcam: video: true
+    // Thử theo exact facingMode
+    constraintList.push({
+      video: {
+        facingMode: { exact: facingMode },
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+      },
+      audio: false,
+    });
+
+    // Thử theo ideal facingMode
+    constraintList.push({
+      video: {
+        facingMode: { ideal: facingMode },
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+      },
+      audio: false,
+    });
+
+    constraintList.push({
+      video: { facingMode: facingMode },
+      audio: false,
+    });
+
+    // Fallback cơ bản nhất
+    constraintList.push({
+      video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+      audio: false,
+    });
     constraintList.push({ video: true, audio: false });
 
     let stream = null;
@@ -205,14 +236,10 @@
         if (stream) break;
       } catch (err) {
         lastErr = err;
-        console.warn('Constraint camera không khả dụng, đang thử cấu hình tiếp theo...', err);
       }
     }
 
     if (stream) {
-      if (cameraStream) {
-        cameraStream.getTracks().forEach((track) => track.stop());
-      }
       cameraStream = stream;
       cameraVideo.srcObject = cameraStream;
       cameraVideo.setAttribute('playsinline', 'true');
@@ -226,11 +253,27 @@
       }
       currentFacingMode = facingMode;
 
+      // Cập nhật danh mục camera có trên thiết bị sau khi đã được cấp quyền
+      await updateVideoDeviceList();
+      const videoTrack = stream.getVideoTracks()[0];
+      if (videoTrack) {
+        const trackSettings = videoTrack.getSettings ? videoTrack.getSettings() : {};
+        if (trackSettings.facingMode) {
+          currentFacingMode = trackSettings.facingMode;
+        }
+        if (trackSettings.deviceId && availableVideoDevices.length > 0) {
+          const matchedIdx = availableVideoDevices.findIndex((d) => d.deviceId === trackSettings.deviceId);
+          if (matchedIdx !== -1) {
+            currentDeviceIndex = matchedIdx;
+          }
+        }
+      }
+
       const cameraErrorBox = document.getElementById('cameraErrorBox');
       if (cameraErrorBox) cameraErrorBox.style.display = 'none';
       if (cameraPermHint) cameraPermHint.style.display = 'none';
-      cameraStandbyBox.style.display = 'none';
-      cameraLiveBox.style.display = 'flex';
+      if (cameraStandbyBox) cameraStandbyBox.style.display = 'none';
+      if (cameraLiveBox) cameraLiveBox.style.display = 'flex';
       hideStatus();
       return;
     }
@@ -243,8 +286,8 @@
     let errMsg = 'Không thể bật camera.';
     if (lastErr && (lastErr.name === 'NotAllowedError' || lastErr.name === 'PermissionDeniedError')) {
       errMsg = '⚠️ Trình duyệt đang chặn quyền Camera. Vui lòng bấm vào biểu tượng Ổ khóa / Camera trên thanh địa chỉ của trình duyệt để cấp quyền "Cho phép" (Allow) rồi bấm lại "Bật Camera Ngay", hoặc bấm "Chụp từ thiết bị".';
-    } else if (lastErr && (lastErr.name === 'NotFoundError' || lastErr.name === 'DevicesNotFoundError')) {
-      errMsg = '⚠️ Không tìm thấy webcam / camera trên thiết bị. Bạn hãy bấm nút "Chụp từ thiết bị" hoặc "Tải ảnh từ máy".';
+    } else if (lastErr && (lastErr.name === 'NotFoundError' || lastErr.name === 'DevicesNotFoundError' || lastErr.name === 'OverconstrainedError')) {
+      errMsg = '⚠️ Không tìm thấy camera khác trên thiết bị này. Bạn có thể sử dụng camera hiện tại hoặc bấm "Chụp từ thiết bị".';
     } else if (!window.isSecureContext && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
       errMsg = '⚠️ Trình duyệt chỉ cho phép bật Live Stream qua HTTPS hoặc localhost. Bạn hãy bấm nút "Chụp từ thiết bị" để mở máy ảnh của điện thoại/máy tính.';
     } else {
@@ -259,7 +302,7 @@
     showToast(errMsg, 'error');
   }
 
-  function stopCamera() {
+  function stopCameraTracksOnly() {
     if (cameraStream) {
       cameraStream.getTracks().forEach((track) => track.stop());
       cameraStream = null;
@@ -267,8 +310,12 @@
     if (cameraVideo) {
       cameraVideo.srcObject = null;
     }
-    cameraLiveBox.style.display = 'none';
-    cameraStandbyBox.style.display = 'block';
+  }
+
+  function stopCamera() {
+    stopCameraTracksOnly();
+    if (cameraLiveBox) cameraLiveBox.style.display = 'none';
+    if (cameraStandbyBox) cameraStandbyBox.style.display = 'block';
   }
 
   const btnTriggerNativeCam = document.getElementById('btnTriggerNativeCam');
@@ -280,42 +327,62 @@
     });
   }
 
-  startLiveCameraBtn.addEventListener('click', () => {
-    const cameraErrorBox = document.getElementById('cameraErrorBox');
-    if (cameraErrorBox) cameraErrorBox.style.display = 'none';
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      startCamera(currentFacingMode);
-    } else {
-      if (fallbackCameraInput) {
-        fallbackCameraInput.click();
+  if (startLiveCameraBtn) {
+    startLiveCameraBtn.addEventListener('click', () => {
+      const cameraErrorBox = document.getElementById('cameraErrorBox');
+      if (cameraErrorBox) cameraErrorBox.style.display = 'none';
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        startCamera(currentFacingMode);
+      } else {
+        if (fallbackCameraInput) {
+          fallbackCameraInput.click();
+        }
       }
-    }
-  });
+    });
+  }
 
-  flipLiveCameraBtn.addEventListener('click', () => {
-    const nextMode = currentFacingMode === 'environment' ? 'user' : 'environment';
-    startCamera(nextMode);
-  });
+  // Đổi Camera (Chuyển camera Trước <-> Sau hoặc xoay vòng các ống kính)
+  if (flipLiveCameraBtn) {
+    flipLiveCameraBtn.addEventListener('click', async () => {
+      if (availableVideoDevices.length === 0) {
+        await updateVideoDeviceList();
+      }
 
+      const nextMode = currentFacingMode === 'environment' ? 'user' : 'environment';
 
-  stopLiveCameraBtn.addEventListener('click', stopCamera);
+      let nextDeviceId = null;
+      if (availableVideoDevices && availableVideoDevices.length > 1) {
+        currentDeviceIndex = (currentDeviceIndex + 1) % availableVideoDevices.length;
+        nextDeviceId = availableVideoDevices[currentDeviceIndex].deviceId;
+      }
+
+      showToast('🔄 Đang chuyển đổi camera...', 'info');
+      await startCamera(nextMode, nextDeviceId);
+    });
+  }
+
+  if (stopLiveCameraBtn) {
+    stopLiveCameraBtn.addEventListener('click', stopCamera);
+  }
 
   // Chụp ảnh từ camera video frame
-  takeSnapshotBtn.addEventListener('click', () => {
-    if (!cameraVideo.videoWidth) return;
+  if (takeSnapshotBtn) {
+    takeSnapshotBtn.addEventListener('click', () => {
+      if (!cameraVideo.videoWidth) return;
 
-    cameraCanvas.width = cameraVideo.videoWidth;
-    cameraCanvas.height = cameraVideo.videoHeight;
-    const ctx = cameraCanvas.getContext('2d');
-    ctx.drawImage(cameraVideo, 0, 0, cameraCanvas.width, cameraCanvas.height);
+      cameraCanvas.width = cameraVideo.videoWidth;
+      cameraCanvas.height = cameraVideo.videoHeight;
+      const ctx = cameraCanvas.getContext('2d');
+      ctx.drawImage(cameraVideo, 0, 0, cameraCanvas.width, cameraCanvas.height);
 
-    cameraCanvas.toBlob((blob) => {
-      if (!blob) return;
-      const file = new File([blob], 'camera-capture-' + Date.now() + '.jpg', { type: 'image/jpeg' });
-      stopCamera();
-      handleFileSelected(file);
-    }, 'image/jpeg', 0.92);
-  });
+      cameraCanvas.toBlob((blob) => {
+        if (!blob) return;
+        const file = new File([blob], 'camera-capture-' + Date.now() + '.jpg', { type: 'image/jpeg' });
+        stopCamera();
+        handleFileSelected(file);
+      }, 'image/jpeg', 0.92);
+    });
+  }
 
   // 4. Xử lý File đã chọn / đã chụp
   function handleFileSelected(file) {
