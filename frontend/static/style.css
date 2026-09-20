@@ -68,8 +68,84 @@ button {
 }
 
 /* =====================================================================
-   TOP NAVIGATION
+   APP TOP HEADER (TINH GỌN & TRONG SUỐT)
    ===================================================================== */
+.app-top-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 40;
+  padding: 18px 32px;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.top-header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.top-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-top-util {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+  font-family: inherit;
+}
+
+.btn-top-util:hover {
+  background: rgba(16, 185, 129, 0.28);
+  border-color: #10b981;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+}
+
+.btn-top-phone {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.btn-top-phone:hover {
+  background: rgba(16, 185, 129, 0.22);
+  border-color: #34d399;
+}
+
+@media (max-width: 640px) {
+  .app-top-header {
+    padding: 14px 16px;
+  }
+  .btn-top-util span {
+    display: none;
+  }
+  .btn-top-util {
+    padding: 8px 10px;
+  }
+}
+
+/* Legacy Top Navigation for Dashboard */
 .topnav {
   position: sticky;
   top: 0;
@@ -3183,10 +3259,10 @@ html {
 .doctor-3d-hero {
   position: relative;
   width: 100%;
-  min-height: 92vh;
+  min-height: 96vh;
   background: linear-gradient(180deg, #071f15 0%, #0a2d1f 40%, #0d3826 80%, #09261a 100%);
   color: #ffffff;
-  padding: 48px 20px 36px;
+  padding: 84px 20px 40px;
   display: flex;
   flex-direction: column;
   align-items: center;

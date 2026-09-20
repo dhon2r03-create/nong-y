@@ -20,7 +20,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=30" />
+  <link rel="stylesheet" href="/static/style.css?v=31" />
 </head>
 <body>
 
@@ -34,6 +34,41 @@
   <!-- Ambient glowing lighting blurs -->
   <div class="doctor-ambient-glow glow-emerald"></div>
   <div class="doctor-ambient-glow glow-lime"></div>
+
+  <!-- Top Glass Header (Logo & Tiện ích) -->
+  <header class="app-top-header" id="appTopHeader">
+    <div class="top-header-container">
+      <a class="brand" href="/" title="Trang chủ Nông Y">
+        <div class="brand-icon">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 26C6 14 14 6 26 6C26 18 18 26 6 26Z" fill="url(#leafGradient)"/>
+            <path d="M6 26C10 22 16 16 26 6" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.8"/>
+            <defs>
+              <linearGradient id="leafGradient" x1="6" y1="26" x2="26" y2="6" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#10b981"/>
+                <stop offset="1" stop-color="#059669"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Nông Y</span>
+          <span class="brand-subtitle">Bác sĩ cây trồng</span>
+        </div>
+      </a>
+
+      <div class="top-header-actions">
+        <a href="/dashboard" class="btn-top-util" title="Xem biểu đồ và thống kê dịch bệnh">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          <span>Thống kê</span>
+        </a>
+        <button type="button" class="btn-top-util btn-top-phone" id="openPhoneModalBtn" title="Quét mã QR mở trên điện thoại">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          <span>Mở trên điện thoại</span>
+        </button>
+      </div>
+    </div>
+  </header>
 
   <!-- Main Container -->
   <div class="doctor-hero-container">
@@ -146,47 +181,8 @@
         <span class="step-text">Nhận phác đồ điều trị</span>
       </div>
     </div>
-
   </div>
 </section>
-
-<header class="topnav" id="subTopnav">
-  <div class="nav-container">
-    <a class="brand" href="/">
-      <div class="brand-icon">
-        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M6 26C6 14 14 6 26 6C26 18 18 26 6 26Z" fill="url(#leafGradient)"/>
-          <path d="M6 26C10 22 16 16 26 6" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.8"/>
-          <defs>
-            <linearGradient id="leafGradient" x1="6" y1="26" x2="26" y2="6" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#10b981"/>
-              <stop offset="1" stop-color="#059669"/>
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-      <div class="brand-text">
-        <span class="brand-title">Nông Y</span>
-        <span class="brand-subtitle">Bác sĩ cây trồng</span>
-      </div>
-    </a>
-
-    <nav class="nav-links">
-      <button type="button" class="nav-link active" id="navDiagnoseBtn" title="Mở phòng chẩn đoán">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Chẩn đoán
-      </button>
-      <a href="/dashboard" class="nav-link">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-        Thống kê
-      </a>
-      <button class="btn btn-phone-connect" id="openPhoneModalBtn" title="Mở trên điện thoại">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-        <span>Mở trên điện thoại</span>
-      </button>
-    </nav>
-  </div>
-</header>
 
 <!-- =====================================================================
      DIAGNOSE WORKSPACE MODAL (XUẤT HIỆN KHI BẤM NÚT)
@@ -692,6 +688,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=30"></script>
+<script src="/static/app.js?v=31"></script>
 </body>
 </html>
