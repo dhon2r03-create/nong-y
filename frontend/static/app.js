@@ -1431,22 +1431,34 @@
     });
   }
 
-  // Nút 1: Camera -> Mở modal và kích hoạt Camera
+  // Nút 1: Camera -> Kích hoạt máy ảnh / camera trực tiếp
   if (tabLiveCameraBtn) {
     tabLiveCameraBtn.addEventListener('click', (e) => {
       e.preventDefault();
+      if (typeof window.triggerParticleWarp === 'function') {
+        window.triggerParticleWarp();
+      }
+
+      const fallbackCameraInput = document.getElementById('fallbackCameraInput');
+      const isMobile = isMobileDevice();
+      const isSecure = window.isSecureContext || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+      const hasGetUserMedia = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+
+      // Nếu trên di động hoặc môi trường không hỗ trợ WebRTC live stream (hoặc kết nối HTTP IP):
+      // Kích hoạt ngay camera native của máy ảnh thiết bị -> Mở máy ảnh ngay khi bấm nút!
+      if (isMobile || !isSecure || !hasGetUserMedia) {
+        if (fallbackCameraInput) {
+          fallbackCameraInput.click();
+          return;
+        }
+      }
+
+      // Trên máy tính Desktop có hỗ trợ Live Stream:
+      // Mở workspace modal và khởi tạo camera live stream
       openDiagnoseWorkspace('camera');
       const cameraErrorBox = document.getElementById('cameraErrorBox');
       if (cameraErrorBox) cameraErrorBox.style.display = 'none';
-
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        startCamera(currentFacingMode);
-      } else {
-        if (cameraErrorBox) {
-          cameraErrorBox.innerHTML = '💡 Trình duyệt đang chạy qua kết nối HTTP (IP) hoặc thiết bị cần chọn ảnh trực tiếp. Bạn hãy bấm nút <strong>"Chụp từ thiết bị"</strong> bên dưới để mở máy ảnh.';
-          cameraErrorBox.style.display = 'block';
-        }
-      }
+      startCamera(currentFacingMode);
     });
   }
 
