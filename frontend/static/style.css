@@ -3353,9 +3353,9 @@ html {
 
 /* Hero Title & Subtitle */
 .doctor-hero-title {
-  font-size: clamp(28px, 4.5vw, 54px);
+  font-size: clamp(32px, 5vw, 56px);
   font-weight: 800;
-  line-height: 1.15;
+  line-height: 1.18;
   letter-spacing: -0.8px;
   color: #ffffff;
   margin-bottom: 14px;
@@ -3368,6 +3368,12 @@ html {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-top: 4px;
+}
+
+.doctor-hero-title .title-gradient-inline {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .doctor-hero-subtitle {
