@@ -1108,7 +1108,7 @@ button {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(3, 20, 14, 0.58);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
@@ -1129,7 +1129,8 @@ button {
   background: #ffffff;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-elevated);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(16, 185, 129, 0.15);
+  border: 1.5px solid rgba(16, 185, 129, 0.3);
 }
 
 .phone-modal-header {
@@ -2393,7 +2394,8 @@ button {
   background: #f8fafc;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-elevated);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(16, 185, 129, 0.15);
+  border: 1.5px solid rgba(16, 185, 129, 0.3);
   display: flex;
   flex-direction: column;
   animation: slide-up 0.25s ease-out;
@@ -3913,7 +3915,9 @@ html {
 .workspace-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(3, 16, 11, 0.92);
+  background: rgba(3, 20, 14, 0.58);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 1;
 }
 
@@ -3925,8 +3929,8 @@ html {
   max-height: 90vh;
   background: #ffffff;
   border-radius: 24px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-  border: 1.5px solid rgba(16, 185, 129, 0.3);
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.55), 0 0 35px rgba(16, 185, 129, 0.2);
+  border: 1.5px solid rgba(16, 185, 129, 0.35);
   display: flex;
   flex-direction: column;
   overflow: hidden;
