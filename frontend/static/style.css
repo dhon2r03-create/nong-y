@@ -38,11 +38,7 @@
 
 html, body {
   min-height: 100vh;
-  background-color: #fafaf7;
-  background-image: 
-    radial-gradient(ellipse at 50% -15%, rgba(16, 185, 129, 0.12), transparent 55%),
-    radial-gradient(ellipse at 90% 25%, rgba(201, 100, 66, 0.06), transparent 50%);
-  background-attachment: fixed;
+  background-color: var(--bg-page);
   color: var(--text-main);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -210,162 +206,49 @@ button {
 .main-content {
   flex: 1;
   width: 100%;
-  max-width: 860px;
+  max-width: 680px;
   margin: 0 auto;
-  padding: 32px 20px 70px;
+  padding: 28px 18px 60px;
 }
 
 .wide-content {
-  max-width: 1060px;
+  max-width: 1040px;
 }
 
 .hero-section {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .hero-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background: #ffffff;
+  gap: 6px;
+  background: #ecfdf5;
   color: #047857;
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  font-size: 12.5px;
+  border: 1px solid #a7f3d0;
+  font-size: 12px;
   font-weight: 700;
-  padding: 6px 14px;
+  padding: 4px 12px;
   border-radius: var(--radius-full);
-  margin-bottom: 14px;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
-}
-
-.hero-badge-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 8px #10b981;
-  animation: pulse-dot 2s infinite ease-in-out;
+  margin-bottom: 12px;
 }
 
 .hero-title {
-  font-size: 32px;
+  font-size: 27px;
   font-weight: 800;
-  letter-spacing: -0.6px;
-  color: #15140f;
+  letter-spacing: -0.5px;
+  color: #0f172a;
   line-height: 1.25;
-  margin-bottom: 10px;
-}
-
-@media (max-width: 640px) {
-  .hero-title {
-    font-size: 24px;
-  }
+  margin-bottom: 8px;
 }
 
 .hero-desc {
-  font-size: 15px;
-  color: #5a5448;
-  max-width: 620px;
-  margin: 0 auto 20px;
-  line-height: 1.6;
-}
-
-/* METRICS STRIP */
-.hero-stats-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.hero-stat-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  background: #ffffff;
-  border: 1px solid rgba(21, 20, 15, 0.08);
-  border-radius: var(--radius-full);
-  padding: 5px 13px;
-  font-size: 13px;
-  color: #2a2620;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
-}
-
-.stat-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-
-.dot-emerald { background: #10b981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.6); }
-.dot-amber { background: #f59e0b; box-shadow: 0 0 6px rgba(245, 158, 11, 0.6); }
-.dot-cyan { background: #06b6d4; box-shadow: 0 0 6px rgba(6, 182, 212, 0.6); }
-.dot-purple { background: #8b5cf6; box-shadow: 0 0 6px rgba(139, 92, 246, 0.6); }
-
-/* FEATURES MINI GRID */
-.features-mini-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  max-width: 820px;
-  margin: 0 auto 8px;
-  text-align: left;
-}
-
-@media (max-width: 700px) {
-  .features-mini-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.f-mini-card {
-  background: #ffffff;
-  border: 1px solid rgba(21, 20, 15, 0.08);
-  border-radius: 14px;
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.f-mini-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-}
-
-.f-mini-icon {
-  font-size: 20px;
-  width: 38px;
-  height: 38px;
-  background: #f1f5f9;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.f-mini-body {
-  display: flex;
-  flex-direction: column;
-}
-
-.f-mini-body strong {
-  font-size: 13px;
-  font-weight: 700;
-  color: #15140f;
-  line-height: 1.3;
-}
-
-.f-mini-body span {
-  font-size: 11.5px;
-  color: #5a5448;
-  line-height: 1.35;
+  font-size: 14.5px;
+  color: var(--text-muted);
+  max-width: 580px;
+  margin: 0 auto;
+  line-height: 1.55;
 }
 
 /* =====================================================================
@@ -373,12 +256,11 @@ button {
    ===================================================================== */
 .diagnose-card {
   background: var(--surface);
-  border: 1px solid rgba(21, 20, 15, 0.08);
-  border-radius: 20px;
-  padding: 26px;
-  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.05);
-  margin-bottom: 28px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 24px;
 }
 
 /* Mode tabs switcher */
