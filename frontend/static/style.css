@@ -3908,17 +3908,208 @@ html {
   align-items: center;
   justify-content: center;
   padding: 20px 16px;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   animation: modalFadeIn 0.15s ease-out;
 }
 
 .workspace-backdrop {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: rgba(3, 20, 14, 0.58);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 1;
+}
+
+.workspace-modal-layout {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  max-width: 1160px;
+  margin: auto;
+  animation: modalFastIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Chibi Doctor Standing Companion */
+.modal-chibi-companion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 190px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.45));
+  animation: chibiSideFloat 3.6s ease-in-out infinite alternate;
+  will-change: transform;
+  user-select: none;
+}
+
+@keyframes chibiSideFloat {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(0.8deg); }
+  100% { transform: translateY(-2px) rotate(-0.8deg); }
+}
+
+.chibi-companion-speech {
+  background: rgba(9, 38, 26, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(16, 185, 129, 0.45);
+  border-radius: 16px;
+  padding: 12px 14px;
+  color: #ffffff;
+  margin-bottom: 14px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35), 0 0 15px rgba(16, 185, 129, 0.2);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.chibi-companion-speech::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px 8px 0;
+  border-style: solid;
+  border-color: rgba(9, 38, 26, 0.95) transparent;
+}
+
+.chibi-speech-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.chibi-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+
+.chibi-speech-tag {
+  font-size: 11px;
+  font-weight: 800;
+  color: #a7f3d0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.chibi-speech-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: #f1f5f9;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.chibi-character-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.chibi-avatar-frame {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  padding: 4px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 50%, #064e3b 100%);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 24px rgba(16, 185, 129, 0.4);
+  overflow: hidden;
+}
+
+.chibi-companion-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  background: #071f15;
+  transform: scale(1.05);
+}
+
+.chibi-badge-name {
+  margin-top: 10px;
+  background: rgba(5, 150, 105, 0.25);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 20px;
+  padding: 6px 14px;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.badge-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.badge-subtitle {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #6ee7b7;
+}
+
+/* Tablet & Mobile Breakpoints for Chibi Companion */
+@media (max-width: 991px) {
+  .workspace-modal-layout {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .modal-chibi-companion {
+    flex-direction: row;
+    width: 100%;
+    max-width: 900px;
+    align-items: center;
+    gap: 12px;
+    animation: none;
+    padding: 0 4px;
+  }
+
+  .modal-chibi-companion .chibi-character-figure {
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .modal-chibi-companion .chibi-avatar-frame {
+    width: 50px;
+    height: 50px;
+    padding: 2px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .modal-chibi-companion .chibi-badge-name {
+    display: none;
+  }
+
+  .modal-chibi-companion .chibi-companion-speech {
+    margin-bottom: 0;
+    flex: 1;
+    padding: 8px 14px;
+    border-radius: 12px;
+  }
+
+  .modal-chibi-companion .chibi-companion-speech::after {
+    display: none;
+  }
 }
 
 .workspace-dialog {
@@ -3935,7 +4126,6 @@ html {
   flex-direction: column;
   overflow: hidden;
   will-change: opacity, transform;
-  animation: modalFastIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes modalFadeIn {

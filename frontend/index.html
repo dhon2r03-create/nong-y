@@ -20,7 +20,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=41" />
+  <link rel="stylesheet" href="/static/style.css?v=42" />
 </head>
 <body>
 
@@ -169,22 +169,46 @@
      ===================================================================== -->
 <div class="diagnose-workspace-modal" id="diagnoseWorkspaceModal" style="display: none;">
   <div class="workspace-backdrop" id="diagnoseWorkspaceBackdrop"></div>
-  <div class="workspace-dialog">
-    <div class="workspace-header">
-      <div class="workspace-title-group">
-        <div class="workspace-title-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+
+  <div class="workspace-modal-layout">
+    <!-- BÁC SĨ CÂY TRỒNG CHIBI 3D ĐỨNG BÊN CẠNH POPUP -->
+    <aside class="modal-chibi-companion" id="modalChibiCompanion" aria-label="Bác sĩ Cây Trồng Chibi AI">
+      <div class="chibi-companion-speech" id="chibiCompanionSpeech">
+        <div class="chibi-speech-header">
+          <span class="chibi-status-dot"></span>
+          <span class="chibi-speech-tag">Dr. Cây Trồng AI</span>
         </div>
-        <div>
-          <h3 class="workspace-title" id="workspaceModalTitle">Phòng Khám Bác Sĩ Cây Trồng AI</h3>
-          <span class="workspace-subtitle" id="workspaceModalSubtitle">Chẩn đoán mầm bệnh & kê đơn điều trị tức thì</span>
+        <p class="chibi-speech-text" id="chibiSpeechText">Chào bạn! Mình đã sẵn sàng hỗ trợ khám bệnh và kê đơn cho cây 🌱</p>
+      </div>
+
+      <div class="chibi-character-figure">
+        <div class="chibi-avatar-frame">
+          <img src="/static/doctor-3d.jpg" alt="Bác Sĩ Cây Trồng Chibi 3D" class="chibi-companion-img" />
+          <div class="chibi-glow-ring"></div>
+        </div>
+        <div class="chibi-badge-name">
+          <span class="badge-title">Bác Sĩ Cây Trồng</span>
+          <span class="badge-subtitle">Trực tuyến 24/7 🌿</span>
         </div>
       </div>
-      <button type="button" class="btn-workspace-close" id="closeDiagnoseWorkspaceBtn" title="Đóng và quay về trang 3D">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        <span>Đóng lại</span>
-      </button>
-    </div>
+    </aside>
+
+    <div class="workspace-dialog">
+      <div class="workspace-header">
+        <div class="workspace-title-group">
+          <div class="workspace-title-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <h3 class="workspace-title" id="workspaceModalTitle">Phòng Khám Bác Sĩ Cây Trồng AI</h3>
+            <span class="workspace-subtitle" id="workspaceModalSubtitle">Chẩn đoán mầm bệnh & kê đơn điều trị tức thì</span>
+          </div>
+        </div>
+        <button type="button" class="btn-workspace-close" id="closeDiagnoseWorkspaceBtn" title="Đóng và quay về trang 3D">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <span>Đóng lại</span>
+        </button>
+      </div>
 
     <main class="main-content">
       <!-- VÙNG CHỤP ẢNH & UPLOAD CHÍNH -->
@@ -516,6 +540,7 @@
     </div>
   </section>
 </main>
+    </div>
   </div>
 </div>
 
@@ -666,6 +691,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=41"></script>
+<script src="/static/app.js?v=42"></script>
 </body>
 </html>

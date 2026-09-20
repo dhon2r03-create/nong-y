@@ -101,6 +101,18 @@
   let currentOriginalImgUrl = '';
   let currentHeatmapImgUrl = '';
 
+  // Chibi Doctor Companion Speech Controller
+  const chibiSpeechText = document.getElementById('chibiSpeechText');
+  function setChibiMessage(text) {
+    if (!chibiSpeechText) return;
+    chibiSpeechText.style.transition = 'opacity 0.15s ease';
+    chibiSpeechText.style.opacity = '0';
+    setTimeout(() => {
+      chibiSpeechText.textContent = text;
+      chibiSpeechText.style.opacity = '1';
+    }, 150);
+  }
+
   // 0. Nạp danh mục loài cây vào Dropdown
   async function loadSupportedPlants() {
     if (!plantFilterSelect) return;
@@ -333,6 +345,8 @@
       if (sectionImageSource) sectionImageSource.style.display = 'none';
       if (sectionPreviewDiagnose) sectionPreviewDiagnose.style.display = 'block';
 
+      setChibiMessage('Ảnh lá cây đã sẵn sàng! Bấm nút "Phân tích bệnh cây trồng" bên dưới nhé ✨');
+
       // Tự động mở Workspace Modal chuyển thẳng vào màn hình Xem trước ảnh & Chẩn đoán
       const workspaceModal = document.getElementById('diagnoseWorkspaceModal');
       if (workspaceModal && (workspaceModal.style.display === 'none' || !workspaceModal.style.display)) {
@@ -529,6 +543,7 @@
     submitBtn.disabled = true;
     btnSpinner.style.display = 'inline-block';
     submitBtnText.textContent = 'Đang phân tích hình ảnh...';
+    setChibiMessage('Đang soi kính hiển vi AI và đối chiếu 38 bệnh cây... Đợi xíu nhé! 🔬');
     hideAllResults();
     hideStatus();
 
@@ -546,6 +561,7 @@
 
       if (!res.ok) {
         showStatus(data.detail || 'Có lỗi xảy ra khi phân tích ảnh.', 'error');
+        setChibiMessage('Có lỗi xảy ra khi phân tích ảnh. Bạn thử lại nhé! ⚠️');
         return;
       }
 
@@ -558,6 +574,7 @@
         if (retakeRequirementText && data.suggested_action) {
           retakeRequirementText.innerHTML = data.suggested_action;
         }
+        setChibiMessage('Ôi không! Ảnh này không phải lá cây trồng, bạn chụp lại giúp mình nhé! 🧐');
         nonPlantAlert.style.display = 'flex';
         nonPlantAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         return;
@@ -581,9 +598,11 @@
       if (isHealthy) {
         plantHealthPill.className = 'diagnosis-status-pill healthy';
         plantHealthLabel.textContent = 'Cây khỏe mạnh';
+        setChibiMessage(`Tuyệt vời! Cây ${data.plant_name} của bạn phát triển rất khỏe mạnh và xanh tốt 🌱`);
       } else {
         plantHealthPill.className = 'diagnosis-status-pill';
         plantHealthLabel.textContent = 'Phát hiện bệnh hại';
+        setChibiMessage(`Phát hiện: ${data.disease_name} trên cây ${data.plant_name}. Hãy xem phác đồ & toa thuốc bên dưới nhé! 🩺`);
       }
 
       if (resultSeverityBadge) {
@@ -1394,6 +1413,8 @@
       if (sectionDesc) sectionDesc.textContent = 'Căn chỉnh lá cây vào khung ngắm và bấm nút chụp ảnh bên dưới';
       if (retakeBtn) retakeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg> 📸 Chụp lại ảnh khác`;
 
+      setChibiMessage('Đang mở camera, bạn hướng ống kính vào phần lá bị bệnh rồi bấm chụp nhé! 📸');
+
       viewCamera.style.display = 'block';
       viewUpload.style.display = 'none';
 
@@ -1414,6 +1435,8 @@
       if (sectionTitle) sectionTitle.textContent = 'Tải ảnh lá cây từ thiết bị';
       if (sectionDesc) sectionDesc.textContent = 'Kéo thả ảnh hoặc chọn ảnh từ thư viện thiết bị';
       if (retakeBtn) retakeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> 📁 Chọn ảnh khác`;
+
+      setChibiMessage('Hãy chọn ảnh chụp lá cây rõ nét từ thiết bị để mình chẩn đoán chính xác nhất nhé! 🌿');
 
       stopCamera();
       viewCamera.style.display = 'none';
