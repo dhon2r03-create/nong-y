@@ -138,27 +138,27 @@
     hideStatus();
 
     if (mode === 'camera') {
-      modeCameraBtn.classList.add('active');
-      modeUploadBtn.classList.remove('active');
-      viewUpload.style.display = 'none';
-      if (!selectedFile) {
+      if (modeCameraBtn) modeCameraBtn.classList.add('active');
+      if (modeUploadBtn) modeUploadBtn.classList.remove('active');
+      if (viewUpload) viewUpload.style.display = 'none';
+      if (!selectedFile && viewCamera) {
         viewCamera.style.display = 'block';
-        viewPreview.style.display = 'none';
+        if (viewPreview) viewPreview.style.display = 'none';
       }
     } else {
-      modeUploadBtn.classList.add('active');
-      modeCameraBtn.classList.remove('active');
+      if (modeUploadBtn) modeUploadBtn.classList.add('active');
+      if (modeCameraBtn) modeCameraBtn.classList.remove('active');
       stopCamera();
-      viewCamera.style.display = 'none';
-      if (!selectedFile) {
+      if (viewCamera) viewCamera.style.display = 'none';
+      if (!selectedFile && viewUpload) {
         viewUpload.style.display = 'block';
-        viewPreview.style.display = 'none';
+        if (viewPreview) viewPreview.style.display = 'none';
       }
     }
   }
 
-  modeCameraBtn.addEventListener('click', () => switchMode('camera'));
-  modeUploadBtn.addEventListener('click', () => switchMode('upload'));
+  if (modeCameraBtn) modeCameraBtn.addEventListener('click', () => switchMode('camera'));
+  if (modeUploadBtn) modeUploadBtn.addEventListener('click', () => switchMode('upload'));
 
   function isMobileDevice() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
