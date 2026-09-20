@@ -1379,9 +1379,6 @@
   const heroLaunchBtn = document.getElementById('heroLaunchDiagnoseBtn');
   const navDiagnoseBtn = document.getElementById('navDiagnoseBtn');
 
-  const modalSwitchCameraBtn = document.getElementById('modalSwitchCameraBtn');
-  const modalSwitchUploadBtn = document.getElementById('modalSwitchUploadBtn');
-
   function setModalStep(stepNumber) {
     const step1 = document.getElementById('modalStep1');
     const step2 = document.getElementById('modalStep2');
@@ -1405,38 +1402,6 @@
     if (line2) line2.classList.toggle('filled', stepNumber >= 3);
   }
 
-  if (modalSwitchCameraBtn) {
-    modalSwitchCameraBtn.addEventListener('click', () => {
-      activeTab = 'camera';
-      modalSwitchCameraBtn.classList.add('active');
-      if (modalSwitchUploadBtn) modalSwitchUploadBtn.classList.remove('active');
-      if (viewUpload) viewUpload.style.display = 'none';
-      if (viewCamera) viewCamera.style.display = 'block';
-      const imageSourceSectionTitle = document.getElementById('imageSourceSectionTitle');
-      const imageSourceSectionDesc = document.getElementById('imageSourceSectionDesc');
-      if (imageSourceSectionTitle) imageSourceSectionTitle.textContent = 'Chụp ảnh lá cây trực tiếp qua camera';
-      if (imageSourceSectionDesc) imageSourceSectionDesc.textContent = 'Căn chỉnh lá cây vào tâm khung ngắm và bấm nút chụp';
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        startCamera(currentFacingMode);
-      }
-    });
-  }
-
-  if (modalSwitchUploadBtn) {
-    modalSwitchUploadBtn.addEventListener('click', () => {
-      activeTab = 'upload';
-      modalSwitchUploadBtn.classList.add('active');
-      if (modalSwitchCameraBtn) modalSwitchCameraBtn.classList.remove('active');
-      stopCamera();
-      if (viewCamera) viewCamera.style.display = 'none';
-      if (viewUpload) viewUpload.style.display = 'block';
-      const imageSourceSectionTitle = document.getElementById('imageSourceSectionTitle');
-      const imageSourceSectionDesc = document.getElementById('imageSourceSectionDesc');
-      if (imageSourceSectionTitle) imageSourceSectionTitle.textContent = 'Tải ảnh lá cây từ thiết bị';
-      if (imageSourceSectionDesc) imageSourceSectionDesc.textContent = 'Kéo thả ảnh hoặc bấm chọn tệp ảnh lá cây từ máy';
-    });
-  }
-
   const openDiagnoseWorkspace = (targetMode = 'camera') => {
     if (typeof window.stopBgAnimForModal === 'function') {
       window.stopBgAnimForModal();
@@ -1457,17 +1422,14 @@
     if (sectionPreviewDiagnose) sectionPreviewDiagnose.style.display = 'none';
 
     if (targetMode === 'camera') {
-      if (modalTitle) modalTitle.textContent = 'Phòng Khám Bác Sĩ Cây Trồng AI';
-      if (modalSubtitle) modalSubtitle.textContent = 'Chẩn đoán mầm bệnh & kê đơn điều trị chuẩn xác tức thì';
+      if (modalTitle) modalTitle.textContent = 'Phòng Khám Bác Sĩ Cây Trồng AI - Camera';
+      if (modalSubtitle) modalSubtitle.textContent = 'Chụp ảnh lá cây trực tiếp qua camera & chẩn đoán tức thì';
       if (sectionTitle) sectionTitle.textContent = 'Chụp ảnh lá cây trực tiếp qua camera';
       if (sectionDesc) sectionDesc.textContent = 'Căn chỉnh lá cây vào tâm khung ngắm và bấm nút chụp ảnh bên dưới';
       if (retakeBtn) retakeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg> 📸 Chụp lại ảnh khác`;
 
       if (viewCamera) viewCamera.style.display = 'block';
       if (viewUpload) viewUpload.style.display = 'none';
-
-      if (modalSwitchCameraBtn) modalSwitchCameraBtn.classList.add('active');
-      if (modalSwitchUploadBtn) modalSwitchUploadBtn.classList.remove('active');
 
       // Khởi động Camera trực tiếp
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -1486,9 +1448,6 @@
       stopCamera();
       if (viewCamera) viewCamera.style.display = 'none';
       if (viewUpload) viewUpload.style.display = 'block';
-
-      if (modalSwitchUploadBtn) modalSwitchUploadBtn.classList.add('active');
-      if (modalSwitchCameraBtn) modalSwitchCameraBtn.classList.remove('active');
 
       if (tabUploadBtn) tabUploadBtn.classList.add('active');
       if (tabLiveCameraBtn) tabLiveCameraBtn.classList.remove('active');

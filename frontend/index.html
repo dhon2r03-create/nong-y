@@ -20,7 +20,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=53" />
+  <link rel="stylesheet" href="/static/style.css?v=55" />
 </head>
 <body>
 
@@ -227,29 +227,17 @@
       <!-- VÙNG CHỤP ẢNH & UPLOAD CHÍNH -->
       <section id="diagnoseCard" class="diagnose-card-container scroll-mt-20">
         
-        <!-- PHẦN 1: NGUỒN ẢNH (CAMERA HOẶC UPLOAD ĐỘC LẬP) -->
+        <!-- PHẦN 1: NGUỒN ẢNH (CAMERA HOẶC TẢI ẢNH ĐỘC LẬP TỪNG CHỨC NĂNG) -->
         <div class="workspace-section-card" id="sectionImageSource">
           <div class="section-card-header">
             <div class="section-card-step">1</div>
             <div class="section-card-titles">
-              <h4 class="section-card-title" id="imageSourceSectionTitle">Nguồn hình ảnh lá cây</h4>
-              <p class="section-card-desc" id="imageSourceSectionDesc">Chụp trực tiếp qua camera HD hoặc tải ảnh sẵn có từ thiết bị</p>
+              <h4 class="section-card-title" id="imageSourceSectionTitle">Thu thập hình ảnh lá cây</h4>
+              <p class="section-card-desc" id="imageSourceSectionDesc">Chụp trực tiếp qua camera hoặc tải ảnh từ thiết bị</p>
             </div>
           </div>
 
-          <!-- In-Modal Segmented Source Switch Tabs -->
-          <div class="modal-source-tabs">
-            <button type="button" class="btn-source-tab active" id="modalSwitchCameraBtn">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-              <span>Camera Trực Tiếp</span>
-            </button>
-            <button type="button" class="btn-source-tab" id="modalSwitchUploadBtn">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              <span>Tải Ảnh Từ Máy</span>
-            </button>
-          </div>
-
-          <!-- 1. LIVE CAMERA PANEL -->
+          <!-- 1. LIVE CAMERA PANEL (Dành riêng cho chức năng Camera) -->
           <div class="view-panel" id="viewCamera">
             <!-- Standby: Khi chua bat camera -->
             <div class="camera-standby-box" id="cameraStandbyBox">
@@ -264,16 +252,16 @@
                 </svg>
               </div>
               <h3 class="standby-title">Khám Bệnh Cây Bằng Camera</h3>
-              <p class="standby-desc">Bật camera trực tiếp hoặc chụp ảnh lá cây qua thiết bị để mô hình AI quét và phân tích.</p>
+              <p class="standby-desc">Bật camera trực tiếp để mô hình AI quét và phân tích tình trạng lá cây.</p>
               
               <div class="camera-error-box" id="cameraErrorBox" style="display:none;"></div>
 
               <div class="camera-standby-actions">
                 <button type="button" class="btn btn-hero-camera" id="startLiveCameraBtn">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/></svg>
-                  Bật Live Camera
+                  Bật Camera Ngay
                 </button>
-                <button type="button" class="btn btn-gallery-trigger" id="btnTriggerNativeCam">
+                <button type="button" class="btn btn-gallery-trigger" id="btnTriggerNativeCam" style="display:none;">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                   Chụp từ thiết bị
                 </button>
@@ -726,6 +714,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=53"></script>
+<script src="/static/app.js?v=55"></script>
 </body>
 </html>
