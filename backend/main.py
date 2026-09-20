@@ -445,10 +445,10 @@ def model_status():
 @app.get("/api/network-info")
 def network_info():
     ip = get_lan_ip()
-    port = 8000
+    port = int(os.getenv("PORT", 8000))
 
-    # Kiem tra xem co Public URL (tu Cloudflare, Pinggy, Ngrok...) hay khong
-    public_url = os.getenv("PUBLIC_URL")
+    # Kiem tra xem co Public URL (Render, Cloudflare, Pinggy, Ngrok...) hay khong
+    public_url = os.getenv("PUBLIC_URL") or os.getenv("RENDER_EXTERNAL_URL")
     if not public_url:
         url_file = ROOT_DIR / ".public_url"
         if url_file.exists():

@@ -1093,9 +1093,9 @@ button {
 }
 
 .qr-box {
-  width: 210px;
-  height: 210px;
-  margin: 0 auto 18px;
+  width: 220px;
+  height: 220px;
+  margin: 0 auto 4px;
   background: #ffffff;
   border: 1.5px solid #e2e8f0;
   border-radius: 14px;

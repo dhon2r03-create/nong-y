@@ -387,7 +387,7 @@
       const res = await fetch('/api/network-info');
       if (res.ok) {
         const data = await res.json();
-        lanUrlInput.value = data.lan_url;
+        if (lanUrlInput) lanUrlInput.value = data.lan_url;
         if (data.qr_svg && data.qr_svg.trim().startsWith('<svg')) {
           qrContainer.innerHTML = data.qr_svg;
         } else if (data.lan_url) {
@@ -405,7 +405,7 @@
       }
     } catch (e) {
       console.warn('Lỗi lấy network-info', e);
-      if (lanUrlInput.value && lanUrlInput.value.startsWith('http')) {
+      if (lanUrlInput && lanUrlInput.value && lanUrlInput.value.startsWith('http')) {
         const encoded = encodeURIComponent(lanUrlInput.value);
         qrContainer.innerHTML = `<img src="/api/qr-code?url=${encoded}" alt="Mã QR" style="width:100%;height:100%;object-fit:contain;" onerror="this.onerror=null;this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encoded}'" />`;
       }
@@ -433,7 +433,7 @@
     });
   }
 
-  if (copyUrlBtn) {
+  if (copyUrlBtn && lanUrlInput) {
     copyUrlBtn.addEventListener('click', () => {
       lanUrlInput.select();
       navigator.clipboard.writeText(lanUrlInput.value);
