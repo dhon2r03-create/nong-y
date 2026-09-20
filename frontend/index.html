@@ -20,7 +20,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=52" />
+  <link rel="stylesheet" href="/static/style.css?v=53" />
 </head>
 <body>
 
@@ -168,21 +168,60 @@
   <div class="workspace-backdrop" id="diagnoseWorkspaceBackdrop"></div>
 
   <div class="workspace-dialog">
-      <div class="workspace-header">
-        <div class="workspace-title-group">
-          <div class="workspace-title-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <div>
-            <h3 class="workspace-title" id="workspaceModalTitle">Phòng Khám Bác Sĩ Cây Trồng</h3>
-            <span class="workspace-subtitle" id="workspaceModalSubtitle">Chẩn đoán mầm bệnh & kê đơn điều trị tức thì</span>
-          </div>
+    <div class="workspace-header">
+      <div class="workspace-title-group">
+        <div class="workspace-title-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
-        <button type="button" class="btn-workspace-close" id="closeDiagnoseWorkspaceBtn" title="Đóng và quay về trang chính">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          <span>Đóng lại</span>
-        </button>
+        <div>
+          <div class="workspace-header-top">
+            <h3 class="workspace-title" id="workspaceModalTitle">Phòng Khám Bác Sĩ Cây Trồng AI</h3>
+            <div class="workspace-model-pill">
+              <span class="model-live-dot"></span>
+              <span>EfficientNet-B4 + Grad-CAM</span>
+            </div>
+          </div>
+          <span class="workspace-subtitle" id="workspaceModalSubtitle">Chẩn đoán mầm bệnh & kê đơn điều trị chuẩn xác tức thì</span>
+        </div>
       </div>
+      <button type="button" class="btn-workspace-close" id="closeDiagnoseWorkspaceBtn" title="Đóng và quay về trang chính">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <span>Đóng lại</span>
+      </button>
+    </div>
+
+    <!-- AI WORKFLOW STEPPER -->
+    <div class="workspace-stepper" id="workspaceStepper">
+      <div class="stepper-step active" id="modalStep1">
+        <div class="stepper-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <div class="stepper-meta">
+          <span class="stepper-sub">Bước 1</span>
+          <span class="stepper-name">Thu thập ảnh lá</span>
+        </div>
+      </div>
+      <div class="stepper-line" id="stepperLine1"></div>
+      <div class="stepper-step" id="modalStep2">
+        <div class="stepper-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <div class="stepper-meta">
+          <span class="stepper-sub">Bước 2</span>
+          <span class="stepper-name">AI Quét & Phân tích</span>
+        </div>
+      </div>
+      <div class="stepper-line" id="stepperLine2"></div>
+      <div class="stepper-step" id="modalStep3">
+        <div class="stepper-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <div class="stepper-meta">
+          <span class="stepper-sub">Bước 3</span>
+          <span class="stepper-name">Kết quả & Phác đồ</span>
+        </div>
+      </div>
+    </div>
 
     <main class="main-content">
       <!-- VÙNG CHỤP ẢNH & UPLOAD CHÍNH -->
@@ -194,28 +233,47 @@
             <div class="section-card-step">1</div>
             <div class="section-card-titles">
               <h4 class="section-card-title" id="imageSourceSectionTitle">Nguồn hình ảnh lá cây</h4>
-              <p class="section-card-desc" id="imageSourceSectionDesc">Chụp trực tiếp bằng camera hoặc chọn tệp ảnh sẵn có từ thiết bị</p>
+              <p class="section-card-desc" id="imageSourceSectionDesc">Chụp trực tiếp qua camera HD hoặc tải ảnh sẵn có từ thiết bị</p>
             </div>
+          </div>
+
+          <!-- In-Modal Segmented Source Switch Tabs -->
+          <div class="modal-source-tabs">
+            <button type="button" class="btn-source-tab active" id="modalSwitchCameraBtn">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span>Camera Trực Tiếp</span>
+            </button>
+            <button type="button" class="btn-source-tab" id="modalSwitchUploadBtn">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>Tải Ảnh Từ Máy</span>
+            </button>
           </div>
 
           <!-- 1. LIVE CAMERA PANEL -->
           <div class="view-panel" id="viewCamera">
             <!-- Standby: Khi chua bat camera -->
             <div class="camera-standby-box" id="cameraStandbyBox">
-              <div class="camera-standby-icon">
-                <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <div class="camera-standby-glow-badge">
+                <span class="glow-dot"></span>
+                <span>AI VISION SCANNER v2.5</span>
               </div>
-              <h3 class="standby-title">Chụp ảnh lá cây từ Camera</h3>
-              <p class="standby-desc">Bật camera trực tiếp hoặc chụp ảnh lá cây qua thiết bị để chẩn đoán mầm bệnh.</p>
+              <div class="camera-standby-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.8">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+              </div>
+              <h3 class="standby-title">Khám Bệnh Cây Bằng Camera</h3>
+              <p class="standby-desc">Bật camera trực tiếp hoặc chụp ảnh lá cây qua thiết bị để mô hình AI quét và phân tích.</p>
               
-              <div class="camera-error-box" id="cameraErrorBox" style="display:none; margin: 12px auto; max-width: 520px; padding: 10px 14px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; color: #b91c1c; font-size: 13px; text-align: left; line-height: 1.5;"></div>
+              <div class="camera-error-box" id="cameraErrorBox" style="display:none;"></div>
 
-              <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 14px;">
+              <div class="camera-standby-actions">
                 <button type="button" class="btn btn-hero-camera" id="startLiveCameraBtn">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/></svg>
-                  Bật Camera Ngay
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/></svg>
+                  Bật Live Camera
                 </button>
-                <button type="button" class="btn btn-gallery-trigger" id="btnTriggerNativeCam" style="margin: 0; cursor: pointer;">
+                <button type="button" class="btn btn-gallery-trigger" id="btnTriggerNativeCam">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                   Chụp từ thiết bị
                 </button>
@@ -231,22 +289,30 @@
                 <video id="cameraVideo" autoplay playsinline muted></video>
                 <canvas id="cameraCanvas" style="display:none;"></canvas>
 
-                <!-- Frame Overlay -->
+                <!-- High-Tech Frame Overlay -->
                 <div class="stream-overlay">
                   <div class="live-tag">
-                    <span class="live-dot"></span> LIVE
+                    <span class="live-dot"></span> LIVE SCAN
+                  </div>
+                  <div class="live-ai-chip">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>AI Model Active</span>
                   </div>
                   <div class="corner-bracket top-left"></div>
                   <div class="corner-bracket top-right"></div>
                   <div class="corner-bracket bottom-left"></div>
                   <div class="corner-bracket bottom-right"></div>
+                  
+                  <!-- Animated Scanner Laser -->
+                  <div class="stream-scan-laser"></div>
+                  
                   <div class="leaf-target-guide">
-                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.4">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(52,211,153,0.55)" stroke-width="1.5">
                       <path d="M12 2C6.5 2 2 6.5 2 12c0 5 4 9 9 10 5.5 0 10-4.5 10-10C21 6.5 16.5 2 12 2z"/>
                       <path d="M12 2c0 10-4 15-10 15"/>
                     </svg>
                   </div>
-                  <div class="stream-guide-badge">Căn chỉnh lá cây vào khung và bấm nút chụp bên dưới</div>
+                  <div class="stream-guide-badge">🎯 Căn chỉnh lá cây vào khung và bấm chụp bên dưới</div>
                 </div>
               </div>
 
@@ -259,7 +325,7 @@
 
                 <button type="button" class="btn-live-capture" id="takeSnapshotBtn">
                   <div class="shutter-circle"></div>
-                  <span>CHỤP ẢNH NÀY</span>
+                  <span>CHỤP ẢNH LÁ CÂY</span>
                 </button>
 
                 <button type="button" class="btn-live-util" id="stopLiveCameraBtn" title="Tắt camera">
@@ -278,11 +344,11 @@
               </div>
               <div class="dropzone-text">
                 <span class="dropzone-prompt">Kéo thả ảnh lá cây vào đây</span>
-                <span class="dropzone-sub">hoặc bấm nút bên dưới để chọn ảnh từ máy</span>
+                <span class="dropzone-sub">Hỗ trợ nhận diện 14 loài cây & 38 bệnh hại thông dụng</span>
               </div>
               <label class="btn btn-gallery-trigger" for="galleryInput">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                Chọn ảnh từ thư viện
+                Chọn ảnh từ thư viện thiết bị
               </label>
             </div>
           </div>
@@ -293,8 +359,8 @@
           <div class="section-card-header">
             <div class="section-card-step">2</div>
             <div class="section-card-titles">
-              <h4 class="section-card-title">Xem trước ảnh & Khám bệnh</h4>
-              <p class="section-card-desc">Kiểm tra ảnh lá cây trước khi gửi cho bác sĩ AI chẩn đoán</p>
+              <h4 class="section-card-title">Xem trước ảnh & Phân tích mầm bệnh</h4>
+              <p class="section-card-desc">Kiểm tra độ rõ nét của lá cây trước khi gửi cho mô hình AI chẩn đoán</p>
             </div>
           </div>
 
@@ -302,7 +368,10 @@
           <div class="view-panel" id="viewPreview">
             <div class="preview-card-wrap">
               <div class="preview-header-bar">
-                <span class="preview-filename-badge" id="previewFileName">anh-chup.jpg</span>
+                <div class="preview-file-meta">
+                  <span class="preview-file-icon">📸</span>
+                  <span class="preview-filename-badge" id="previewFileName">anh-chup.jpg</span>
+                </div>
                 <button type="button" class="btn-retake" id="retakeBtn">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
                   Chụp lại / Đổi ảnh khác
@@ -310,6 +379,10 @@
               </div>
               <div class="preview-image-box">
                 <img id="previewImg" alt="Ảnh lá cây xem trước" />
+                <div class="preview-scan-corners">
+                  <span class="psc tl"></span><span class="psc tr"></span>
+                  <span class="psc bl"></span><span class="psc br"></span>
+                </div>
               </div>
             </div>
           </div>
@@ -321,8 +394,8 @@
           <div class="submit-action-bar">
             <button class="btn btn-submit-analyze" id="submitBtn" disabled>
               <span class="btn-spinner" id="btnSpinner" style="display:none;"></span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-              <span id="submitBtnText">Phân tích bệnh cây trồng ngay</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+              <span id="submitBtnText">Phân tích bệnh với mô hình AI ngay</span>
             </button>
           </div>
         </div>
@@ -653,6 +726,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=52"></script>
+<script src="/static/app.js?v=53"></script>
 </body>
 </html>

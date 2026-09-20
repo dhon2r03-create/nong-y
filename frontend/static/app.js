@@ -413,6 +413,8 @@
       if (sectionImageSource) sectionImageSource.style.display = 'none';
       if (sectionPreviewDiagnose) sectionPreviewDiagnose.style.display = 'block';
 
+      setModalStep(2);
+
       // Tự động mở Workspace Modal chuyển thẳng vào màn hình Xem trước ảnh & Chẩn đoán
       const workspaceModal = document.getElementById('diagnoseWorkspaceModal');
       if (workspaceModal && (workspaceModal.style.display === 'none' || !workspaceModal.style.display)) {
@@ -440,6 +442,7 @@
     if (sectionPreviewDiagnose) sectionPreviewDiagnose.style.display = 'none';
     if (sectionImageSource) sectionImageSource.style.display = 'block';
 
+    setModalStep(1);
     hideAllResults();
     hideStatus();
 
@@ -582,6 +585,7 @@
 
       // TRƯỜNG HỢP 2: CÂY TRỒNG HỢP LỆ
       lastDiagnosisData = data;
+      setModalStep(3);
       resultDisease.textContent = data.disease_name;
       resultPlant.textContent = 'Cây: ' + data.plant_name;
       resultConfidence.textContent = data.confidence + '%';
@@ -1256,42 +1260,9 @@
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
     window.innerWidth <= 768;
 
-  // 1. Tương tác ảnh 3D mượt mà, không gây lag (100% GPU via requestAnimationFrame)
-  if (card3d && stageWrapper && !isLowEndOrMobile) {
-    let targetRotX = 0;
-    let targetRotY = 0;
-    let isHovering = false;
-    let rAfTilt = null;
-
-    const renderCardTilt = () => {
-      if (isHovering) {
-        card3d.style.transform = `perspective(1000px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(1.015, 1.015, 1.015)`;
-      } else {
-        card3d.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-      }
-      rAfTilt = null;
-    };
-
-    stageWrapper.addEventListener('pointermove', (e) => {
-      const rect = stageWrapper.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width - 0.5;
-      const py = (e.clientY - rect.top) / rect.height - 0.5;
-      targetRotX = -py * 8; // Max 4 deg tilt
-      targetRotY = px * 8;
-      isHovering = true;
-      if (!rAfTilt) {
-        rAfTilt = requestAnimationFrame(renderCardTilt);
-      }
-    }, { passive: true });
-
-    stageWrapper.addEventListener('pointerleave', () => {
-      isHovering = false;
-      targetRotX = 0;
-      targetRotY = 0;
-      if (!rAfTilt) {
-        rAfTilt = requestAnimationFrame(renderCardTilt);
-      }
-    }, { passive: true });
+  // 1. Tắt hoàn toàn tương tác nghiêng/lắc ảnh để ảnh hiển thị ổn định, sắc nét & không bị dịch chuyển
+  if (card3d) {
+    card3d.style.transform = 'none';
   }
 
   // 2. Bioluminescent 3D Floating Particles (Tối ưu cực đại, dừng hẳn khi mở modal)
@@ -1408,12 +1379,71 @@
   const heroLaunchBtn = document.getElementById('heroLaunchDiagnoseBtn');
   const navDiagnoseBtn = document.getElementById('navDiagnoseBtn');
 
+  const modalSwitchCameraBtn = document.getElementById('modalSwitchCameraBtn');
+  const modalSwitchUploadBtn = document.getElementById('modalSwitchUploadBtn');
+
+  function setModalStep(stepNumber) {
+    const step1 = document.getElementById('modalStep1');
+    const step2 = document.getElementById('modalStep2');
+    const step3 = document.getElementById('modalStep3');
+    const line1 = document.getElementById('stepperLine1');
+    const line2 = document.getElementById('stepperLine2');
+
+    if (step1) {
+      step1.classList.toggle('active', stepNumber === 1);
+      step1.classList.toggle('done', stepNumber > 1);
+    }
+    if (step2) {
+      step2.classList.toggle('active', stepNumber === 2);
+      step2.classList.toggle('done', stepNumber > 2);
+    }
+    if (step3) {
+      step3.classList.toggle('active', stepNumber === 3);
+      step3.classList.toggle('done', stepNumber > 3);
+    }
+    if (line1) line1.classList.toggle('filled', stepNumber >= 2);
+    if (line2) line2.classList.toggle('filled', stepNumber >= 3);
+  }
+
+  if (modalSwitchCameraBtn) {
+    modalSwitchCameraBtn.addEventListener('click', () => {
+      activeTab = 'camera';
+      modalSwitchCameraBtn.classList.add('active');
+      if (modalSwitchUploadBtn) modalSwitchUploadBtn.classList.remove('active');
+      if (viewUpload) viewUpload.style.display = 'none';
+      if (viewCamera) viewCamera.style.display = 'block';
+      const imageSourceSectionTitle = document.getElementById('imageSourceSectionTitle');
+      const imageSourceSectionDesc = document.getElementById('imageSourceSectionDesc');
+      if (imageSourceSectionTitle) imageSourceSectionTitle.textContent = 'Chụp ảnh lá cây trực tiếp qua camera';
+      if (imageSourceSectionDesc) imageSourceSectionDesc.textContent = 'Căn chỉnh lá cây vào tâm khung ngắm và bấm nút chụp';
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        startCamera(currentFacingMode);
+      }
+    });
+  }
+
+  if (modalSwitchUploadBtn) {
+    modalSwitchUploadBtn.addEventListener('click', () => {
+      activeTab = 'upload';
+      modalSwitchUploadBtn.classList.add('active');
+      if (modalSwitchCameraBtn) modalSwitchCameraBtn.classList.remove('active');
+      stopCamera();
+      if (viewCamera) viewCamera.style.display = 'none';
+      if (viewUpload) viewUpload.style.display = 'block';
+      const imageSourceSectionTitle = document.getElementById('imageSourceSectionTitle');
+      const imageSourceSectionDesc = document.getElementById('imageSourceSectionDesc');
+      if (imageSourceSectionTitle) imageSourceSectionTitle.textContent = 'Tải ảnh lá cây từ thiết bị';
+      if (imageSourceSectionDesc) imageSourceSectionDesc.textContent = 'Kéo thả ảnh hoặc bấm chọn tệp ảnh lá cây từ máy';
+    });
+  }
+
   const openDiagnoseWorkspace = (targetMode = 'camera') => {
     if (typeof window.stopBgAnimForModal === 'function') {
       window.stopBgAnimForModal();
     }
 
     activeTab = targetMode;
+    setModalStep(1);
 
     const modalTitle = document.getElementById('workspaceModalTitle');
     const modalSubtitle = document.getElementById('workspaceModalSubtitle');
@@ -1427,14 +1457,17 @@
     if (sectionPreviewDiagnose) sectionPreviewDiagnose.style.display = 'none';
 
     if (targetMode === 'camera') {
-      if (modalTitle) modalTitle.textContent = 'Phòng Khám Bác Sĩ Cây Trồng';
-      if (modalSubtitle) modalSubtitle.textContent = 'Chẩn đoán mầm bệnh & kê đơn điều trị tức thì';
-      if (sectionTitle) sectionTitle.textContent = 'Chụp ảnh lá cây trực tiếp';
-      if (sectionDesc) sectionDesc.textContent = 'Căn chỉnh lá cây vào khung ngắm và bấm nút chụp ảnh bên dưới';
+      if (modalTitle) modalTitle.textContent = 'Phòng Khám Bác Sĩ Cây Trồng AI';
+      if (modalSubtitle) modalSubtitle.textContent = 'Chẩn đoán mầm bệnh & kê đơn điều trị chuẩn xác tức thì';
+      if (sectionTitle) sectionTitle.textContent = 'Chụp ảnh lá cây trực tiếp qua camera';
+      if (sectionDesc) sectionDesc.textContent = 'Căn chỉnh lá cây vào tâm khung ngắm và bấm nút chụp ảnh bên dưới';
       if (retakeBtn) retakeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg> 📸 Chụp lại ảnh khác`;
 
       if (viewCamera) viewCamera.style.display = 'block';
       if (viewUpload) viewUpload.style.display = 'none';
+
+      if (modalSwitchCameraBtn) modalSwitchCameraBtn.classList.add('active');
+      if (modalSwitchUploadBtn) modalSwitchUploadBtn.classList.remove('active');
 
       // Khởi động Camera trực tiếp
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -1444,7 +1477,7 @@
       if (tabLiveCameraBtn) tabLiveCameraBtn.classList.add('active');
       if (tabUploadBtn) tabUploadBtn.classList.remove('active');
     } else if (targetMode === 'upload') {
-      if (modalTitle) modalTitle.textContent = 'Khám Bệnh Tải Ảnh Lá Cây';
+      if (modalTitle) modalTitle.textContent = 'Khám Bệnh Tải Ảnh Lá Cây AI';
       if (modalSubtitle) modalSubtitle.textContent = 'Tải ảnh lá cây từ thiết bị & chẩn đoán bệnh tức thì';
       if (sectionTitle) sectionTitle.textContent = 'Tải ảnh lá cây từ thiết bị';
       if (sectionDesc) sectionDesc.textContent = 'Kéo thả ảnh hoặc chọn ảnh từ thư viện thiết bị';
@@ -1453,6 +1486,9 @@
       stopCamera();
       if (viewCamera) viewCamera.style.display = 'none';
       if (viewUpload) viewUpload.style.display = 'block';
+
+      if (modalSwitchUploadBtn) modalSwitchUploadBtn.classList.add('active');
+      if (modalSwitchCameraBtn) modalSwitchCameraBtn.classList.remove('active');
 
       if (tabUploadBtn) tabUploadBtn.classList.add('active');
       if (tabLiveCameraBtn) tabLiveCameraBtn.classList.remove('active');
@@ -1528,6 +1564,7 @@
       if (typeof window.triggerParticleWarp === 'function') {
         window.triggerParticleWarp();
       }
+      openDiagnoseWorkspace('upload');
       const galleryInput = document.getElementById('galleryInput');
       if (galleryInput) {
         galleryInput.click();
