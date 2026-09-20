@@ -63,14 +63,6 @@
   const treatmentChemical = document.getElementById('treatmentChemical');
   const treatmentPrevention = document.getElementById('treatmentPrevention');
 
-  // Phone Connect Modal Elements
-  const openPhoneModalBtn = document.getElementById('openPhoneModalBtn');
-  const phoneModal = document.getElementById('phoneModal');
-  const closePhoneModalBtn = document.getElementById('closePhoneModalBtn');
-  const qrContainer = document.getElementById('qrContainer');
-  const lanUrlInput = document.getElementById('lanUrlInput');
-  const copyUrlBtn = document.getElementById('copyUrlBtn');
-
   // Prescription Elements
   const prescriptionActionBar = document.getElementById('prescriptionActionBar');
   const btnOpenPrescription = document.getElementById('btnOpenPrescription');
@@ -436,70 +428,7 @@
     }
   });
 
-  // 6. Phone Connect Modal
-  async function loadNetworkInfo() {
-    try {
-      qrContainer.innerHTML = '<div class="qr-loading">Đang tạo mã QR...</div>';
-      const res = await fetch('/api/network-info');
-      if (res.ok) {
-        const data = await res.json();
-        if (lanUrlInput) lanUrlInput.value = data.lan_url;
-        if (data.qr_svg && data.qr_svg.trim().startsWith('<svg')) {
-          qrContainer.innerHTML = data.qr_svg;
-        } else if (data.lan_url) {
-          const encoded = encodeURIComponent(data.lan_url);
-          qrContainer.innerHTML = `<img src="/api/qr-code?url=${encoded}" alt="Mã QR" style="width:100%;height:100%;object-fit:contain;" onerror="this.onerror=null;this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encoded}'" />`;
-        } else {
-          qrContainer.innerHTML = '<div class="qr-loading">Không thể nạp mã QR. Vui lòng thử lại.</div>';
-        }
 
-        const networkTipBadge = document.getElementById('networkTipBadge');
-        if (data.is_public && networkTipBadge) {
-          networkTipBadge.className = 'wifi-tip-badge public-badge';
-          networkTipBadge.innerHTML = '🌐 <span>Đường link <strong>Internet công khai</strong>: Bất kỳ ai cũng có thể truy cập qua 4G, 5G hoặc Wi-Fi khác!</span>';
-        }
-      }
-    } catch (e) {
-      console.warn('Lỗi lấy network-info', e);
-      if (lanUrlInput && lanUrlInput.value && lanUrlInput.value.startsWith('http')) {
-        const encoded = encodeURIComponent(lanUrlInput.value);
-        qrContainer.innerHTML = `<img src="/api/qr-code?url=${encoded}" alt="Mã QR" style="width:100%;height:100%;object-fit:contain;" onerror="this.onerror=null;this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encoded}'" />`;
-      }
-    }
-  }
-
-  if (openPhoneModalBtn) {
-    openPhoneModalBtn.addEventListener('click', () => {
-      phoneModal.style.display = 'flex';
-      loadNetworkInfo();
-    });
-  }
-
-  if (closePhoneModalBtn) {
-    closePhoneModalBtn.addEventListener('click', () => {
-      phoneModal.style.display = 'none';
-    });
-  }
-
-  if (phoneModal) {
-    phoneModal.addEventListener('click', (e) => {
-      if (e.target === phoneModal) {
-        phoneModal.style.display = 'none';
-      }
-    });
-  }
-
-  if (copyUrlBtn && lanUrlInput) {
-    copyUrlBtn.addEventListener('click', () => {
-      lanUrlInput.select();
-      navigator.clipboard.writeText(lanUrlInput.value);
-      const originalText = copyUrlBtn.textContent;
-      copyUrlBtn.textContent = 'Đã chép!';
-      setTimeout(() => {
-        copyUrlBtn.textContent = originalText;
-      }, 2000);
-    });
-  }
 
   // 6.5 Heatmap toggle events
   if (viewOriginalImgBtn) {
@@ -1209,16 +1138,11 @@
     });
   }
 
-  // Kết nối Reach Out với modal mở trên điện thoại (QR code)
+  // Kết nối Reach Out với modal chẩn đoán
   const handleReachOutClick = (e) => {
     if (e) e.preventDefault();
     closeAtelierMobileMenu();
-    const openPhoneModalBtn = document.getElementById('openPhoneModalBtn');
-    if (openPhoneModalBtn) {
-      openPhoneModalBtn.click();
-    } else {
-      window.location.href = '#diagnoseCard';
-    }
+    openDiagnoseWorkspace('camera');
   };
 
   if (atelierReachOutBtn) atelierReachOutBtn.addEventListener('click', handleReachOutClick);
@@ -1533,10 +1457,7 @@
   if (tabPhoneBtn) {
     tabPhoneBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      const openPhoneModalBtn = document.getElementById('openPhoneModalBtn');
-      if (openPhoneModalBtn) {
-        openPhoneModalBtn.click();
-      }
+      openDiagnoseWorkspace('camera');
     });
   }
 

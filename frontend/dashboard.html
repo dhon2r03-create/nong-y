@@ -39,10 +39,6 @@
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         <span>Phòng khám</span>
       </a>
-      <button type="button" class="btn-top-util btn-top-phone" id="openPhoneModalBtn" title="Quét mã QR mở trên điện thoại">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-        <span>Mở trên điện thoại</span>
-      </button>
     </div>
   </div>
 </header>
@@ -196,26 +192,6 @@
   </div>
 </main>
 
-<!-- MODAL: MO TREN DIEN THOAI -->
-<div class="modal-backdrop" id="phoneModal" style="display:none;">
-  <div class="phone-modal-card">
-    <div class="phone-modal-header">
-      <div class="phone-header-title">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-        Dùng ứng dụng trên điện thoại
-      </div>
-      <button type="button" class="btn-modal-close" id="closePhoneModalBtn">✕</button>
-    </div>
-
-    <div class="phone-modal-body">
-      <p class="phone-modal-desc">Quét mã QR bằng điện thoại để xem trực tiếp báo cáo và chẩn đoán bệnh cây.</p>
-      <div class="qr-box" id="qrContainer">
-        <div class="qr-loading">Đang nạp mã QR...</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script src="/static/dashboard.js?v=35"></script>
+<script src="/static/dashboard.js?v=36"></script>
 </body>
 </html>

@@ -20,7 +20,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=42" />
+  <link rel="stylesheet" href="/static/style.css?v=43" />
 </head>
 <body>
 
@@ -62,10 +62,6 @@
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
           <span>Thống kê</span>
         </a>
-        <button type="button" class="btn-top-util btn-top-phone" id="openPhoneModalBtn" title="Quét mã QR mở trên điện thoại">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-          <span>Mở trên điện thoại</span>
-        </button>
       </div>
     </div>
   </header>
@@ -544,26 +540,6 @@
   </div>
 </div>
 
-<!-- MODAL: MO TREN DIEN THOAI (QR CODE & LAN IP) -->
-<div class="modal-backdrop" id="phoneModal" style="display:none;">
-  <div class="phone-modal-card">
-    <div class="phone-modal-header">
-      <div class="phone-header-title">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-        Dùng ứng dụng trên điện thoại
-      </div>
-      <button type="button" class="btn-modal-close" id="closePhoneModalBtn">✕</button>
-    </div>
-
-    <div class="phone-modal-body">
-      <p class="phone-modal-desc">Sử dụng camera điện thoại để chẩn đoán cây trồng trực tiếp tại ruộng vườn.</p>
-
-      <div class="qr-box" id="qrContainer">
-        <div class="qr-loading">Đang nạp mã QR...</div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- MODAL: TOA THUOC VA PHIEU CHAN DOAN NONG NGHIEP -->
 <div class="modal-backdrop" id="prescriptionModal" style="display:none;">
@@ -691,6 +667,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=42"></script>
+<script src="/static/app.js?v=43"></script>
 </body>
 </html>
