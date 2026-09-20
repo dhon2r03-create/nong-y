@@ -1198,12 +1198,34 @@
   const tabPhoneBtn = document.getElementById('tabPhoneBtn');
   const scrollIndicator = document.getElementById('doctorScrollIndicator');
 
-  // 1. 3D Parallax Tilt Effect with Mouse / Touch
+  // 1. 3D Parallax Tilt Effect with Mouse / Touch (Optimized On-Demand Render)
   if (card3d && heroSection) {
     let currentX = 0;
     let currentY = 0;
     let targetX = 0;
     let targetY = 0;
+    let isTiltLoopRunning = false;
+
+    const animateTilt = () => {
+      currentX += (targetX - currentX) * 0.15;
+      currentY += (targetY - currentY) * 0.15;
+
+      card3d.style.transform = `translate3d(0,0,0) rotateX(${currentX.toFixed(2)}deg) rotateY(${currentY.toFixed(2)}deg)`;
+
+      if (Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05) {
+        requestAnimationFrame(animateTilt);
+      } else {
+        isTiltLoopRunning = false;
+        card3d.style.transform = `translate3d(0,0,0) rotateX(${targetX.toFixed(1)}deg) rotateY(${targetY.toFixed(1)}deg)`;
+      }
+    };
+
+    const requestTiltUpdate = () => {
+      if (!isTiltLoopRunning) {
+        isTiltLoopRunning = true;
+        requestAnimationFrame(animateTilt);
+      }
+    };
 
     const onMouseMove = (e) => {
       const rect = card3d.getBoundingClientRect();
@@ -1213,14 +1235,16 @@
       const normX = (e.clientX - cardCenterX) / (window.innerWidth / 2);
       const normY = (e.clientY - cardCenterY) / (window.innerHeight / 2);
 
-      targetY = Math.max(-12, Math.min(12, normX * 14));
-      targetX = Math.max(-12, Math.min(12, -normY * 14));
+      targetY = Math.max(-10, Math.min(10, normX * 12));
+      targetX = Math.max(-10, Math.min(10, -normY * 12));
+      requestTiltUpdate();
     };
 
-    heroSection.addEventListener('mousemove', onMouseMove);
+    heroSection.addEventListener('mousemove', onMouseMove, { passive: true });
     heroSection.addEventListener('mouseleave', () => {
       targetX = 0;
       targetY = 0;
+      requestTiltUpdate();
     });
 
     // Touch support for mobile parallax
@@ -1230,37 +1254,20 @@
         const rect = card3d.getBoundingClientRect();
         const normX = (touch.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
         const normY = (touch.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
-        targetY = Math.max(-8, Math.min(8, normX * 10));
-        targetX = Math.max(-8, Math.min(8, -normY * 10));
+        targetY = Math.max(-7, Math.min(7, normX * 8));
+        targetX = Math.max(-7, Math.min(7, -normY * 8));
+        requestTiltUpdate();
       }
     }, { passive: true });
 
     heroSection.addEventListener('touchend', () => {
       targetX = 0;
       targetY = 0;
+      requestTiltUpdate();
     });
-
-    // Gyroscope tilt on supporting mobile devices
-    if (window.DeviceOrientationEvent) {
-      window.addEventListener('deviceorientation', (e) => {
-        if (e.gamma !== null && e.beta !== null) {
-          targetY = Math.max(-10, Math.min(10, e.gamma / 3));
-          targetX = Math.max(-10, Math.min(10, (e.beta - 45) / 3));
-        }
-      }, { passive: true });
-    }
-
-    const animateTilt = () => {
-      currentX += (targetX - currentX) * 0.1;
-      currentY += (targetY - currentY) * 0.1;
-
-      card3d.style.transform = `rotateX(${currentX.toFixed(2)}deg) rotateY(${currentY.toFixed(2)}deg)`;
-      requestAnimationFrame(animateTilt);
-    };
-    animateTilt();
   }
 
-  // 2. Bioluminescent 3D Floating Particles Engine
+  // 2. Bioluminescent 3D Floating Particles Engine (Ultra-Lightweight, No shadowBlur)
   if (canvas) {
     const ctx = canvas.getContext('2d');
     let width = (canvas.width = canvas.offsetWidth || window.innerWidth);
@@ -1270,39 +1277,56 @@
       if (!canvas) return;
       width = canvas.width = canvas.offsetWidth || window.innerWidth;
       height = canvas.height = canvas.offsetHeight || 600;
-    });
+    }, { passive: true });
 
     const particles = [];
-    const particleCount = 45;
+    const particleCount = 18; // 18 particles run at smooth 60-120fps
 
     for (let i = 0; i < particleCount; i++) {
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        radius: Math.random() * 2.5 + 1,
-        vx: (Math.random() - 0.5) * 0.6,
-        vy: -Math.random() * 0.8 - 0.3,
-        alpha: Math.random() * 0.6 + 0.2,
-        pulseSpeed: Math.random() * 0.03 + 0.01,
-        color: Math.random() > 0.3 ? 'rgba(52, 211, 153,' : 'rgba(167, 243, 208,'
+        radius: Math.random() * 2 + 1.2,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: -Math.random() * 0.6 - 0.2,
+        alpha: Math.random() * 0.5 + 0.3,
+        pulseSpeed: Math.random() * 0.02 + 0.01,
+        color: Math.random() > 0.3 ? '52, 211, 153' : '167, 243, 208'
       });
+    }
+
+    let isHeroInView = true;
+    if ('IntersectionObserver' in window && heroSection) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          isHeroInView = entry.isIntersecting;
+        });
+      }, { threshold: 0.05 });
+      observer.observe(heroSection);
     }
 
     let warpSpeed = 1;
     window.triggerParticleWarp = () => {
-      warpSpeed = 6;
-      setTimeout(() => { warpSpeed = 1; }, 700);
+      warpSpeed = 4;
+      setTimeout(() => { warpSpeed = 1; }, 500);
     };
 
     const renderParticles = () => {
+      // Pause animation if hero not in viewport to save 100% CPU/battery
+      if (!isHeroInView) {
+        requestAnimationFrame(renderParticles);
+        return;
+      }
+
       ctx.clearRect(0, 0, width, height);
 
-      particles.forEach((p) => {
+      for (let i = 0; i < particleCount; i++) {
+        const p = particles[i];
         p.y += p.vy * warpSpeed;
         p.x += p.vx;
-        p.alpha += Math.sin(Date.now() * p.pulseSpeed * 0.001) * 0.008;
-        if (p.alpha > 0.85) p.alpha = 0.85;
-        if (p.alpha < 0.15) p.alpha = 0.15;
+        p.alpha += Math.sin(Date.now() * p.pulseSpeed * 0.001) * 0.006;
+        if (p.alpha > 0.8) p.alpha = 0.8;
+        if (p.alpha < 0.2) p.alpha = 0.2;
 
         if (p.y < -10) {
           p.y = height + 10;
@@ -1311,15 +1335,18 @@
         if (p.x < -10) p.x = width + 10;
         if (p.x > width + 10) p.x = -10;
 
-        ctx.save();
+        // Draw soft concentric glow (100x faster than canvas shadowBlur)
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius * (warpSpeed > 1 ? 1.5 : 1), 0, Math.PI * 2);
-        ctx.fillStyle = `${p.color} ${p.alpha})`;
-        ctx.shadowColor = '#34d399';
-        ctx.shadowBlur = warpSpeed > 1 ? 14 : 6;
+        ctx.arc(p.x, p.y, p.radius * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.color}, ${(p.alpha * 0.2).toFixed(2)})`;
         ctx.fill();
-        ctx.restore();
-      });
+
+        // Draw particle core
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.color}, ${p.alpha.toFixed(2)})`;
+        ctx.fill();
+      }
 
       requestAnimationFrame(renderParticles);
     };
