@@ -1248,57 +1248,9 @@
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
     window.innerWidth <= 768;
 
-  // 1. 3D Parallax Tilt (Chỉ chạy trên Desktop cấu hình tốt, tắt 100% trên Mobile để lướt siêu mượt)
-  if (card3d && heroSection && !isLowEndOrMobile) {
-    let currentX = 0;
-    let currentY = 0;
-    let targetX = 0;
-    let targetY = 0;
-    let isTiltLoopRunning = false;
-
-    const animateTilt = () => {
-      currentX += (targetX - currentX) * 0.12;
-      currentY += (targetY - currentY) * 0.12;
-
-      card3d.style.transform = `translate3d(0,0,0) rotateX(${currentX.toFixed(2)}deg) rotateY(${currentY.toFixed(2)}deg)`;
-
-      if (Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05) {
-        requestAnimationFrame(animateTilt);
-      } else {
-        isTiltLoopRunning = false;
-        card3d.style.transform = `translate3d(0,0,0) rotateX(${targetX.toFixed(1)}deg) rotateY(${targetY.toFixed(1)}deg)`;
-      }
-    };
-
-    const requestTiltUpdate = () => {
-      if (!isTiltLoopRunning) {
-        isTiltLoopRunning = true;
-        requestAnimationFrame(animateTilt);
-      }
-    };
-
-    const onMouseMove = (e) => {
-      const rect = card3d.getBoundingClientRect();
-      const cardCenterX = rect.left + rect.width / 2;
-      const cardCenterY = rect.top + rect.height / 2;
-
-      const normX = (e.clientX - cardCenterX) / (window.innerWidth / 2);
-      const normY = (e.clientY - cardCenterY) / (window.innerHeight / 2);
-
-      targetY = Math.max(-8, Math.min(8, normX * 8));
-      targetX = Math.max(-8, Math.min(8, -normY * 8));
-      requestTiltUpdate();
-    };
-
-    heroSection.addEventListener('mousemove', onMouseMove, { passive: true });
-    heroSection.addEventListener('mouseleave', () => {
-      targetX = 0;
-      targetY = 0;
-      requestTiltUpdate();
-    });
-  } else if (card3d) {
-    // Với máy yếu / mobile: Giữ tĩnh 100% để 0% lag
-    card3d.style.transform = 'translate3d(0,0,0)';
+  // 1. Giữ thẻ ảnh bác sĩ 3D tĩnh 100% (Đã tắt hiệu ứng di chuột nghiêng 3D để chống lag hoàn toàn)
+  if (card3d) {
+    card3d.style.transform = 'none';
   }
 
   // 2. Bioluminescent 3D Floating Particles (Tối ưu cực đại, dừng hẳn khi không xem)

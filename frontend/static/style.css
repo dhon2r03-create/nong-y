@@ -3448,19 +3448,10 @@ html {
 .doctor-3d-card {
   position: relative;
   width: 100%;
-  transform-style: preserve-3d;
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
-  transition: box-shadow 0.3s ease;
   border-radius: 24px;
   background: rgba(10, 42, 29, 0.6);
   border: 1.5px solid rgba(16, 185, 129, 0.3);
   box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.5), 0 0 20px rgba(16, 185, 129, 0.12);
-  cursor: grab;
-}
-
-.doctor-3d-card:active {
-  cursor: grabbing;
 }
 
 .doctor-3d-image-container {
