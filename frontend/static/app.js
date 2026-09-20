@@ -1184,3 +1184,262 @@
   }
 })();
 
+/* =====================================================================
+   3D PLANT DOCTOR INTERACTIVE HERO CONTROLLER
+   ===================================================================== */
+(function initDoctor3DHero() {
+  const heroSection = document.getElementById('doctorHero');
+  const stageWrapper = document.getElementById('doctor3dStageWrapper');
+  const card3d = document.getElementById('doctor3dCard');
+  const canvas = document.getElementById('doctor3dCanvas');
+
+  const tabLiveCameraBtn = document.getElementById('tabLiveCameraBtn');
+  const tabUploadBtn = document.getElementById('tabUploadBtn');
+  const tabPhoneBtn = document.getElementById('tabPhoneBtn');
+  const scrollIndicator = document.getElementById('doctorScrollIndicator');
+
+  // 1. 3D Parallax Tilt Effect with Mouse / Touch
+  if (card3d && heroSection) {
+    let currentX = 0;
+    let currentY = 0;
+    let targetX = 0;
+    let targetY = 0;
+
+    const onMouseMove = (e) => {
+      const rect = card3d.getBoundingClientRect();
+      const cardCenterX = rect.left + rect.width / 2;
+      const cardCenterY = rect.top + rect.height / 2;
+
+      const normX = (e.clientX - cardCenterX) / (window.innerWidth / 2);
+      const normY = (e.clientY - cardCenterY) / (window.innerHeight / 2);
+
+      targetY = Math.max(-12, Math.min(12, normX * 14));
+      targetX = Math.max(-12, Math.min(12, -normY * 14));
+    };
+
+    heroSection.addEventListener('mousemove', onMouseMove);
+    heroSection.addEventListener('mouseleave', () => {
+      targetX = 0;
+      targetY = 0;
+    });
+
+    // Touch support for mobile parallax
+    heroSection.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches[0]) {
+        const touch = e.touches[0];
+        const rect = card3d.getBoundingClientRect();
+        const normX = (touch.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+        const normY = (touch.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+        targetY = Math.max(-8, Math.min(8, normX * 10));
+        targetX = Math.max(-8, Math.min(8, -normY * 10));
+      }
+    }, { passive: true });
+
+    heroSection.addEventListener('touchend', () => {
+      targetX = 0;
+      targetY = 0;
+    });
+
+    // Gyroscope tilt on supporting mobile devices
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', (e) => {
+        if (e.gamma !== null && e.beta !== null) {
+          targetY = Math.max(-10, Math.min(10, e.gamma / 3));
+          targetX = Math.max(-10, Math.min(10, (e.beta - 45) / 3));
+        }
+      }, { passive: true });
+    }
+
+    const animateTilt = () => {
+      currentX += (targetX - currentX) * 0.1;
+      currentY += (targetY - currentY) * 0.1;
+
+      card3d.style.transform = `rotateX(${currentX.toFixed(2)}deg) rotateY(${currentY.toFixed(2)}deg)`;
+      requestAnimationFrame(animateTilt);
+    };
+    animateTilt();
+  }
+
+  // 2. Bioluminescent 3D Floating Particles Engine
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let width = (canvas.width = canvas.offsetWidth || window.innerWidth);
+    let height = (canvas.height = canvas.offsetHeight || 600);
+
+    window.addEventListener('resize', () => {
+      if (!canvas) return;
+      width = canvas.width = canvas.offsetWidth || window.innerWidth;
+      height = canvas.height = canvas.offsetHeight || 600;
+    });
+
+    const particles = [];
+    const particleCount = 45;
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 2.5 + 1,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: -Math.random() * 0.8 - 0.3,
+        alpha: Math.random() * 0.6 + 0.2,
+        pulseSpeed: Math.random() * 0.03 + 0.01,
+        color: Math.random() > 0.3 ? 'rgba(52, 211, 153,' : 'rgba(167, 243, 208,'
+      });
+    }
+
+    let warpSpeed = 1;
+    window.triggerParticleWarp = () => {
+      warpSpeed = 6;
+      setTimeout(() => { warpSpeed = 1; }, 700);
+    };
+
+    const renderParticles = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach((p) => {
+        p.y += p.vy * warpSpeed;
+        p.x += p.vx;
+        p.alpha += Math.sin(Date.now() * p.pulseSpeed * 0.001) * 0.008;
+        if (p.alpha > 0.85) p.alpha = 0.85;
+        if (p.alpha < 0.15) p.alpha = 0.15;
+
+        if (p.y < -10) {
+          p.y = height + 10;
+          p.x = Math.random() * width;
+        }
+        if (p.x < -10) p.x = width + 10;
+        if (p.x > width + 10) p.x = -10;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius * (warpSpeed > 1 ? 1.5 : 1), 0, Math.PI * 2);
+        ctx.fillStyle = `${p.color} ${p.alpha})`;
+        ctx.shadowColor = '#34d399';
+        ctx.shadowBlur = warpSpeed > 1 ? 14 : 6;
+        ctx.fill();
+        ctx.restore();
+      });
+
+      requestAnimationFrame(renderParticles);
+    };
+    renderParticles();
+  }
+
+  // 3. Smooth Tab Switching & Seamless Transition into Capture Section
+  // 3. Smooth Modal Popup & Seamless Diagnosis Workspace Activation
+  const workspaceModal = document.getElementById('diagnoseWorkspaceModal');
+  const closeWorkspaceBtn = document.getElementById('closeDiagnoseWorkspaceBtn');
+  const workspaceBackdrop = document.getElementById('diagnoseWorkspaceBackdrop');
+  const heroLaunchBtn = document.getElementById('heroLaunchDiagnoseBtn');
+  const navDiagnoseBtn = document.getElementById('navDiagnoseBtn');
+
+  const openDiagnoseWorkspace = (targetMode = 'camera') => {
+    if (typeof window.triggerParticleWarp === 'function') {
+      window.triggerParticleWarp();
+    }
+
+    if (workspaceModal) {
+      workspaceModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    if (targetMode === 'camera') {
+      const modeCameraBtn = document.getElementById('modeCameraBtn');
+      if (modeCameraBtn) modeCameraBtn.click();
+
+      setTimeout(() => {
+        const startLiveCameraBtn = document.getElementById('startLiveCameraBtn');
+        if (startLiveCameraBtn && startLiveCameraBtn.offsetParent !== null) {
+          startLiveCameraBtn.click();
+        }
+      }, 350);
+
+      if (tabLiveCameraBtn) {
+        tabLiveCameraBtn.classList.add('active');
+        if (tabUploadBtn) tabUploadBtn.classList.remove('active');
+      }
+    } else if (targetMode === 'upload') {
+      const modeUploadBtn = document.getElementById('modeUploadBtn');
+      if (modeUploadBtn) modeUploadBtn.click();
+
+      if (tabUploadBtn) {
+        tabUploadBtn.classList.add('active');
+        if (tabLiveCameraBtn) tabLiveCameraBtn.classList.remove('active');
+      }
+    }
+  };
+
+  const closeDiagnoseWorkspace = () => {
+    if (workspaceModal) {
+      workspaceModal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    const stopLiveCameraBtn = document.getElementById('stopLiveCameraBtn');
+    const cameraLiveBox = document.getElementById('cameraLiveBox');
+    if (stopLiveCameraBtn && cameraLiveBox && cameraLiveBox.style.display !== 'none') {
+      stopLiveCameraBtn.click();
+    }
+  };
+
+  if (heroLaunchBtn) {
+    heroLaunchBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openDiagnoseWorkspace('camera');
+    });
+  }
+
+  if (navDiagnoseBtn) {
+    navDiagnoseBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openDiagnoseWorkspace('camera');
+    });
+  }
+
+  if (tabLiveCameraBtn) {
+    tabLiveCameraBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openDiagnoseWorkspace('camera');
+    });
+  }
+
+  if (tabUploadBtn) {
+    tabUploadBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openDiagnoseWorkspace('upload');
+    });
+  }
+
+  if (tabPhoneBtn) {
+    tabPhoneBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const openPhoneModalBtn = document.getElementById('openPhoneModalBtn');
+      if (openPhoneModalBtn) {
+        openPhoneModalBtn.click();
+      }
+    });
+  }
+
+  if (scrollIndicator) {
+    scrollIndicator.addEventListener('click', (e) => {
+      e.preventDefault();
+      openDiagnoseWorkspace('camera');
+    });
+  }
+
+  if (closeWorkspaceBtn) {
+    closeWorkspaceBtn.addEventListener('click', closeDiagnoseWorkspace);
+  }
+
+  if (workspaceBackdrop) {
+    workspaceBackdrop.addEventListener('click', closeDiagnoseWorkspace);
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && workspaceModal && workspaceModal.style.display === 'flex') {
+      closeDiagnoseWorkspace();
+    }
+  });
+})();
+
