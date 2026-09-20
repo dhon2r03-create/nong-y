@@ -312,11 +312,18 @@
     const reader = new FileReader();
     reader.onload = (e) => {
       previewImg.src = e.target.result;
-      previewFileName.textContent = file.name || 'Ảnh lá cây vừa chụp';
+      previewFileName.textContent = file.name || 'Ảnh lá cây vừa tải lên';
 
       viewCamera.style.display = 'none';
       viewUpload.style.display = 'none';
       viewPreview.style.display = 'block';
+
+      // Tự động mở Workspace Modal chuyển thẳng vào màn hình Xem trước ảnh & Chẩn đoán
+      const workspaceModal = document.getElementById('diagnoseWorkspaceModal');
+      if (workspaceModal && (workspaceModal.style.display === 'none' || !workspaceModal.style.display)) {
+        workspaceModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
     };
     reader.readAsDataURL(file);
 
@@ -1381,12 +1388,14 @@
       const modeCameraBtn = document.getElementById('modeCameraBtn');
       if (modeCameraBtn) modeCameraBtn.click();
 
+      // Bật ngay stream Camera trực tiếp không để chờ
       setTimeout(() => {
         const startLiveCameraBtn = document.getElementById('startLiveCameraBtn');
-        if (startLiveCameraBtn && startLiveCameraBtn.offsetParent !== null) {
+        const cameraLiveBox = document.getElementById('cameraLiveBox');
+        if (startLiveCameraBtn && (!cameraLiveBox || cameraLiveBox.style.display === 'none')) {
           startLiveCameraBtn.click();
         }
-      }, 350);
+      }, 100);
 
       if (tabLiveCameraBtn) {
         tabLiveCameraBtn.classList.add('active');
@@ -1430,6 +1439,7 @@
     });
   }
 
+  // Nút 1: Khám Live Camera -> Mở modal và BẬT NGAY Live Camera stream
   if (tabLiveCameraBtn) {
     tabLiveCameraBtn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -1437,10 +1447,42 @@
     });
   }
 
+  // Nút 2: Tải Ảnh Lá Cây -> MỞ NGAY hộp thoại chọn tệp/ảnh từ thiết bị
   if (tabUploadBtn) {
     tabUploadBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      openDiagnoseWorkspace('upload');
+      if (typeof window.triggerParticleWarp === 'function') {
+        window.triggerParticleWarp();
+      }
+      const galleryInput = document.getElementById('galleryInput');
+      if (galleryInput) {
+        galleryInput.click();
+      }
+    });
+
+    // Kéo thả trực tiếp ảnh vào nút trên trang chủ
+    tabUploadBtn.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      tabUploadBtn.style.borderColor = '#10b981';
+      tabUploadBtn.style.transform = 'scale(1.03)';
+    });
+
+    tabUploadBtn.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      tabUploadBtn.style.borderColor = '';
+      tabUploadBtn.style.transform = '';
+    });
+
+    tabUploadBtn.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      tabUploadBtn.style.borderColor = '';
+      tabUploadBtn.style.transform = '';
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleFileSelected(e.dataTransfer.files[0]);
+      }
     });
   }
 
