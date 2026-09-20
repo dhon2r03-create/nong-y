@@ -271,22 +271,23 @@
     cameraStandbyBox.style.display = 'block';
   }
 
+  const btnTriggerNativeCam = document.getElementById('btnTriggerNativeCam');
+  if (btnTriggerNativeCam) {
+    btnTriggerNativeCam.addEventListener('click', () => {
+      if (fallbackCameraInput) {
+        fallbackCameraInput.click();
+      }
+    });
+  }
+
   startLiveCameraBtn.addEventListener('click', () => {
     const cameraErrorBox = document.getElementById('cameraErrorBox');
     if (cameraErrorBox) cameraErrorBox.style.display = 'none';
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       startCamera(currentFacingMode);
     } else {
-      const isMobile = isMobileDevice();
-      if (isMobile) {
+      if (fallbackCameraInput) {
         fallbackCameraInput.click();
-      } else {
-        const msg = '⚠️ Trình duyệt không hỗ trợ Live Stream trên kết nối này. Hãy bấm "Chụp từ thiết bị" bên cạnh.';
-        if (cameraErrorBox) {
-          cameraErrorBox.innerHTML = msg;
-          cameraErrorBox.style.display = 'block';
-        }
-        showToast(msg, 'error');
       }
     }
   });
@@ -1431,7 +1432,7 @@
     });
   }
 
-  // Nút 1: Camera -> Kích hoạt máy ảnh / camera trực tiếp
+  // Nút 1: Camera -> Mở ngay Popup Modal Phòng Khám Bác Sĩ Cây Trồng
   if (tabLiveCameraBtn) {
     tabLiveCameraBtn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -1439,26 +1440,21 @@
         window.triggerParticleWarp();
       }
 
-      const fallbackCameraInput = document.getElementById('fallbackCameraInput');
-      const isMobile = isMobileDevice();
-      const isSecure = window.isSecureContext || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-      const hasGetUserMedia = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
-
-      // Nếu trên di động hoặc môi trường không hỗ trợ WebRTC live stream (hoặc kết nối HTTP IP):
-      // Kích hoạt ngay camera native của máy ảnh thiết bị -> Mở máy ảnh ngay khi bấm nút!
-      if (isMobile || !isSecure || !hasGetUserMedia) {
-        if (fallbackCameraInput) {
-          fallbackCameraInput.click();
-          return;
-        }
-      }
-
-      // Trên máy tính Desktop có hỗ trợ Live Stream:
-      // Mở workspace modal và khởi tạo camera live stream
+      // 1. Luôn hiển thị Cửa Sổ Popup Modal lên màn hình!
       openDiagnoseWorkspace('camera');
+
       const cameraErrorBox = document.getElementById('cameraErrorBox');
       if (cameraErrorBox) cameraErrorBox.style.display = 'none';
-      startCamera(currentFacingMode);
+
+      // 2. Kích hoạt camera stream nếu có hỗ trợ WebRTC
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        startCamera(currentFacingMode);
+      } else {
+        if (cameraErrorBox) {
+          cameraErrorBox.innerHTML = '💡 Vui lòng bấm nút <strong>"Chụp từ thiết bị"</strong> bên dưới để mở máy ảnh của thiết bị.';
+          cameraErrorBox.style.display = 'block';
+        }
+      }
     });
   }
 

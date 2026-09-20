@@ -20,7 +20,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=49" />
+  <link rel="stylesheet" href="/static/style.css?v=50" />
 </head>
 <body>
 
@@ -215,10 +215,10 @@
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/></svg>
                   Bật Camera Ngay
                 </button>
-                <label for="fallbackCameraInput" class="btn btn-gallery-trigger" style="margin: 0; cursor: pointer;">
+                <button type="button" class="btn btn-gallery-trigger" id="btnTriggerNativeCam" style="margin: 0; cursor: pointer;">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                   Chụp từ thiết bị
-                </label>
+                </button>
               </div>
               <div class="camera-permission-hint" id="cameraPermHint" style="display:none;">
                 💡 Vui lòng bấm <strong>"Cho phép" (Allow)</strong> khi trình duyệt hỏi quyền truy cập Camera.
@@ -653,6 +653,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=49"></script>
+<script src="/static/app.js?v=50"></script>
 </body>
 </html>
