@@ -1645,7 +1645,7 @@
     if (sectionPreviewDiagnose) sectionPreviewDiagnose.style.display = 'none';
 
     if (targetMode === 'camera') {
-      if (modalTitle) modalTitle.textContent = 'Phòng Khám Bác Sĩ Cây Trồng AI - Camera';
+      if (modalTitle) modalTitle.textContent = 'Phòng Khám Cây Trồng';
       if (modalSubtitle) modalSubtitle.textContent = 'Chụp ảnh lá cây trực tiếp qua camera & chẩn đoán tức thì';
       if (sectionTitle) sectionTitle.textContent = 'Chụp ảnh lá cây trực tiếp qua camera';
       if (sectionDesc) sectionDesc.textContent = 'Căn chỉnh lá cây vào tâm khung ngắm và bấm nút chụp ảnh bên dưới';
@@ -1662,7 +1662,7 @@
       if (tabLiveCameraBtn) tabLiveCameraBtn.classList.add('active');
       if (tabUploadBtn) tabUploadBtn.classList.remove('active');
     } else if (targetMode === 'upload') {
-      if (modalTitle) modalTitle.textContent = 'Khám Bệnh Tải Ảnh Lá Cây AI';
+      if (modalTitle) modalTitle.textContent = 'Phòng Khám Cây Trồng';
       if (modalSubtitle) modalSubtitle.textContent = 'Tải ảnh lá cây từ thiết bị & chẩn đoán bệnh tức thì';
       if (sectionTitle) sectionTitle.textContent = 'Tải ảnh lá cây từ thiết bị';
       if (sectionDesc) sectionDesc.textContent = 'Kéo thả ảnh hoặc chọn ảnh từ thư viện thiết bị';
