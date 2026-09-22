@@ -20,7 +20,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=70" />
+  <link rel="stylesheet" href="/static/style.css?v=75" />
 </head>
 <body>
 
@@ -97,7 +97,7 @@
       <!-- 3D Perspective Hologram Grid Floor -->
       <div class="stage-3d-grid-floor"></div>
 
-      <div class="doctor-3d-card" id="doctor3dCard" title="Nhấn vào ảnh để kích hoạt quét AI hoặc di chuyển chuột để tương tác 3D">
+      <div class="doctor-3d-card" id="doctor3dCard">
         <!-- 3D Doctor Illustration with Interactive Depth -->
         <div class="doctor-3d-image-container" id="doctorImageContainer">
           <img
@@ -111,28 +111,7 @@
           <!-- 3D Scanning Laser Beam Sweep -->
           <div class="laser-scanner-beam"></div>
 
-          <!-- 3D Holographic Parallax Depth Chips -->
-          <div class="chip-3d chip-3d-tl" id="chip3dTL">
-            <span class="chip-3d-dot"></span>
-            <span class="chip-3d-label">AI Neural Net • 99.4%</span>
-          </div>
-
-          <div class="chip-3d chip-3d-tr" id="chip3dTR">
-            <span class="chip-3d-sparkle">⚡</span>
-            <span class="chip-3d-label">Grad-CAM 3D Active</span>
-          </div>
-
-          <div class="chip-3d chip-3d-bl" id="chip3dBL">
-            <span class="chip-3d-sparkle">🌿</span>
-            <span class="chip-3d-label">14 Loài Cây • 38 Bệnh</span>
-          </div>
-
-          <div class="chip-3d chip-3d-br" id="chip3dBR">
-            <span class="chip-3d-sparkle">🛡️</span>
-            <span class="chip-3d-label">Toa BVTV Chuẩn Số</span>
-          </div>
-
-          <!-- Scanning Target Crosshairs aligned with leaf -->
+          <!-- Scanning Target Crosshairs aligned with leaf (Khung ngắm không chữ) -->
           <div class="scan-target-box" id="doctorScanTarget">
             <div class="target-corner tl"></div>
             <div class="target-corner tr"></div>
@@ -140,7 +119,6 @@
             <div class="target-corner br"></div>
             <div class="target-line"></div>
             <div class="target-ring-3d"></div>
-            <span class="target-label" id="targetLabelText">AI SCANNING LEAF</span>
           </div>
         </div>
       </div>
@@ -758,6 +736,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=70"></script>
+<script src="/static/app.js?v=75"></script>
 </body>
 </html>

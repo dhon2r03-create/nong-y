@@ -1370,7 +1370,6 @@
 
   // 1. Tương tác ảnh 3D mượt mà, theo dõi chuyển động chuột & chạm thông minh
   const scanTarget = document.getElementById('doctorScanTarget');
-  const targetLabelText = document.getElementById('targetLabelText');
   const imageContainer = document.getElementById('doctorImageContainer');
 
   if (card3d && stageWrapper) {
@@ -1381,24 +1380,11 @@
     let isHovering = false;
     let rAfTilt = null;
 
-    const chipTL = document.getElementById('chip3dTL');
-    const chipTR = document.getElementById('chip3dTR');
-    const chipBL = document.getElementById('chip3dBL');
-    const chipBR = document.getElementById('chip3dBR');
-
     const renderCardTilt = () => {
       if (isHovering) {
         card3d.style.transform = `perspective(1000px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
-        if (chipTL) chipTL.style.transform = `translate3d(${-targetRotY * 1.6}px, ${targetRotX * 1.4}px, 50px)`;
-        if (chipTR) chipTR.style.transform = `translate3d(${-targetRotY * 1.3}px, ${targetRotX * 1.3}px, 54px)`;
-        if (chipBL) chipBL.style.transform = `translate3d(${-targetRotY * 1.1}px, ${targetRotX * 1.1}px, 44px)`;
-        if (chipBR) chipBR.style.transform = `translate3d(${-targetRotY * 1.5}px, ${targetRotX * 1.5}px, 48px)`;
       } else {
         card3d.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-        if (chipTL) chipTL.style.transform = 'translate3d(0, 0, 48px)';
-        if (chipTR) chipTR.style.transform = 'translate3d(0, 0, 48px)';
-        if (chipBL) chipBL.style.transform = 'translate3d(0, 0, 48px)';
-        if (chipBR) chipBR.style.transform = 'translate3d(0, 0, 48px)';
       }
       rAfTilt = null;
     };
@@ -1426,10 +1412,6 @@
         scanTarget.style.setProperty('--target-y', `${targetYPercent.toFixed(1)}%`);
       }
 
-      if (targetLabelText) {
-        targetLabelText.textContent = `AI SCANNING LEAF [${Math.round((px + 0.5) * 100)}%, ${Math.round((py + 0.5) * 100)}%]`;
-      }
-
       if (!rAfTilt) {
         rAfTilt = requestAnimationFrame(renderCardTilt);
       }
@@ -1443,9 +1425,6 @@
         scanTarget.style.setProperty('--target-x', '29%');
         scanTarget.style.setProperty('--target-y', '48%');
       }
-      if (targetLabelText) {
-        targetLabelText.textContent = 'AI SCANNING LEAF';
-      }
       if (!rAfTilt) {
         rAfTilt = requestAnimationFrame(renderCardTilt);
       }
@@ -1457,7 +1436,7 @@
 
     stageWrapper.addEventListener('pointerleave', handlePointerLeave, { passive: true });
 
-    // Hiệu ứng chạm / click tạo sóng xung kích laser và hướng dẫn người dùng
+    // Hiệu ứng chạm / click tạo sóng xung kích laser
     stageWrapper.addEventListener('click', (e) => {
       const rect = stageWrapper.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
@@ -1477,7 +1456,7 @@
         window.triggerParticleWarp();
       }
 
-      // Kích hoạt rung nhẹ ảnh và gợi ý mở khám bệnh
+      // Kích hoạt rung nhẹ ảnh
       card3d.style.transform = `perspective(1000px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(0.98, 0.98, 0.98)`;
       setTimeout(() => {
         if (isHovering) {
@@ -1486,8 +1465,6 @@
           card3d.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
         }
       }, 150);
-
-      showToast('🌿 AI Bác Sĩ Cây Trồng đã sẵn sàng! Bấm nút "Camera" hoặc "Tải Ảnh Lá Cây" bên dưới để khám bệnh ngay.', 'info');
     });
   }
 

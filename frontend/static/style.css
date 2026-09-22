@@ -3569,21 +3569,7 @@ html {
   background: rgba(52, 211, 153, 0.4);
 }
 
-.target-label {
-  position: absolute;
-  bottom: -22px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  color: #a7f3d0;
-  background: rgba(6, 31, 20, 0.92);
-  padding: 2px 8px;
-  border-radius: 4px;
-  white-space: nowrap;
-  border: 1px solid rgba(52, 211, 153, 0.3);
-}
+
 
 /* =====================================================================
    3D PERSPECTIVE HOLOGRAPHIC GRID FLOOR & ELEMENTS
@@ -3612,52 +3598,7 @@ html {
   100% { opacity: 0.95; transform: rotateX(72deg) translateY(6px); }
 }
 
-/* 3D Holographic Parallax Floating Chips */
-.chip-3d {
-  position: absolute;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
-  background: rgba(6, 30, 20, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1.5px solid rgba(52, 211, 153, 0.5);
-  border-radius: 9999px;
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-  box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.6), 0 0 16px rgba(16, 185, 129, 0.28);
-  pointer-events: none;
-  z-index: 10;
-  transform: translateZ(48px);
-  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s ease;
-  will-change: transform;
-}
 
-.chip-3d-tl { top: 14px; left: 14px; }
-.chip-3d-tr { top: 14px; right: 14px; }
-.chip-3d-bl { bottom: 14px; left: 14px; }
-.chip-3d-br { bottom: 14px; right: 14px; }
-
-.chip-3d-dot {
-  width: 7.5px;
-  height: 7.5px;
-  border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 10px #34d399;
-  animation: pulse-dot-anim 1.4s infinite;
-}
-
-.chip-3d-sparkle {
-  font-size: 13px;
-  filter: drop-shadow(0 0 6px rgba(52, 211, 153, 0.8));
-}
-
-.chip-3d-label {
-  white-space: nowrap;
-}
 
 /* 3D Rotating Target Ring */
 .target-ring-3d {
@@ -3809,14 +3750,6 @@ html {
   .doctor-3d-card {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   }
-  .chip-3d {
-    font-size: 10.5px;
-    padding: 4px 9px;
-  }
-  .chip-3d-tl { top: 8px; left: 8px; }
-  .chip-3d-tr { top: 8px; right: 8px; }
-  .chip-3d-bl { bottom: 8px; left: 8px; }
-  .chip-3d-br { bottom: 8px; right: 8px; }
   .stage-3d-grid-floor {
     display: none;
   }
