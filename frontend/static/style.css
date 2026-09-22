@@ -3352,7 +3352,7 @@ html {
   inset: 0;
   width: 100%;
   height: 100%;
-  background: #061f14 url('/static/doctor-3d.jpg?v=96') center top / cover no-repeat;
+  background: #061f14 url('/static/doctor-3d.jpg?v=97') center top / cover no-repeat;
   transform: translateY(90px) scale(1.12);
   transform-origin: center top;
   pointer-events: none;
