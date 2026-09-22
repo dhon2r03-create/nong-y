@@ -1407,11 +1407,10 @@
     });
   }
 
-  // 1.0 NHÂN VẬT 3D TÁCH NỀN DI CHUYỂN THEO CHUỘT & TƯƠNG TÁC THOẠI
+  // 1.0 NHÂN VẬT 3D TÁCH NỀN DI CHUYỂN & LIẾC MẮT THEO CHUỘT
   const charWrap = document.getElementById('doctorCharacterWrap');
   const charImg = document.getElementById('doctorCharacterImg');
-  const speechBubble = document.getElementById('doctorSpeechBubble');
-  const speechText = document.getElementById('doctorSpeechText');
+  const pupilsOverlay = document.getElementById('doctorPupilsOverlay');
   const leafGlow = document.getElementById('leafGlowFx');
   const shadowAura = document.getElementById('doctorShadowAura');
 
@@ -1422,77 +1421,76 @@
     let currRotY = 0;
     let currTransX = 0;
     let currTransY = 0;
+
+    // Tọa độ liếc mắt của con ngươi
+    let currEyeX = 0;
+    let currEyeY = 0;
+
     let isMouseOverHero = false;
     let charAnimFrame = null;
 
-    // Danh sách các câu thoại tương tác thông minh của Bác Sĩ Cây Trồng
-    const doctorDialogues = [
-      '🌿 Chào bạn! Cây trồng của bạn hôm nay có khỏe mạnh không?',
-      '🔬 Tôi có thể chẩn đoán hơn 38 loại bệnh cây tức thì qua ảnh chụp đấy!',
-      '🌱 Hãy thử bấm "Chụp ảnh camera" để tôi soi lá cây giúp bạn nhé!',
-      '💡 Chiếc lá trên tay tôi là tiêu bản đang được AI quét dữ liệu sinh học.',
-      '🩺 Đừng lo khi cây bị đốm lá hay vàng úa, tôi sẽ kê đơn chuẩn xác!',
-      '✨ Hệ thống AI sẵn sàng 24/7 đồng hành cùng mùa màng bội thu của bà con!',
-      '🍃 Bạn vừa chạm vào tôi! Rất vui được đồng hành cùng bạn!'
-    ];
-    let dialogueIndex = 0;
-    let bubbleTimeout = null;
-
-    const showDialogue = (customText) => {
-      if (!speechBubble || !speechText) return;
-      if (customText) {
-        speechText.textContent = customText;
-      } else {
-        dialogueIndex = (dialogueIndex + 1) % doctorDialogues.length;
-        speechText.textContent = doctorDialogues[dialogueIndex];
-      }
-      speechBubble.classList.add('active');
-      clearTimeout(bubbleTimeout);
-      bubbleTimeout = setTimeout(() => {
-        speechBubble.classList.remove('active');
-      }, 4200);
-    };
-
-    // Tương tác khi click hoặc chạm vào nhân vật
+    // Tương tác khi click hoặc chạm vào nhân vật: Nhảy reo và phát sáng lá cây (không còn chữ thoại)
     charWrap.addEventListener('click', (e) => {
       e.stopPropagation();
 
-      // Hiệu ứng nhảy reo vui nhộn
+      // Hiệu ứng nhảy reo vui nhộn (Cheer bounce)
       charWrap.classList.remove('cheering');
       void charWrap.offsetWidth; // Trigger reflow
       charWrap.classList.add('cheering');
 
-      // Tỏa tia sáng xanh từ chiếc lá
+      // Tỏa tia sáng xanh sinh học từ chiếc lá
       if (leafGlow) {
         leafGlow.classList.remove('pulse');
         void leafGlow.offsetWidth;
         leafGlow.classList.add('pulse');
-        setTimeout(() => leafGlow.classList.remove('pulse'), 500);
+        setTimeout(() => leafGlow.classList.remove('pulse'), 600);
       }
-
-      showDialogue();
     });
 
-    // Theo dõi chuyển động chuột mượt mà (Mouse Tracking Parallax)
+    // Cập nhật chuyển động 3D toàn thân và LIẾC MẮT THEO CHUỘT
     const updateCharacterTracking = () => {
-      // Lerp (nội suy mượt mà)
-      const targetRotX = isMouseOverHero ? -mouseY * 16 : 0;
-      const targetRotY = isMouseOverHero ? mouseX * 22 : 0;
-      const targetTransX = isMouseOverHero ? mouseX * 24 : 0;
-      const targetTransY = isMouseOverHero ? mouseY * 14 : 0;
+      // 1. Mục tiêu xoay và dịch chuyển thân thể nhân vật
+      const targetRotX = isMouseOverHero ? -mouseY * 14 : 0;
+      const targetRotY = isMouseOverHero ? mouseX * 20 : 0;
+      const targetTransX = isMouseOverHero ? mouseX * 22 : 0;
+      const targetTransY = isMouseOverHero ? mouseY * 12 : 0;
 
+      // 2. Mục tiêu liếc mắt của con ngươi:
+      // Di chuyển tối đa 14px theo chiều ngang và 10px theo chiều dọc trong hốc mắt
+      const targetEyeX = isMouseOverHero ? mouseX * 14 : 0;
+      const targetEyeY = isMouseOverHero ? mouseY * 10 : 0;
+
+      // Nội suy mượt mà (Lerp)
       currRotX += (targetRotX - currRotX) * 0.1;
       currRotY += (targetRotY - currRotY) * 0.1;
       currTransX += (targetTransX - currTransX) * 0.1;
       currTransY += (targetTransY - currTransY) * 0.1;
 
+      currEyeX += (targetEyeX - currEyeX) * 0.15;
+      currEyeY += (targetEyeY - currEyeY) * 0.15;
+
+      // Áp dụng biến đổi 3D cho toàn bộ nhân vật
       charWrap.style.transform = `perspective(1200px) translate3d(${currTransX.toFixed(2)}px, ${currTransY.toFixed(2)}px, 0) rotateX(${currRotX.toFixed(2)}deg) rotateY(${currRotY.toFixed(2)}deg)`;
 
-      if (shadowAura) {
-        shadowAura.style.transform = `translate3d(${-currTransX * 0.6}px, 0, -20px) scale(${1 - Math.abs(mouseY) * 0.1})`;
+      // Áp dụng chuyển động liếc mắt cho lớp con ngươi (Pupils)
+      if (pupilsOverlay) {
+        pupilsOverlay.style.transform = `translate3d(${currEyeX.toFixed(2)}px, ${currEyeY.toFixed(2)}px, 0)`;
       }
 
-      if (isMouseOverHero || Math.abs(currRotX) > 0.05 || Math.abs(currRotY) > 0.05) {
+      // Bóng đổ sinh học dưới sàn chuyển động bù trừ
+      if (shadowAura) {
+        shadowAura.style.transform = `translate3d(${-currTransX * 0.6}px, 0, -20px) scale(${1 - Math.abs(mouseY) * 0.08})`;
+      }
+
+      // Tiếp tục vòng lặp animation nếu chuột còn di chuyển hoặc đang trở về vị trí cân bằng
+      const isMoving =
+        isMouseOverHero ||
+        Math.abs(currRotX) > 0.05 ||
+        Math.abs(currRotY) > 0.05 ||
+        Math.abs(currEyeX) > 0.05 ||
+        Math.abs(currEyeY) > 0.05;
+
+      if (isMoving) {
         charAnimFrame = requestAnimationFrame(updateCharacterTracking);
       } else {
         charAnimFrame = null;
@@ -1505,12 +1503,16 @@
       }
     };
 
+    // Bắt tọa độ chuột trên toàn bộ khu vực Hero
     heroSection.addEventListener('pointermove', (e) => {
       const rect = heroSection.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
       isMouseOverHero = true;
+
+      // Chuẩn hóa tọa độ chuột trong khoảng [-1, 1]
       mouseX = Math.max(-1, Math.min(1, ((e.clientX - rect.left) / rect.width) * 2 - 1));
       mouseY = Math.max(-1, Math.min(1, ((e.clientY - rect.top) / rect.height) * 2 - 1));
+
       startTrackingLoop();
     }, { passive: true });
 
@@ -1519,15 +1521,6 @@
       mouseX = 0;
       mouseY = 0;
       startTrackingLoop();
-    });
-
-    // Chào mừng nhẹ khi người dùng rê chuột vào nhân vật lần đầu
-    let hasGreeted = false;
-    charWrap.addEventListener('pointerenter', () => {
-      if (!hasGreeted) {
-        hasGreeted = true;
-        showDialogue('Bác Sĩ Cây Trồng đang lắng nghe bạn! Hãy click để trò chuyện.');
-      }
     });
   }
 
