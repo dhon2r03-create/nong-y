@@ -14,6 +14,9 @@ import io
 import json
 import os
 import socket
+import threading
+import time
+import urllib.request
 import uuid
 from collections import Counter, defaultdict
 from datetime import datetime
@@ -137,10 +140,54 @@ def parse_plant_disease(label: str) -> tuple[str, str]:
 
 
 
+def _keep_alive_worker():
+    """Chạy ngầm định kỳ gửi HTTP request đến URL của Render để chống tự ngủ (spin down)."""
+    # Render tự động cấp biến môi trường RENDER_EXTERNAL_URL (vd: https://nong-y.onrender.com)
+    # Có thể tùy chỉnh thêm qua biến KEEP_ALIVE_URL
+    app_url = os.environ.get("RENDER_EXTERNAL_URL") or os.environ.get("KEEP_ALIVE_URL")
+    if not app_url:
+        print("[Keep-Alive] Khong co RENDER_EXTERNAL_URL hoac KEEP_ALIVE_URL. Bo qua tu dong giu thuc.", flush=True)
+        return
+
+    ping_url = f"{app_url.rstrip('/')}/api/health"
+    print(f"[Keep-Alive] Da bat che do chong ngu Render cho: {ping_url}", flush=True)
+
+    # Đợi 2 phút sau khi khởi động trước lần ping đầu tiên
+    time.sleep(120)
+
+    while True:
+        try:
+            req = urllib.request.Request(
+                ping_url,
+                headers={"User-Agent": "Render-Auto-KeepAlive/1.0"}
+            )
+            with urllib.request.urlopen(req, timeout=20) as resp:
+                status_code = resp.status
+                print(f"[Keep-Alive] Ping {ping_url} thanh cong [HTTP {status_code}] luc {datetime.now().strftime('%H:%M:%S')}", flush=True)
+        except Exception as e:
+            print(f"[Keep-Alive] Ping gap loi (se thu lai o chu ky tiep theo): {e}", flush=True)
+
+        # Render tu dong ngu sau 15 phut khong co request -> Ping moi 10 phut (600 giay)
+        time.sleep(600)
+
+
+@app.get("/api/health")
+def health_check():
+    """Endpoint nhe kiem tra tinh trang hoat dong cua he thong va chong ngu."""
+    return {
+        "status": "healthy",
+        "service": "Plant Disease Diagnosis API",
+        "time": datetime.utcnow().isoformat() + "Z"
+    }
+
+
 @app.on_event("startup")
 def on_startup():
     init_db()
     try_load_model()
+    # Kích hoạt worker tự động giữ Render luôn thức
+    threading.Thread(target=_keep_alive_worker, daemon=True).start()
+
 
 
 # ---------------------------------------------------------------------------
