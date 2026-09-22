@@ -1410,9 +1410,9 @@
 
     const renderCardTilt = () => {
       if (isHovering) {
-        card3d.style.transform = `perspective(1000px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+        card3d.style.transform = `perspective(1200px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(1.01, 1.01, 1.01)`;
       } else {
-        card3d.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        card3d.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
       }
       rAfTilt = null;
     };
@@ -1423,8 +1423,8 @@
       const px = Math.max(-0.5, Math.min(0.5, (clientX - rect.left) / rect.width - 0.5));
       const py = Math.max(-0.5, Math.min(0.5, (clientY - rect.top) / rect.height - 0.5));
 
-      targetRotX = -py * 10; // Max 5 deg tilt
-      targetRotY = px * 12;
+      targetRotX = -py * 7; // Smooth gentle tilt for full screen
+      targetRotY = px * 9;
       isHovering = true;
 
       // Cập nhật điểm sáng lóa (Glare) & tọa độ mục tiêu quét
@@ -1458,11 +1458,18 @@
       }
     };
 
-    stageWrapper.addEventListener('pointermove', (e) => {
+    // Theo dõi chuyển động chuột toàn màn hình mượt mà
+    window.addEventListener('pointermove', (e) => {
       handlePointerMove(e.clientX, e.clientY);
     }, { passive: true });
 
-    stageWrapper.addEventListener('pointerleave', handlePointerLeave, { passive: true });
+    document.addEventListener('mouseleave', handlePointerLeave, { passive: true });
+
+    // Hỗ trợ nhấp đúp chuột vào ảnh để bật/tắt toàn màn hình
+    stageWrapper.addEventListener('dblclick', (e) => {
+      e.preventDefault();
+      toggleFullScreenMode();
+    });
 
     // Hiệu ứng chạm / click tạo sóng xung kích laser
     stageWrapper.addEventListener('click', (e) => {
@@ -1485,16 +1492,64 @@
       }
 
       // Kích hoạt rung nhẹ ảnh
-      card3d.style.transform = `perspective(1000px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(0.98, 0.98, 0.98)`;
+      card3d.style.transform = `perspective(1200px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(0.99, 0.99, 0.99)`;
       setTimeout(() => {
         if (isHovering) {
-          card3d.style.transform = `perspective(1000px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+          card3d.style.transform = `perspective(1200px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(1.01, 1.01, 1.01)`;
         } else {
-          card3d.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+          card3d.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
         }
       }, 150);
     });
   }
+
+  // 1.1 Bộ điều khiển chế độ Toàn Màn Hình (HTML5 Fullscreen API)
+  const btnToggleFullscreen = document.getElementById('btnToggleFullscreen');
+  const fsBtnLabel = document.getElementById('fsBtnLabel');
+  const iconFsEnter = document.querySelector('.icon-fs-enter');
+  const iconFsExit = document.querySelector('.icon-fs-exit');
+
+  const toggleFullScreenMode = () => {
+    try {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        const root = document.documentElement;
+        if (root.requestFullscreen) {
+          root.requestFullscreen();
+        } else if (root.webkitRequestFullscreen) {
+          root.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    } catch (fsErr) {
+      console.warn('Fullscreen error:', fsErr);
+    }
+  };
+
+  if (btnToggleFullscreen) {
+    btnToggleFullscreen.addEventListener('click', (e) => {
+      e.preventDefault();
+      toggleFullScreenMode();
+    });
+  }
+
+  const syncFullscreenUI = () => {
+    const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    if (iconFsEnter && iconFsExit) {
+      iconFsEnter.style.display = isFs ? 'none' : 'block';
+      iconFsExit.style.display = isFs ? 'block' : 'none';
+    }
+    if (fsBtnLabel) {
+      fsBtnLabel.textContent = isFs ? 'Thoát' : 'Toàn màn hình';
+    }
+  };
+
+  document.addEventListener('fullscreenchange', syncFullscreenUI);
+  document.addEventListener('webkitfullscreenchange', syncFullscreenUI);
 
   // 1.2 Tương tác kiểm tra tiêu bản 3D cho ảnh xem trước trong modal
   const previewImageBox = document.getElementById('previewImageBox');
@@ -1523,12 +1578,12 @@
     } else {
       const ctx = canvas.getContext('2d', { alpha: true });
       let width = (canvas.width = canvas.offsetWidth || window.innerWidth);
-      let height = (canvas.height = canvas.offsetHeight || 500);
+      let height = (canvas.height = canvas.offsetHeight || window.innerHeight);
 
       window.addEventListener('resize', () => {
         if (!canvas) return;
         width = canvas.width = canvas.offsetWidth || window.innerWidth;
-        height = canvas.height = canvas.offsetHeight || 500;
+        height = canvas.height = canvas.offsetHeight || window.innerHeight;
       }, { passive: true });
 
       const particles = [];

@@ -134,6 +134,19 @@ button {
   border-color: #34d399;
 }
 
+.btn-top-fullscreen {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(52, 211, 153, 0.45);
+  color: #a7f3d0;
+}
+
+.btn-top-fullscreen:hover {
+  background: rgba(16, 185, 129, 0.35);
+  border-color: #34d399;
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(52, 211, 153, 0.4);
+}
+
 @media (max-width: 640px) {
   .app-top-header {
     padding: 14px 16px;
@@ -3313,17 +3326,20 @@ html {
    ===================================================================== */
 .doctor-3d-hero {
   position: relative;
+  width: 100vw;
   width: 100%;
+  height: 100vh;
+  height: 100dvh;
   min-height: 100vh;
   min-height: 100dvh;
-  background: transparent;
+  background: #061f14;
   color: #ffffff;
-  padding: 68px 16px 20px;
+  padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  overflow-x: hidden;
+  overflow: hidden;
   box-sizing: border-box;
 }
 
@@ -3334,7 +3350,7 @@ html {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 3;
   pointer-events: none;
 }
 
@@ -3343,47 +3359,172 @@ html {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
   opacity: 0.7;
 }
 
 .glow-emerald {
-  width: 600px;
-  height: 450px;
-  background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.07) 45%, transparent 70%);
-  top: -80px;
+  width: 700px;
+  height: 500px;
+  background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.06) 50%, transparent 75%);
+  top: -100px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .glow-lime {
-  width: 450px;
-  height: 350px;
-  background: radial-gradient(ellipse at center, rgba(52, 211, 153, 0.18) 0%, rgba(52, 211, 153, 0.04) 45%, transparent 70%);
+  width: 500px;
+  height: 400px;
+  background: radial-gradient(ellipse at center, rgba(52, 211, 153, 0.16) 0%, rgba(52, 211, 153, 0.03) 45%, transparent 70%);
   bottom: 40px;
   right: 5%;
 }
 
+/* 3D Full Screen Stage & Card */
+.doctor-3d-stage-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  max-width: none;
+  perspective: 1200px;
+  perspective-origin: 50% 45%;
+  overflow: hidden;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.doctor-3d-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+.doctor-3d-image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  border-radius: 0;
+  aspect-ratio: auto;
+  background: #061f14;
+  overflow: hidden;
+}
+
+.doctor-3d-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+  transform: translateZ(0) scale(1.04);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+}
+
+/* Cinematic Vignette Overlay over Full Screen 3D image */
+.doctor-3d-image-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, rgba(6, 31, 20, 0.1) 0%, rgba(6, 31, 20, 0.42) 65%, rgba(6, 31, 20, 0.88) 100%),
+              linear-gradient(180deg, rgba(6, 31, 20, 0.78) 0%, transparent 18%, transparent 60%, rgba(6, 31, 20, 0.94) 100%);
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* Dynamic Interactive Glare Sheen across full screen */
+.doctor-3d-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle 480px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.14), transparent 70%);
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+  z-index: 7;
+}
+
+/* Interactive Click Ripple Pulse Effect */
+.interactive-click-ripple {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #34d399;
+  background: radial-gradient(circle, rgba(52, 211, 153, 0.5) 0%, rgba(16, 185, 129, 0) 70%);
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  z-index: 20;
+  animation: click-ripple-anim 0.85s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes click-ripple-anim {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(22); opacity: 0; }
+}
+
+/* 3D Laser Scanner Beam across full screen height */
+.laser-scanner-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2.5px;
+  background: linear-gradient(90deg, transparent 0%, rgba(52, 211, 153, 0.35) 15%, #34d399 50%, rgba(52, 211, 153, 0.35) 85%, transparent 100%);
+  animation: laser-scan-gpu 5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 5;
+  transform: translate3d(0, 0, 0);
+  box-shadow: 0 0 16px rgba(52, 211, 153, 0.7);
+  will-change: transform, opacity;
+}
+
+@keyframes laser-scan-gpu {
+  0% { transform: translateY(6vh); opacity: 0; }
+  12% { opacity: 0.95; }
+  88% { opacity: 0.95; }
+  100% { transform: translateY(94vh); opacity: 0; }
+}
+
+/* Main HUD Overlay Container */
 .doctor-hero-container {
   position: relative;
   z-index: 10;
-  max-width: 860px;
   width: 100%;
-  margin: auto;
+  max-width: 1100px;
+  height: 100%;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   text-align: center;
   box-sizing: border-box;
+  padding: 88px 20px 24px;
+  pointer-events: none;
 }
 
 /* Doctor Hero Intro (Tiêu đề & Slogan Web App) */
 .doctor-hero-intro {
-  margin-bottom: 16px;
+  margin-top: 4px;
+  margin-bottom: 0;
   text-align: center;
   max-width: 760px;
   animation: heroIntroFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  pointer-events: auto;
 }
 
 .doctor-hero-title {
@@ -3394,7 +3535,7 @@ html {
   letter-spacing: -0.5px;
   font-family: 'Plus Jakarta Sans', var(--font-sans);
   margin-bottom: 6px;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65), 0 0 24px rgba(16, 185, 129, 0.2);
 }
 
 .doctor-hero-title .highlight-gradient {
@@ -3403,17 +3544,17 @@ html {
   -webkit-text-fill-color: transparent;
   display: inline-block;
   text-shadow: none;
-  filter: drop-shadow(0 2px 10px rgba(16, 185, 129, 0.35));
+  filter: drop-shadow(0 2px 10px rgba(16, 185, 129, 0.45));
 }
 
 .doctor-hero-subtitle {
   font-size: clamp(13px, 1.7vw, 15.5px);
   font-weight: 500;
-  color: #cbd5e1;
+  color: #e2e8f0;
   line-height: 1.5;
   letter-spacing: 0.1px;
   opacity: 0.95;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.8);
 }
 
 @keyframes heroIntroFadeIn {
@@ -3427,106 +3568,16 @@ html {
   }
 }
 
-/* 3D Stage & Card */
-.doctor-3d-stage-wrapper {
+/* Floating HUD Dock */
+.doctor-hero-dock {
   width: 100%;
-  max-width: 800px;
-  margin: 0 auto 10px;
-  perspective: 1000px;
-  perspective-origin: center center;
-}
-
-.doctor-3d-card {
-  position: relative;
-  width: 100%;
-  border-radius: 22px;
-  background: rgba(10, 42, 29, 0.6);
-  border: 1.5px solid rgba(16, 185, 129, 0.35);
-  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.5), 0 0 20px rgba(16, 185, 129, 0.15);
-  cursor: pointer;
-  transform-style: preserve-3d;
-  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
-  will-change: transform;
-}
-
-.doctor-3d-card:hover {
-  border-color: rgba(52, 211, 153, 0.75);
-  box-shadow: 0 22px 48px -8px rgba(0, 0, 0, 0.6), 0 0 35px rgba(16, 185, 129, 0.35);
-}
-
-.doctor-3d-image-container {
-  position: relative;
-  width: 100%;
-  border-radius: 20px;
-  overflow: hidden;
-  aspect-ratio: 16 / 9;
-  max-height: min(440px, 48vh);
-  background: #061f14;
-}
-
-/* Dynamic Interactive Glare Sheen */
-.doctor-3d-glare {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: 20px;
-  background: radial-gradient(circle 350px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.16), transparent 70%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 7;
-}
-
-.doctor-3d-card:hover .doctor-3d-glare {
-  opacity: 1;
-}
-
-/* Interactive Click Ripple Pulse Effect */
-.interactive-click-ripple {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 2px solid #34d399;
-  background: radial-gradient(circle, rgba(52, 211, 153, 0.45) 0%, rgba(16, 185, 129, 0) 70%);
-  transform: translate(-50%, -50%) scale(0);
-  pointer-events: none;
-  z-index: 20;
-  animation: click-ripple-anim 0.8s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
-}
-
-@keyframes click-ripple-anim {
-  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(15); opacity: 0; }
-}
-
-.doctor-3d-main-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transform: translateZ(0);
-}
-
-/* 3D Laser Scanner Beam (GPU Accelerated - No Layout Thrashing) */
-.laser-scanner-beam {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent 0%, rgba(52, 211, 153, 0.4) 20%, #34d399 50%, rgba(52, 211, 153, 0.4) 80%, transparent 100%);
-  animation: laser-scan-gpu 4.5s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 5;
-  transform: translate3d(0, 0, 0);
-  will-change: transform, opacity;
-}
-
-@keyframes laser-scan-gpu {
-  0% { transform: translateY(40px); opacity: 0; }
-  12% { opacity: 0.9; }
-  88% { opacity: 0.9; }
-  100% { transform: translateY(380px); opacity: 0; }
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+  margin-bottom: 6px;
 }
 
 /* Scan Target Box */
@@ -3576,20 +3627,20 @@ html {
    ===================================================================== */
 .stage-3d-grid-floor {
   position: absolute;
-  bottom: -45px;
-  left: 3%;
-  right: 3%;
-  height: 120px;
-  perspective: 700px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32vh;
+  perspective: 800px;
   transform: rotateX(72deg);
   background-image: 
     linear-gradient(to right, rgba(52, 211, 153, 0.22) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(52, 211, 153, 0.22) 1px, transparent 1px);
-  background-size: 28px 28px;
-  mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, transparent 72%);
-  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, transparent 72%);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse at center 85%, rgba(0,0,0,0.85) 0%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center 85%, rgba(0,0,0,0.85) 0%, transparent 75%);
   pointer-events: none;
-  z-index: 0;
+  z-index: 4;
   animation: grid-floor-pulse 4s ease-in-out infinite alternate;
 }
 
@@ -4019,10 +4070,14 @@ html {
 
 @media (max-width: 640px) {
   .doctor-3d-hero {
-    padding: 58px 12px 14px;
+    padding: 0;
+  }
+  .doctor-hero-container {
+    padding: 68px 12px 16px;
   }
   .doctor-hero-intro {
-    margin-bottom: 10px;
+    margin-top: 2px;
+    margin-bottom: 0;
     padding: 0 6px;
   }
   .doctor-hero-title {
@@ -4034,12 +4089,10 @@ html {
     font-size: 12px;
     line-height: 1.4;
   }
-  .doctor-3d-stage-wrapper {
-    margin: 0 auto 8px;
-  }
-  .doctor-3d-image-container {
-    aspect-ratio: 16 / 10;
-    max-height: 240px;
+  .doctor-hero-dock {
+    width: 100%;
+    max-width: 360px;
+    gap: 10px;
   }
   .doctor-hero-actions {
     flex-direction: column;

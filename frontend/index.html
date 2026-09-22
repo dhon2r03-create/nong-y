@@ -20,7 +20,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=85" />
+  <link rel="stylesheet" href="/static/style.css?v=90" />
 </head>
 <body>
 
@@ -63,6 +63,16 @@
       </a>
 
       <div class="top-header-actions">
+        <!-- Nút bật/tắt toàn màn hình chuẩn xác -->
+        <button type="button" class="btn-top-util btn-top-fullscreen" id="btnToggleFullscreen" title="Bật/Tắt chế độ Toàn màn hình (Full Screen)">
+          <svg class="icon-fs-enter" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+          </svg>
+          <svg class="icon-fs-exit" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="display:none;">
+            <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>
+          </svg>
+          <span id="fsBtnLabel">Toàn màn hình</span>
+        </button>
         <a href="https://zalo.me/0981975851" target="_blank" rel="noopener noreferrer" class="btn-top-util btn-top-zalo" title="Liên hệ Zalo tư vấn: 0981975851">
           <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="24" cy="24" r="22" fill="#10b981"/>
@@ -79,7 +89,39 @@
     </div>
   </header>
 
-  <!-- Main Container -->
+  <!-- 3D Full Screen Stage: Bác sĩ khám cây trồng tràn màn hình -->
+  <div class="doctor-3d-stage-wrapper" id="doctor3dStageWrapper" title="Nhấp đúp chuột vào ảnh để bật/tắt toàn màn hình">
+    <!-- 3D Perspective Hologram Grid Floor -->
+    <div class="stage-3d-grid-floor"></div>
+
+    <div class="doctor-3d-card" id="doctor3dCard">
+      <!-- 3D Doctor Illustration with Interactive Depth -->
+      <div class="doctor-3d-image-container" id="doctorImageContainer">
+        <img
+          src="/static/doctor-3d.jpg"
+          alt="Bác Sĩ Cây Trồng AI"
+          class="doctor-3d-main-img"
+          loading="eager"
+        />
+        <!-- Dynamic Interactive Sheen / Glare -->
+        <div class="doctor-3d-glare" id="doctor3dGlare"></div>
+        <!-- 3D Scanning Laser Beam Sweep -->
+        <div class="laser-scanner-beam"></div>
+
+        <!-- Scanning Target Crosshairs aligned with leaf (Khung ngắm không chữ) -->
+        <div class="scan-target-box" id="doctorScanTarget">
+          <div class="target-corner tl"></div>
+          <div class="target-corner tr"></div>
+          <div class="target-corner bl"></div>
+          <div class="target-corner br"></div>
+          <div class="target-line"></div>
+          <div class="target-ring-3d"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container Overlay (HUD Controls) -->
   <div class="doctor-hero-container">
 
     <!-- Tiêu đề & Slogan Web App -->
@@ -92,82 +134,53 @@
       </p>
     </div>
 
-    <!-- 3D Interactive Stage: Bác sĩ khám cây trồng -->
-    <div class="doctor-3d-stage-wrapper" id="doctor3dStageWrapper">
-      <!-- 3D Perspective Hologram Grid Floor -->
-      <div class="stage-3d-grid-floor"></div>
-
-      <div class="doctor-3d-card" id="doctor3dCard">
-        <!-- 3D Doctor Illustration with Interactive Depth -->
-        <div class="doctor-3d-image-container" id="doctorImageContainer">
-          <img
-            src="/static/doctor-3d.jpg"
-            alt="Bác Sĩ Cây Trồng AI"
-            class="doctor-3d-main-img"
-            loading="eager"
-          />
-          <!-- Dynamic Interactive Sheen / Glare -->
-          <div class="doctor-3d-glare" id="doctor3dGlare"></div>
-          <!-- 3D Scanning Laser Beam Sweep -->
-          <div class="laser-scanner-beam"></div>
-
-          <!-- Scanning Target Crosshairs aligned with leaf (Khung ngắm không chữ) -->
-          <div class="scan-target-box" id="doctorScanTarget">
-            <div class="target-corner tl"></div>
-            <div class="target-corner tr"></div>
-            <div class="target-corner bl"></div>
-            <div class="target-corner br"></div>
-            <div class="target-line"></div>
-            <div class="target-ring-3d"></div>
-          </div>
+    <!-- Floating HUD Dock at bottom -->
+    <div class="doctor-hero-dock">
+      <!-- Bộ chọn loài cây trực tiếp trên giao diện chính -->
+      <div class="hero-plant-filter-bar">
+        <div class="hero-filter-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <label class="hero-filter-label" for="plantFilterSelect">Loài cây cần khám:</label>
+        <div class="hero-filter-select-wrap">
+          <select id="plantFilterSelect" class="hero-plant-select">
+            <option value="auto">🌱 Tự động nhận diện (Tất cả 14 loài cây)</option>
+          </select>
         </div>
       </div>
-    </div>
 
-    <!-- Bộ chọn loài cây trực tiếp trên giao diện chính -->
-    <div class="hero-plant-filter-bar">
-      <div class="hero-filter-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.2">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        </svg>
+      <!-- Khu vực nút hành động tinh gọn & hiện đại -->
+      <div class="doctor-hero-actions">
+        <button type="button" class="btn-hero-action btn-hero-primary" id="tabLiveCameraBtn" title="Chụp ảnh khám bệnh bằng camera">
+          <span class="btn-hero-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+            <span class="pulse-beacon"></span>
+          </span>
+          <span class="btn-hero-text">
+            <strong class="btn-hero-title">Camera</strong>
+            <small class="btn-hero-sub">Chụp ảnh lá cây trực tiếp</small>
+          </span>
+        </button>
+
+        <button type="button" class="btn-hero-action btn-hero-secondary" id="tabUploadBtn" title="Tải ảnh lá cây từ thiết bị">
+          <span class="btn-hero-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </span>
+          <span class="btn-hero-text">
+            <strong class="btn-hero-title">Tải Ảnh Lá Cây</strong>
+            <small class="btn-hero-sub">Kéo thả hoặc chọn tệp</small>
+          </span>
+        </button>
       </div>
-      <label class="hero-filter-label" for="plantFilterSelect">Loài cây cần khám:</label>
-      <div class="hero-filter-select-wrap">
-        <select id="plantFilterSelect" class="hero-plant-select">
-          <option value="auto">🌱 Tự động nhận diện (Tất cả 14 loài cây)</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Khu vực nút hành động tinh gọn & hiện đại -->
-    <div class="doctor-hero-actions">
-      <button type="button" class="btn-hero-action btn-hero-primary" id="tabLiveCameraBtn" title="Chụp ảnh khám bệnh bằng camera">
-        <span class="btn-hero-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-            <circle cx="12" cy="13" r="4"/>
-          </svg>
-          <span class="pulse-beacon"></span>
-        </span>
-        <span class="btn-hero-text">
-          <strong class="btn-hero-title">Camera</strong>
-          <small class="btn-hero-sub">Chụp ảnh lá cây trực tiếp</small>
-        </span>
-      </button>
-
-      <button type="button" class="btn-hero-action btn-hero-secondary" id="tabUploadBtn" title="Tải ảnh lá cây từ thiết bị">
-        <span class="btn-hero-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="17 8 12 3 7 8"/>
-            <line x1="12" y1="3" x2="12" y2="15"/>
-          </svg>
-        </span>
-        <span class="btn-hero-text">
-          <strong class="btn-hero-title">Tải Ảnh Lá Cây</strong>
-          <small class="btn-hero-sub">Kéo thả hoặc chọn tệp</small>
-        </span>
-      </button>
     </div>
   </div>
 </section>
@@ -736,6 +749,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=85"></script>
+<script src="/static/app.js?v=90"></script>
 </body>
 </html>
