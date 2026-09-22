@@ -77,8 +77,8 @@ button {
   left: 0;
   width: 100%;
   z-index: 40;
-  padding: 18px 32px;
-  background: transparent;
+  padding: 16px 32px;
+  background: linear-gradient(180deg, rgba(3, 18, 12, 0.55) 0%, rgba(3, 18, 12, 0.12) 80%, transparent 100%);
   box-sizing: border-box;
 }
 
@@ -103,25 +103,26 @@ button {
   gap: 8px;
   padding: 8px 16px;
   border-radius: 9999px;
-  background: rgba(16, 185, 129, 0.14);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(52, 211, 153, 0.28);
-  color: #e2e8f0;
+  background: rgba(6, 35, 23, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  color: #f1f5f9;
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
   transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
   font-family: inherit;
 }
 
 .btn-top-util:hover {
   background: rgba(16, 185, 129, 0.28);
-  border-color: #10b981;
+  border-color: #34d399;
   color: #ffffff;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
 }
 
 .btn-top-phone {
@@ -3346,14 +3347,15 @@ html {
   box-sizing: border-box;
 }
 
-/* Background ảnh nhân vật được đẩy xuống dưới để hiển thị tiêu đề thoáng đãng */
+/* Background ảnh nhân vật mở rộng toàn diện lên trên và đẩy nhẹ xuống dưới để không bị vệt đen */
 .doctor-hero-bg {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  background: #061f14 url('/static/doctor-3d.jpg?v=97') center top / cover no-repeat;
-  transform: translateY(90px) scale(1.12);
+  top: -120px;
+  left: -4%;
+  width: 108%;
+  height: calc(100% + 160px);
+  background: #061f14 url('/static/doctor-3d.jpg?v=98') center top / cover no-repeat;
+  transform: translateY(105px);
   transform-origin: center top;
   pointer-events: none;
   z-index: 0;
@@ -3366,7 +3368,13 @@ html {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(6, 31, 20, 0.72) 0%, rgba(6, 31, 20, 0.04) 28%, transparent 55%, rgba(6, 31, 20, 0.92) 100%);
+  background: linear-gradient(180deg, 
+    rgba(4, 20, 13, 0.6) 0%, 
+    rgba(4, 20, 13, 0.2) 24%, 
+    rgba(4, 20, 13, 0.02) 48%, 
+    rgba(4, 20, 13, 0.55) 80%, 
+    rgba(4, 20, 13, 0.95) 100%
+  );
   pointer-events: none;
   z-index: 1;
 }
@@ -3396,13 +3404,13 @@ html {
   justify-content: space-between;
   text-align: center;
   box-sizing: border-box;
-  padding: 86px 20px 24px;
+  padding: 82px 20px 24px;
   pointer-events: none;
 }
 
 /* Doctor Hero Intro - KHÔNG CÒN KHUNG, THOÁNG ĐÃNG VÀ NỔI BẬT */
 .doctor-hero-intro {
-  margin-top: 8px;
+  margin-top: 4px;
   margin-bottom: 0;
   text-align: center;
   max-width: 840px;
@@ -3414,6 +3422,48 @@ html {
   -webkit-backdrop-filter: none;
   animation: heroIntroFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
   pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Chip Badge công nghệ AI hiện đại */
+.hero-chip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 15px;
+  margin-bottom: 10px;
+  border-radius: 9999px;
+  background: rgba(6, 35, 23, 0.6);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-size: 12px;
+  font-weight: 600;
+  color: #a7f3d0;
+  letter-spacing: 0.35px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  user-select: none;
+}
+
+.hero-chip-badge .chip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 10px #34d399;
+  animation: badgeDotPulse 2s infinite ease-in-out;
+}
+
+.hero-chip-badge .chip-sparkle {
+  color: #fbbf24;
+  font-size: 11px;
+}
+
+@keyframes badgeDotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.8); }
 }
 
 .doctor-hero-title {
@@ -3421,29 +3471,31 @@ html {
   font-weight: 800;
   color: #ffffff;
   line-height: 1.22;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.6px;
   font-family: 'Plus Jakarta Sans', var(--font-sans);
   margin-bottom: 8px;
-  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.95), 0 1px 4px rgba(0, 0, 0, 0.9);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8), 0 4px 28px rgba(0, 0, 0, 0.6);
 }
 
 .doctor-hero-title .highlight-gradient {
-  background: linear-gradient(135deg, #34d399 0%, #10b981 60%, #6ee7b7 100%);
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #86efac 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
-  filter: drop-shadow(0 2px 10px rgba(16, 185, 129, 0.6));
+  font-weight: 800;
+  text-shadow: none !important;
+  filter: drop-shadow(0 2px 12px rgba(34, 197, 94, 0.45));
 }
 
 .doctor-hero-subtitle {
-  font-size: clamp(14px, 1.8vw, 17px);
+  font-size: clamp(14px, 1.8vw, 16.5px);
   font-weight: 500;
-  color: #ffffff;
-  line-height: 1.55;
+  color: rgba(241, 245, 249, 0.95);
+  line-height: 1.5;
   letter-spacing: 0.12px;
-  opacity: 0.98;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 1px 4px rgba(0, 0, 0, 0.9);
-  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+  margin: 0 auto;
+  max-width: 640px;
 }
 
 @keyframes heroIntroFadeIn {
@@ -3962,19 +4014,27 @@ html {
     padding: 0;
   }
   .doctor-hero-bg {
-    transform: translateY(50px) scale(1.15);
+    top: -70px;
+    height: calc(100% + 120px);
+    transform: translateY(60px);
     background-position: center top;
   }
   .doctor-hero-container {
-    padding: 68px 12px 16px;
+    padding: 64px 12px 16px;
   }
   .doctor-hero-intro {
     margin-top: 2px;
     margin-bottom: 0;
     padding: 0 6px;
   }
+  .hero-chip-badge {
+    font-size: 11px;
+    padding: 4px 11px;
+    margin-bottom: 6px;
+    gap: 6px;
+  }
   .doctor-hero-title {
-    font-size: 22px;
+    font-size: 21px;
     line-height: 1.25;
     margin-bottom: 4px;
   }
