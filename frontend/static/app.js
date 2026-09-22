@@ -1397,109 +1397,13 @@
     window.innerWidth <= 768;
 
   // 1. Tương tác ảnh 3D mượt mà, theo dõi chuyển động chuột & chạm thông minh
-  const scanTarget = document.getElementById('doctorScanTarget');
-  const imageContainer = document.getElementById('doctorImageContainer');
-
-  if (card3d && stageWrapper) {
-    let targetRotX = 0;
-    let targetRotY = 0;
-    let targetXPercent = 29;
-    let targetYPercent = 48;
-    let isHovering = false;
-    let rAfTilt = null;
-
-    const renderCardTilt = () => {
-      if (isHovering) {
-        card3d.style.transform = `perspective(1200px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(1.01, 1.01, 1.01)`;
-      } else {
-        card3d.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+  // Hỗ trợ nhấp đúp vào màn hình chính để bật/tắt toàn màn hình
+  if (heroSection) {
+    heroSection.addEventListener('dblclick', (e) => {
+      if (!e.target.closest('button, select, a, input, label')) {
+        e.preventDefault();
+        toggleFullScreenMode();
       }
-      rAfTilt = null;
-    };
-
-    const handlePointerMove = (clientX, clientY) => {
-      const rect = stageWrapper.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
-      const px = Math.max(-0.5, Math.min(0.5, (clientX - rect.left) / rect.width - 0.5));
-      const py = Math.max(-0.5, Math.min(0.5, (clientY - rect.top) / rect.height - 0.5));
-
-      targetRotX = -py * 7; // Smooth gentle tilt for full screen
-      targetRotY = px * 9;
-      isHovering = true;
-
-      // Cập nhật điểm sáng lóa (Glare) & tọa độ mục tiêu quét
-      const mouseX = ((px + 0.5) * 100).toFixed(1);
-      const mouseY = ((py + 0.5) * 100).toFixed(1);
-      card3d.style.setProperty('--mouse-x', `${mouseX}%`);
-      card3d.style.setProperty('--mouse-y', `${mouseY}%`);
-
-      targetXPercent = 29 + px * 22;
-      targetYPercent = 48 + py * 22;
-      if (scanTarget) {
-        scanTarget.style.setProperty('--target-x', `${targetXPercent.toFixed(1)}%`);
-        scanTarget.style.setProperty('--target-y', `${targetYPercent.toFixed(1)}%`);
-      }
-
-      if (!rAfTilt) {
-        rAfTilt = requestAnimationFrame(renderCardTilt);
-      }
-    };
-
-    const handlePointerLeave = () => {
-      isHovering = false;
-      targetRotX = 0;
-      targetRotY = 0;
-      if (scanTarget) {
-        scanTarget.style.setProperty('--target-x', '29%');
-        scanTarget.style.setProperty('--target-y', '48%');
-      }
-      if (!rAfTilt) {
-        rAfTilt = requestAnimationFrame(renderCardTilt);
-      }
-    };
-
-    // Theo dõi chuyển động chuột toàn màn hình mượt mà
-    window.addEventListener('pointermove', (e) => {
-      handlePointerMove(e.clientX, e.clientY);
-    }, { passive: true });
-
-    document.addEventListener('mouseleave', handlePointerLeave, { passive: true });
-
-    // Hỗ trợ nhấp đúp chuột vào ảnh để bật/tắt toàn màn hình
-    stageWrapper.addEventListener('dblclick', (e) => {
-      e.preventDefault();
-      toggleFullScreenMode();
-    });
-
-    // Hiệu ứng chạm / click tạo sóng xung kích laser
-    stageWrapper.addEventListener('click', (e) => {
-      const rect = stageWrapper.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const clickY = e.clientY - rect.top;
-
-      // Tạo hạt sóng ripple
-      const ripple = document.createElement('div');
-      ripple.className = 'interactive-click-ripple';
-      ripple.style.left = `${clickX}px`;
-      ripple.style.top = `${clickY}px`;
-      if (imageContainer) {
-        imageContainer.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 850);
-      }
-
-      if (typeof window.triggerParticleWarp === 'function') {
-        window.triggerParticleWarp();
-      }
-
-      // Kích hoạt rung nhẹ ảnh
-      card3d.style.transform = `perspective(1200px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(0.99, 0.99, 0.99)`;
-      setTimeout(() => {
-        if (isHovering) {
-          card3d.style.transform = `perspective(1200px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(1.01, 1.01, 1.01)`;
-        } else {
-          card3d.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-        }
-      }, 150);
     });
   }
 

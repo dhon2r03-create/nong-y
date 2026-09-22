@@ -3324,6 +3324,9 @@ html {
 /* =====================================================================
    3D PLANT DOCTOR INTERACTIVE HERO SECTION (ÔNG BÁC SĨ KHÁM CÂY TRỒNG)
    ===================================================================== */
+/* =====================================================================
+   HERO SECTION VỚI HÌNH ẢNH 3D NÔNG DÂN LÀM BACKGROUND FULL MÀN HÌNH
+   ===================================================================== */
 .doctor-3d-hero {
   position: relative;
   width: 100vw;
@@ -3332,7 +3335,7 @@ html {
   height: 100dvh;
   min-height: 100vh;
   min-height: 100dvh;
-  background: #061f14;
+  background: #061f14 url('/static/doctor-3d.jpg') center 28% / cover no-repeat;
   color: #ffffff;
   padding: 0;
   display: flex;
@@ -3341,6 +3344,18 @@ html {
   justify-content: space-between;
   overflow: hidden;
   box-sizing: border-box;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Lớp phủ điện ảnh làm nổi bật tiêu đề & cụm nút bấm bên dưới */
+.doctor-3d-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 31, 20, 0.78) 0%, rgba(6, 31, 20, 0.06) 26%, rgba(6, 31, 20, 0.14) 60%, rgba(6, 31, 20, 0.92) 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* 3D Particle Canvas */
@@ -3350,153 +3365,8 @@ html {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 3;
-  pointer-events: none;
-}
-
-/* Ambient Radial Glows (GPU Accelerated, No Heavy Filter Blur) */
-.doctor-ambient-glow {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.7;
-}
-
-.glow-emerald {
-  width: 700px;
-  height: 500px;
-  background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.06) 50%, transparent 75%);
-  top: -100px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.glow-lime {
-  width: 500px;
-  height: 400px;
-  background: radial-gradient(ellipse at center, rgba(52, 211, 153, 0.16) 0%, rgba(52, 211, 153, 0.03) 45%, transparent 70%);
-  bottom: 40px;
-  right: 5%;
-}
-
-/* 3D Full Screen Stage & Card */
-.doctor-3d-stage-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  max-width: none;
-  perspective: 1200px;
-  perspective-origin: 50% 45%;
-  overflow: hidden;
   z-index: 2;
-  cursor: pointer;
-}
-
-.doctor-3d-card {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  cursor: pointer;
-  transform-style: preserve-3d;
-  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-  will-change: transform;
-}
-
-.doctor-3d-image-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  max-height: none;
-  border-radius: 0;
-  aspect-ratio: auto;
-  background: #061f14;
-  overflow: hidden;
-}
-
-.doctor-3d-main-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 30%;
-  display: block;
-  transform: translateZ(0) scale(1.04);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
-}
-
-/* Cinematic Vignette Overlay over Full Screen 3D image */
-.doctor-3d-image-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 45%, rgba(6, 31, 20, 0.1) 0%, rgba(6, 31, 20, 0.42) 65%, rgba(6, 31, 20, 0.88) 100%),
-              linear-gradient(180deg, rgba(6, 31, 20, 0.78) 0%, transparent 18%, transparent 60%, rgba(6, 31, 20, 0.94) 100%);
   pointer-events: none;
-  z-index: 6;
-}
-
-/* Dynamic Interactive Glare Sheen across full screen */
-.doctor-3d-glare {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(circle 480px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.14), transparent 70%);
-  opacity: 0.6;
-  transition: opacity 0.3s ease;
-  z-index: 7;
-}
-
-/* Interactive Click Ripple Pulse Effect */
-.interactive-click-ripple {
-  position: absolute;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 2px solid #34d399;
-  background: radial-gradient(circle, rgba(52, 211, 153, 0.5) 0%, rgba(16, 185, 129, 0) 70%);
-  transform: translate(-50%, -50%) scale(0);
-  pointer-events: none;
-  z-index: 20;
-  animation: click-ripple-anim 0.85s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
-}
-
-@keyframes click-ripple-anim {
-  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(22); opacity: 0; }
-}
-
-/* 3D Laser Scanner Beam across full screen height */
-.laser-scanner-beam {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2.5px;
-  background: linear-gradient(90deg, transparent 0%, rgba(52, 211, 153, 0.35) 15%, #34d399 50%, rgba(52, 211, 153, 0.35) 85%, transparent 100%);
-  animation: laser-scan-gpu 5s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 5;
-  transform: translate3d(0, 0, 0);
-  box-shadow: 0 0 16px rgba(52, 211, 153, 0.7);
-  will-change: transform, opacity;
-}
-
-@keyframes laser-scan-gpu {
-  0% { transform: translateY(6vh); opacity: 0; }
-  12% { opacity: 0.95; }
-  88% { opacity: 0.95; }
-  100% { transform: translateY(94vh); opacity: 0; }
 }
 
 /* Main HUD Overlay Container */
@@ -3513,48 +3383,81 @@ html {
   justify-content: space-between;
   text-align: center;
   box-sizing: border-box;
-  padding: 88px 20px 24px;
+  padding: 86px 20px 24px;
   pointer-events: none;
 }
 
-/* Doctor Hero Intro (Tiêu đề & Slogan Web App) */
+/* Doctor Hero Intro - BẢNG TIÊU ĐỀ NỔI BẬT CAO CẤP */
 .doctor-hero-intro {
-  margin-top: 4px;
+  margin-top: 14px;
   margin-bottom: 0;
   text-align: center;
-  max-width: 760px;
+  max-width: 780px;
+  padding: 18px 30px;
+  border-radius: 22px;
+  background: rgba(6, 31, 20, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1.5px solid rgba(52, 211, 153, 0.45);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.65), 0 0 28px rgba(16, 185, 129, 0.22);
   animation: heroIntroFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
   pointer-events: auto;
 }
 
+.hero-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.22);
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  color: #6ee7b7;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.hero-badge-pill .badge-dot-live {
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulse-dot-anim 1.5s infinite;
+}
+
 .doctor-hero-title {
-  font-size: clamp(22px, 3.8vw, 34px);
+  font-size: clamp(24px, 4vw, 36px);
   font-weight: 800;
   color: #ffffff;
   line-height: 1.25;
   letter-spacing: -0.5px;
   font-family: 'Plus Jakarta Sans', var(--font-sans);
   margin-bottom: 6px;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65), 0 0 24px rgba(16, 185, 129, 0.2);
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85);
 }
 
 .doctor-hero-title .highlight-gradient {
-  background: linear-gradient(135deg, #34d399 0%, #10b981 60%, #6ee7b7 100%);
+  background: linear-gradient(135deg, #34d399 0%, #10b981 60%, #a7f3d0 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
   text-shadow: none;
-  filter: drop-shadow(0 2px 10px rgba(16, 185, 129, 0.45));
+  filter: drop-shadow(0 2px 10px rgba(16, 185, 129, 0.5));
 }
 
 .doctor-hero-subtitle {
-  font-size: clamp(13px, 1.7vw, 15.5px);
+  font-size: clamp(13px, 1.75vw, 15.5px);
   font-weight: 500;
-  color: #e2e8f0;
+  color: #f1f5f9;
   line-height: 1.5;
-  letter-spacing: 0.1px;
-  opacity: 0.95;
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.12px;
+  opacity: 0.96;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
+  margin: 0;
 }
 
 @keyframes heroIntroFadeIn {

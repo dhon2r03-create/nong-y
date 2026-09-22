@@ -20,7 +20,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=90" />
+  <link rel="stylesheet" href="/static/style.css?v=95" />
 </head>
 <body>
 
@@ -31,14 +31,6 @@
   <!-- Dynamic 3D interactive particle canvas -->
   <canvas id="doctor3dCanvas" class="doctor-3d-canvas pointer-events-none"></canvas>
 
-  <!-- Ambient glowing lighting blurs -->
-  <div class="doctor-ambient-glow glow-emerald"></div>
-  <div class="doctor-ambient-glow glow-lime"></div>
-
-  <!-- Floating 3D Bio-Orbs with Depth-of-Field -->
-  <div class="bio-3d-orb orb-1" aria-hidden="true"></div>
-  <div class="bio-3d-orb orb-2" aria-hidden="true"></div>
-  <div class="bio-3d-orb orb-3" aria-hidden="true"></div>
 
   <!-- Top Glass Header (Logo & Tiện ích) -->
   <header class="app-top-header" id="appTopHeader">
@@ -89,48 +81,20 @@
     </div>
   </header>
 
-  <!-- 3D Full Screen Stage: Bác sĩ khám cây trồng tràn màn hình -->
-  <div class="doctor-3d-stage-wrapper" id="doctor3dStageWrapper" title="Nhấp đúp chuột vào ảnh để bật/tắt toàn màn hình">
-    <!-- 3D Perspective Hologram Grid Floor -->
-    <div class="stage-3d-grid-floor"></div>
-
-    <div class="doctor-3d-card" id="doctor3dCard">
-      <!-- 3D Doctor Illustration with Interactive Depth -->
-      <div class="doctor-3d-image-container" id="doctorImageContainer">
-        <img
-          src="/static/doctor-3d.jpg"
-          alt="Bác Sĩ Cây Trồng AI"
-          class="doctor-3d-main-img"
-          loading="eager"
-        />
-        <!-- Dynamic Interactive Sheen / Glare -->
-        <div class="doctor-3d-glare" id="doctor3dGlare"></div>
-        <!-- 3D Scanning Laser Beam Sweep -->
-        <div class="laser-scanner-beam"></div>
-
-        <!-- Scanning Target Crosshairs aligned with leaf (Khung ngắm không chữ) -->
-        <div class="scan-target-box" id="doctorScanTarget">
-          <div class="target-corner tl"></div>
-          <div class="target-corner tr"></div>
-          <div class="target-corner bl"></div>
-          <div class="target-corner br"></div>
-          <div class="target-line"></div>
-          <div class="target-ring-3d"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Main Container Overlay (HUD Controls) -->
+  <!-- Main Container Overlay -->
   <div class="doctor-hero-container">
 
-    <!-- Tiêu đề & Slogan Web App -->
+    <!-- Tiêu đề & Slogan Web App Nổi Bật -->
     <div class="doctor-hero-intro">
+      <div class="hero-badge-pill">
+        <span class="badge-dot-live"></span>
+        <span>Hệ Thống Trí Tuệ Nhân Tạo Chăm Sóc Cây Trồng</span>
+      </div>
       <h1 class="doctor-hero-title">
-        Web App Nhận Diện <span class="highlight-gradient">Bệnh Cây Trồng</span>
+        Bác Sĩ Cây Trồng <span class="highlight-gradient">Nông Y AI</span>
       </h1>
       <p class="doctor-hero-subtitle">
-        Chẩn đoán mầm bệnh tức thì &amp; kê đơn điều trị chuẩn xác
+        Chẩn đoán mầm bệnh tức thì qua hình ảnh &amp; đề xuất phác đồ điều trị chuẩn xác cho nhà nông
       </p>
     </div>
 
@@ -749,6 +713,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=90"></script>
+<script src="/static/app.js?v=95"></script>
 </body>
 </html>
