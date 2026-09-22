@@ -3347,15 +3347,15 @@ html {
   box-sizing: border-box;
 }
 
-/* Background ảnh nhân vật mở rộng toàn diện lên trên và đẩy nhẹ xuống dưới để không bị vệt đen */
+/* Background ảnh 3D tối giản mới: phủ toàn màn hình, căn chỉnh tỷ lệ vàng */
 .doctor-hero-bg {
   position: absolute;
-  top: -120px;
-  left: -4%;
-  width: 108%;
-  height: calc(100% + 160px);
-  background: #061f14 url('/static/doctor-3d.jpg?v=98') center top / cover no-repeat;
-  transform: translateY(105px);
+  top: -80px;
+  left: -2%;
+  width: 104%;
+  height: calc(100% + 120px);
+  background: #09261a url('/static/doctor-3d.jpg?v=99') center top / cover no-repeat;
+  transform: translateY(70px);
   transform-origin: center top;
   pointer-events: none;
   z-index: 0;
@@ -3369,11 +3369,11 @@ html {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, 
-    rgba(4, 20, 13, 0.6) 0%, 
-    rgba(4, 20, 13, 0.2) 24%, 
-    rgba(4, 20, 13, 0.02) 48%, 
-    rgba(4, 20, 13, 0.55) 80%, 
-    rgba(4, 20, 13, 0.95) 100%
+    rgba(3, 18, 12, 0.45) 0%, 
+    rgba(3, 18, 12, 0.12) 25%, 
+    transparent 45%, 
+    rgba(3, 18, 12, 0.4) 80%, 
+    rgba(3, 18, 12, 0.88) 100%
   );
   pointer-events: none;
   z-index: 1;
@@ -4014,9 +4014,9 @@ html {
     padding: 0;
   }
   .doctor-hero-bg {
-    top: -70px;
-    height: calc(100% + 120px);
-    transform: translateY(60px);
+    top: -50px;
+    height: calc(100% + 100px);
+    transform: translateY(45px);
     background-position: center top;
   }
   .doctor-hero-container {
