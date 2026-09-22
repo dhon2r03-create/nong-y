@@ -20,7 +20,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=60" />
+  <link rel="stylesheet" href="/static/style.css?v=70" />
 </head>
 <body>
 
@@ -34,6 +34,11 @@
   <!-- Ambient glowing lighting blurs -->
   <div class="doctor-ambient-glow glow-emerald"></div>
   <div class="doctor-ambient-glow glow-lime"></div>
+
+  <!-- Floating 3D Bio-Orbs with Depth-of-Field -->
+  <div class="bio-3d-orb orb-1" aria-hidden="true"></div>
+  <div class="bio-3d-orb orb-2" aria-hidden="true"></div>
+  <div class="bio-3d-orb orb-3" aria-hidden="true"></div>
 
   <!-- Top Glass Header (Logo & Tiện ích) -->
   <header class="app-top-header" id="appTopHeader">
@@ -89,6 +94,9 @@
 
     <!-- 3D Interactive Stage: Bác sĩ khám cây trồng -->
     <div class="doctor-3d-stage-wrapper" id="doctor3dStageWrapper">
+      <!-- 3D Perspective Hologram Grid Floor -->
+      <div class="stage-3d-grid-floor"></div>
+
       <div class="doctor-3d-card" id="doctor3dCard" title="Nhấn vào ảnh để kích hoạt quét AI hoặc di chuyển chuột để tương tác 3D">
         <!-- 3D Doctor Illustration with Interactive Depth -->
         <div class="doctor-3d-image-container" id="doctorImageContainer">
@@ -102,6 +110,28 @@
           <div class="doctor-3d-glare" id="doctor3dGlare"></div>
           <!-- 3D Scanning Laser Beam Sweep -->
           <div class="laser-scanner-beam"></div>
+
+          <!-- 3D Holographic Parallax Depth Chips -->
+          <div class="chip-3d chip-3d-tl" id="chip3dTL">
+            <span class="chip-3d-dot"></span>
+            <span class="chip-3d-label">AI Neural Net • 99.4%</span>
+          </div>
+
+          <div class="chip-3d chip-3d-tr" id="chip3dTR">
+            <span class="chip-3d-sparkle">⚡</span>
+            <span class="chip-3d-label">Grad-CAM 3D Active</span>
+          </div>
+
+          <div class="chip-3d chip-3d-bl" id="chip3dBL">
+            <span class="chip-3d-sparkle">🌿</span>
+            <span class="chip-3d-label">14 Loài Cây • 38 Bệnh</span>
+          </div>
+
+          <div class="chip-3d chip-3d-br" id="chip3dBR">
+            <span class="chip-3d-sparkle">🛡️</span>
+            <span class="chip-3d-label">Toa BVTV Chuẩn Số</span>
+          </div>
+
           <!-- Scanning Target Crosshairs aligned with leaf -->
           <div class="scan-target-box" id="doctorScanTarget">
             <div class="target-corner tl"></div>
@@ -109,6 +139,7 @@
             <div class="target-corner bl"></div>
             <div class="target-corner br"></div>
             <div class="target-line"></div>
+            <div class="target-ring-3d"></div>
             <span class="target-label" id="targetLabelText">AI SCANNING LEAF</span>
           </div>
         </div>
@@ -367,11 +398,17 @@
                   Chụp lại / Đổi ảnh khác
                 </button>
               </div>
-              <div class="preview-image-box">
+              <div class="preview-image-box" id="previewImageBox">
                 <img id="previewImg" alt="Ảnh lá cây xem trước" />
+                <div class="preview-3d-glare" id="preview3dGlare"></div>
+                <div class="preview-3d-laser-grid"></div>
                 <div class="preview-scan-corners">
                   <span class="psc tl"></span><span class="psc tr"></span>
                   <span class="psc bl"></span><span class="psc br"></span>
+                </div>
+                <div class="preview-3d-specimen-badge">
+                  <span class="badge-dot-live"></span>
+                  <span>3D Specimen Scanner Active</span>
                 </div>
               </div>
             </div>
@@ -721,6 +758,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=60"></script>
+<script src="/static/app.js?v=70"></script>
 </body>
 </html>

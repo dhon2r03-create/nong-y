@@ -1381,11 +1381,24 @@
     let isHovering = false;
     let rAfTilt = null;
 
+    const chipTL = document.getElementById('chip3dTL');
+    const chipTR = document.getElementById('chip3dTR');
+    const chipBL = document.getElementById('chip3dBL');
+    const chipBR = document.getElementById('chip3dBR');
+
     const renderCardTilt = () => {
       if (isHovering) {
         card3d.style.transform = `perspective(1000px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+        if (chipTL) chipTL.style.transform = `translate3d(${-targetRotY * 1.6}px, ${targetRotX * 1.4}px, 50px)`;
+        if (chipTR) chipTR.style.transform = `translate3d(${-targetRotY * 1.3}px, ${targetRotX * 1.3}px, 54px)`;
+        if (chipBL) chipBL.style.transform = `translate3d(${-targetRotY * 1.1}px, ${targetRotX * 1.1}px, 44px)`;
+        if (chipBR) chipBR.style.transform = `translate3d(${-targetRotY * 1.5}px, ${targetRotX * 1.5}px, 48px)`;
       } else {
         card3d.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        if (chipTL) chipTL.style.transform = 'translate3d(0, 0, 48px)';
+        if (chipTR) chipTR.style.transform = 'translate3d(0, 0, 48px)';
+        if (chipBL) chipBL.style.transform = 'translate3d(0, 0, 48px)';
+        if (chipBR) chipBR.style.transform = 'translate3d(0, 0, 48px)';
       }
       rAfTilt = null;
     };
@@ -1475,6 +1488,26 @@
       }, 150);
 
       showToast('🌿 AI Bác Sĩ Cây Trồng đã sẵn sàng! Bấm nút "Camera" hoặc "Tải Ảnh Lá Cây" bên dưới để khám bệnh ngay.', 'info');
+    });
+  }
+
+  // 1.2 Tương tác kiểm tra tiêu bản 3D cho ảnh xem trước trong modal
+  const previewImageBox = document.getElementById('previewImageBox');
+  if (previewImageBox) {
+    previewImageBox.addEventListener('pointermove', (e) => {
+      const rect = previewImageBox.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const px = Math.max(-0.5, Math.min(0.5, (e.clientX - rect.left) / rect.width - 0.5));
+      const py = Math.max(-0.5, Math.min(0.5, (e.clientY - rect.top) / rect.height - 0.5));
+      const prevRotX = -py * 12;
+      const prevRotY = px * 14;
+      previewImageBox.style.transform = `perspective(900px) rotateX(${prevRotX.toFixed(2)}deg) rotateY(${prevRotY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+      previewImageBox.style.setProperty('--prev-x', `${((px + 0.5) * 100).toFixed(1)}%`);
+      previewImageBox.style.setProperty('--prev-y', `${((py + 0.5) * 100).toFixed(1)}%`);
+    }, { passive: true });
+
+    previewImageBox.addEventListener('pointerleave', () => {
+      previewImageBox.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
     });
   }
 

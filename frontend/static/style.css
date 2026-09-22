@@ -3585,29 +3585,221 @@ html {
   border: 1px solid rgba(52, 211, 153, 0.3);
 }
 
-/* Floating 3D Hologram Chips (High Performance, No Heavy Continuous Blur Repaint) */
-.hologram-chip {
+/* =====================================================================
+   3D PERSPECTIVE HOLOGRAPHIC GRID FLOOR & ELEMENTS
+   ===================================================================== */
+.stage-3d-grid-floor {
   position: absolute;
-  display: flex;
+  bottom: -45px;
+  left: 3%;
+  right: 3%;
+  height: 120px;
+  perspective: 700px;
+  transform: rotateX(72deg);
+  background-image: 
+    linear-gradient(to right, rgba(52, 211, 153, 0.22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(52, 211, 153, 0.22) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, transparent 72%);
+  pointer-events: none;
+  z-index: 0;
+  animation: grid-floor-pulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes grid-floor-pulse {
+  0% { opacity: 0.55; transform: rotateX(72deg) translateY(0); }
+  100% { opacity: 0.95; transform: rotateX(72deg) translateY(6px); }
+}
+
+/* 3D Holographic Parallax Floating Chips */
+.chip-3d {
+  position: absolute;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  background: rgba(7, 31, 21, 0.92);
-  border: 1.5px solid rgba(16, 185, 129, 0.4);
-  border-radius: 14px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
-  transform: translate3d(0, 0, 0);
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(6, 30, 20, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(52, 211, 153, 0.5);
+  border-radius: 9999px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.6), 0 0 16px rgba(16, 185, 129, 0.28);
+  pointer-events: none;
   z-index: 10;
+  transform: translateZ(48px);
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s ease;
+  will-change: transform;
 }
 
-.chip-left {
-  top: 18px;
-  left: -14px;
+.chip-3d-tl { top: 14px; left: 14px; }
+.chip-3d-tr { top: 14px; right: 14px; }
+.chip-3d-bl { bottom: 14px; left: 14px; }
+.chip-3d-br { bottom: 14px; right: 14px; }
+
+.chip-3d-dot {
+  width: 7.5px;
+  height: 7.5px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 10px #34d399;
+  animation: pulse-dot-anim 1.4s infinite;
 }
 
-.chip-right {
-  bottom: 20px;
-  right: -14px;
+.chip-3d-sparkle {
+  font-size: 13px;
+  filter: drop-shadow(0 0 6px rgba(52, 211, 153, 0.8));
+}
+
+.chip-3d-label {
+  white-space: nowrap;
+}
+
+/* 3D Rotating Target Ring */
+.target-ring-3d {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(52, 211, 153, 0.55);
+  animation: rotate-target-ring 14s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotate-target-ring {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Floating 3D Bio-Orbs with Depth-of-Field */
+.bio-3d-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bio-3d-orb.orb-1 {
+  width: 220px;
+  height: 220px;
+  top: 8%;
+  left: -60px;
+  background: radial-gradient(circle at 35% 35%, rgba(52, 211, 153, 0.35) 0%, rgba(16, 185, 129, 0.12) 50%, transparent 75%);
+  filter: blur(28px);
+  animation: float-orb-1 9s ease-in-out infinite alternate;
+}
+
+.bio-3d-orb.orb-2 {
+  width: 280px;
+  height: 280px;
+  top: 25%;
+  right: -90px;
+  background: radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.28) 0%, rgba(5, 150, 105, 0.1) 55%, transparent 80%);
+  filter: blur(34px);
+  animation: float-orb-2 12s ease-in-out infinite alternate;
+}
+
+.bio-3d-orb.orb-3 {
+  width: 180px;
+  height: 180px;
+  bottom: 12%;
+  left: 30%;
+  background: radial-gradient(circle at 40% 40%, rgba(52, 211, 153, 0.25) 0%, transparent 70%);
+  filter: blur(24px);
+  animation: float-orb-3 10s ease-in-out infinite alternate;
+}
+
+@keyframes float-orb-1 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(40px, 30px, 0) scale(1.15); }
+}
+
+@keyframes float-orb-2 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(-35px, 45px, 0) scale(0.92); }
+}
+
+@keyframes float-orb-3 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(25px, -30px, 0) scale(1.08); }
+}
+
+/* 3D Specimen Scanner in Modal Preview */
+.preview-image-box {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  perspective: 900px;
+  transform-style: preserve-3d;
+  background: #061c12;
+  border: 1.5px solid rgba(52, 211, 153, 0.35);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.6);
+  cursor: crosshair;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.preview-image-box:hover {
+  border-color: rgba(52, 211, 153, 0.7);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6), 0 0 25px rgba(16, 185, 129, 0.25);
+}
+
+.preview-3d-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle 280px at var(--prev-x, 50%) var(--prev-y, 50%), rgba(255, 255, 255, 0.18), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 5;
+}
+
+.preview-image-box:hover .preview-3d-glare {
+  opacity: 1;
+}
+
+.preview-3d-laser-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(52, 211, 153, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(52, 211, 153, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0.75;
+}
+
+.preview-3d-specimen-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  background: rgba(6, 28, 18, 0.88);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #a7f3d0;
+  letter-spacing: 0.3px;
+  z-index: 6;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.preview-3d-specimen-badge .badge-dot-live {
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulse-dot-anim 1.2s infinite;
 }
 
 @media (max-width: 768px) {
@@ -3617,26 +3809,17 @@ html {
   .doctor-3d-card {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   }
-  .chip-left {
-    left: 8px;
-    top: 8px;
-    padding: 6px 10px;
+  .chip-3d {
+    font-size: 10.5px;
+    padding: 4px 9px;
   }
-  .chip-right {
-    right: 8px;
-    bottom: 8px;
-    padding: 6px 10px;
+  .chip-3d-tl { top: 8px; left: 8px; }
+  .chip-3d-tr { top: 8px; right: 8px; }
+  .chip-3d-bl { bottom: 8px; left: 8px; }
+  .chip-3d-br { bottom: 8px; right: 8px; }
+  .stage-3d-grid-floor {
+    display: none;
   }
-}
-
-.chip-icon {
-  font-size: 20px;
-}
-
-.chip-info {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
 }
 
 .chip-title {
