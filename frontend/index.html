@@ -20,7 +20,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=99" />
+  <link rel="stylesheet" href="/static/style.css?v=100" />
 </head>
 <body>
 
@@ -28,11 +28,41 @@
      3D PLANT DOCTOR INTERACTIVE HERO SECTION (ÔNG BÁC SĨ KHÁM CÂY TRỒNG)
      ===================================================================== -->
 <section class="doctor-3d-hero relative w-full overflow-hidden select-none" id="doctorHero">
-  <!-- Lớp background ảnh nhân vật được căn đẩy xuống để hiển thị tiêu đề -->
+  <!-- Lớp background ảnh phòng khám tối giản -->
   <div class="doctor-hero-bg" id="doctorHeroBg"></div>
 
   <!-- Dynamic 3D interactive particle canvas -->
   <canvas id="doctor3dCanvas" class="doctor-3d-canvas pointer-events-none"></canvas>
+
+  <!-- Lớp nhân vật 3D tách nền tương tác chuyển động theo chuột -->
+  <div class="doctor-character-stage" id="doctorCharacterStage">
+    <div class="doctor-character-wrap" id="doctorCharacterWrap">
+      <!-- Bong bóng thoại tương tác khi trò chuyện/click vào nhân vật -->
+      <div class="doctor-speech-bubble" id="doctorSpeechBubble" aria-live="polite">
+        <div class="bubble-sparkle">✨</div>
+        <span class="bubble-text" id="doctorSpeechText">Xin chào bà con! Tôi là Bác Sĩ Cây Trồng Nông Y AI.</span>
+      </div>
+
+      <!-- Vầng hào quang sinh học dưới chân nhân vật -->
+      <div class="doctor-shadow-aura" id="doctorShadowAura"></div>
+
+      <!-- Ảnh nhân vật 3D tách nền trong suốt -->
+      <img src="/static/doctor-chibi.png?v=100" 
+           alt="Bác sĩ Cây Trồng 3D" 
+           class="doctor-character-img" 
+           id="doctorCharacterImg" 
+           draggable="false" />
+
+      <!-- Hiệu ứng tia sáng ma thuật tỏa ra từ chiếc lá khi click -->
+      <div class="leaf-glow-fx" id="leafGlowFx"></div>
+
+      <!-- Nhãn tương tác gợi ý cho người dùng -->
+      <div class="character-interact-hint">
+        <span class="hint-icon">👋</span>
+        <span>Chạm / Di chuột để tương tác</span>
+      </div>
+    </div>
+  </div>
 
   <!-- Top Glass Header (Logo & Tiện ích) -->
   <header class="app-top-header" id="appTopHeader">
@@ -716,6 +746,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=99"></script>
+<script src="/static/app.js?v=100"></script>
 </body>
 </html>
