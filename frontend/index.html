@@ -20,7 +20,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=95" />
+  <link rel="stylesheet" href="/static/style.css?v=96" />
 </head>
 <body>
 
@@ -28,9 +28,11 @@
      3D PLANT DOCTOR INTERACTIVE HERO SECTION (ÔNG BÁC SĨ KHÁM CÂY TRỒNG)
      ===================================================================== -->
 <section class="doctor-3d-hero relative w-full overflow-hidden select-none" id="doctorHero">
+  <!-- Lớp background ảnh nhân vật được căn đẩy xuống để hiển thị tiêu đề -->
+  <div class="doctor-hero-bg" id="doctorHeroBg"></div>
+
   <!-- Dynamic 3D interactive particle canvas -->
   <canvas id="doctor3dCanvas" class="doctor-3d-canvas pointer-events-none"></canvas>
-
 
   <!-- Top Glass Header (Logo & Tiện ích) -->
   <header class="app-top-header" id="appTopHeader">
@@ -84,17 +86,13 @@
   <!-- Main Container Overlay -->
   <div class="doctor-hero-container">
 
-    <!-- Tiêu đề & Slogan Web App Nổi Bật -->
+    <!-- Tiêu đề & Slogan Web App (Không còn khung, thoáng đãng nổi bật) -->
     <div class="doctor-hero-intro">
-      <div class="hero-badge-pill">
-        <span class="badge-dot-live"></span>
-        <span>Hệ Thống Trí Tuệ Nhân Tạo Chăm Sóc Cây Trồng</span>
-      </div>
       <h1 class="doctor-hero-title">
         Bác Sĩ Cây Trồng <span class="highlight-gradient">Nông Y AI</span>
       </h1>
       <p class="doctor-hero-subtitle">
-        Chẩn đoán mầm bệnh tức thì qua hình ảnh &amp; đề xuất phác đồ điều trị chuẩn xác cho nhà nông
+        Chẩn đoán mầm bệnh tức thì &amp; kê đơn điều trị chuẩn xác cho nhà nông
       </p>
     </div>
 
@@ -713,6 +711,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=95"></script>
+<script src="/static/app.js?v=96"></script>
 </body>
 </html>
