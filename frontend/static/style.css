@@ -3399,9 +3399,6 @@ html {
   justify-content: center;
   pointer-events: auto;
   cursor: pointer;
-  transform-style: preserve-3d;
-  transition: transform 0.15s cubic-bezier(0.2, 0.9, 0.3, 1);
-  will-change: transform;
   margin-top: 50px;
 }
 
@@ -3414,26 +3411,24 @@ html {
   background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.35) 0%, rgba(5, 30, 20, 0.7) 45%, transparent 75%);
   border-radius: 50%;
   filter: blur(8px);
-  transform: translateZ(-20px);
-  transition: transform 0.25s ease, opacity 0.25s ease;
   pointer-events: none;
 }
 
-/* Khung bao nhân vật và các lớp chuyển động mắt */
+/* Khung bao nhân vật chứa mô hình 3D tĩnh */
 .doctor-character-body {
   position: relative;
   display: inline-block;
   user-select: none;
 }
 
-/* Ảnh nhân vật 3D tách nền trong suốt */
+/* Ảnh nhân vật 3D tách nền trong suốt cực nét chuẩn Pixar (nhân vật tĩnh) */
 .doctor-character-img {
   display: block;
   width: auto;
-  height: min(440px, 48vh);
+  height: min(450px, 50vh);
   max-width: 90vw;
   object-fit: contain;
-  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 25px rgba(16, 185, 129, 0.25));
+  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 25px rgba(16, 185, 129, 0.3));
   user-select: none;
   -webkit-user-drag: none;
   transform-origin: center bottom;
@@ -3443,23 +3438,38 @@ html {
   z-index: 2;
 }
 
-/* Lớp con ngươi 3D liếc mắt theo hướng con trỏ chuột */
-.doctor-pupils-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  pointer-events: none;
-  z-index: 3;
-  will-change: transform;
-  transition: transform 0.08s cubic-bezier(0.1, 0.9, 0.2, 1);
-  image-rendering: -webkit-optimize-contrast;
+.doctor-character-wrap:hover .doctor-character-img {
+  filter: drop-shadow(0 20px 48px rgba(0, 0, 0, 0.78)) drop-shadow(0 0 40px rgba(52, 211, 153, 0.55));
 }
 
-.doctor-character-wrap:hover .doctor-character-img {
-  filter: drop-shadow(0 18px 45px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 35px rgba(52, 211, 153, 0.45));
+/* Hiệu ứng tia sáng ma thuật tỏa ra từ chiếc lá khi click nhân vật */
+.leaf-glow-fx {
+  position: absolute;
+  top: 4%;
+  left: 50%;
+  width: 92px;
+  height: 92px;
+  margin-left: -46px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(140, 247, 190, 0.95) 0%,
+    rgba(52, 211, 153, 0.38) 45%,
+    transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 4;
+  filter: blur(1px);
+  will-change: transform, opacity;
+}
+
+.leaf-glow-fx.pulse {
+  animation: leafGlowPulse 0.7s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+@keyframes leafGlowPulse {
+  0%   { opacity: 0; transform: scale(0.25); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: scale(2.15); }
 }
 
 /* Animation giật nhẹ vui nhộn khi click (Bouncing cheer) */
@@ -4119,7 +4129,7 @@ html {
     margin-top: 35px;
   }
   .doctor-character-img {
-    height: min(340px, 42vh);
+    height: min(350px, 44vh);
   }
   .doctor-hero-container {
     padding: 64px 12px 16px;

@@ -1407,29 +1407,12 @@
     });
   }
 
-  // 1.0 NHÂN VẬT 3D TÁCH NỀN DI CHUYỂN & LIẾC MẮT THEO CHUỘT
+  // 1.0 NHÂN VẬT 3D TÁCH NỀN TĨNH (STATIC CHARACTER)
   const charWrap = document.getElementById('doctorCharacterWrap');
-  const charImg = document.getElementById('doctorCharacterImg');
-  const pupilsOverlay = document.getElementById('doctorPupilsOverlay');
   const leafGlow = document.getElementById('leafGlowFx');
-  const shadowAura = document.getElementById('doctorShadowAura');
 
-  if (charWrap && heroSection) {
-    let mouseX = 0;
-    let mouseY = 0;
-    let currRotX = 0;
-    let currRotY = 0;
-    let currTransX = 0;
-    let currTransY = 0;
-
-    // Tọa độ liếc mắt của con ngươi
-    let currEyeX = 0;
-    let currEyeY = 0;
-
-    let isMouseOverHero = false;
-    let charAnimFrame = null;
-
-    // Tương tác khi click hoặc chạm vào nhân vật: Nhảy reo và phát sáng lá cây (không còn chữ thoại)
+  if (charWrap) {
+    // Tương tác khi click hoặc chạm vào nhân vật: Nhảy reo nhẹ và phát sáng lá cây
     charWrap.addEventListener('click', (e) => {
       e.stopPropagation();
 
@@ -1443,84 +1426,8 @@
         leafGlow.classList.remove('pulse');
         void leafGlow.offsetWidth;
         leafGlow.classList.add('pulse');
-        setTimeout(() => leafGlow.classList.remove('pulse'), 600);
+        setTimeout(() => leafGlow.classList.remove('pulse'), 700);
       }
-    });
-
-    // Cập nhật chuyển động 3D toàn thân và LIẾC MẮT THEO CHUỘT
-    const updateCharacterTracking = () => {
-      // 1. Mục tiêu xoay và dịch chuyển thân thể nhân vật
-      const targetRotX = isMouseOverHero ? -mouseY * 14 : 0;
-      const targetRotY = isMouseOverHero ? mouseX * 20 : 0;
-      const targetTransX = isMouseOverHero ? mouseX * 22 : 0;
-      const targetTransY = isMouseOverHero ? mouseY * 12 : 0;
-
-      // 2. Mục tiêu liếc mắt của con ngươi:
-      // Di chuyển tối đa 14px theo chiều ngang và 10px theo chiều dọc trong hốc mắt
-      const targetEyeX = isMouseOverHero ? mouseX * 14 : 0;
-      const targetEyeY = isMouseOverHero ? mouseY * 10 : 0;
-
-      // Nội suy mượt mà (Lerp)
-      currRotX += (targetRotX - currRotX) * 0.1;
-      currRotY += (targetRotY - currRotY) * 0.1;
-      currTransX += (targetTransX - currTransX) * 0.1;
-      currTransY += (targetTransY - currTransY) * 0.1;
-
-      currEyeX += (targetEyeX - currEyeX) * 0.15;
-      currEyeY += (targetEyeY - currEyeY) * 0.15;
-
-      // Áp dụng biến đổi 3D cho toàn bộ nhân vật
-      charWrap.style.transform = `perspective(1200px) translate3d(${currTransX.toFixed(2)}px, ${currTransY.toFixed(2)}px, 0) rotateX(${currRotX.toFixed(2)}deg) rotateY(${currRotY.toFixed(2)}deg)`;
-
-      // Áp dụng chuyển động liếc mắt cho lớp con ngươi (Pupils)
-      if (pupilsOverlay) {
-        pupilsOverlay.style.transform = `translate3d(${currEyeX.toFixed(2)}px, ${currEyeY.toFixed(2)}px, 0)`;
-      }
-
-      // Bóng đổ sinh học dưới sàn chuyển động bù trừ
-      if (shadowAura) {
-        shadowAura.style.transform = `translate3d(${-currTransX * 0.6}px, 0, -20px) scale(${1 - Math.abs(mouseY) * 0.08})`;
-      }
-
-      // Tiếp tục vòng lặp animation nếu chuột còn di chuyển hoặc đang trở về vị trí cân bằng
-      const isMoving =
-        isMouseOverHero ||
-        Math.abs(currRotX) > 0.05 ||
-        Math.abs(currRotY) > 0.05 ||
-        Math.abs(currEyeX) > 0.05 ||
-        Math.abs(currEyeY) > 0.05;
-
-      if (isMoving) {
-        charAnimFrame = requestAnimationFrame(updateCharacterTracking);
-      } else {
-        charAnimFrame = null;
-      }
-    };
-
-    const startTrackingLoop = () => {
-      if (!charAnimFrame) {
-        charAnimFrame = requestAnimationFrame(updateCharacterTracking);
-      }
-    };
-
-    // Bắt tọa độ chuột trên toàn bộ khu vực Hero
-    heroSection.addEventListener('pointermove', (e) => {
-      const rect = heroSection.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
-      isMouseOverHero = true;
-
-      // Chuẩn hóa tọa độ chuột trong khoảng [-1, 1]
-      mouseX = Math.max(-1, Math.min(1, ((e.clientX - rect.left) / rect.width) * 2 - 1));
-      mouseY = Math.max(-1, Math.min(1, ((e.clientY - rect.top) / rect.height) * 2 - 1));
-
-      startTrackingLoop();
-    }, { passive: true });
-
-    heroSection.addEventListener('pointerleave', () => {
-      isMouseOverHero = false;
-      mouseX = 0;
-      mouseY = 0;
-      startTrackingLoop();
     });
   }
 
