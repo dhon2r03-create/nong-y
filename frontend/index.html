@@ -89,25 +89,27 @@
 
     <!-- 3D Interactive Stage: Bác sĩ khám cây trồng -->
     <div class="doctor-3d-stage-wrapper" id="doctor3dStageWrapper">
-      <div class="doctor-3d-card" id="doctor3dCard">
+      <div class="doctor-3d-card" id="doctor3dCard" title="Nhấn vào ảnh để kích hoạt quét AI hoặc di chuyển chuột để tương tác 3D">
         <!-- 3D Doctor Illustration with Interactive Depth -->
-        <div class="doctor-3d-image-container">
+        <div class="doctor-3d-image-container" id="doctorImageContainer">
           <img
             src="/static/doctor-3d.jpg"
             alt="Bác Sĩ Cây Trồng AI"
             class="doctor-3d-main-img"
             loading="eager"
           />
+          <!-- Dynamic Interactive Sheen / Glare -->
+          <div class="doctor-3d-glare" id="doctor3dGlare"></div>
           <!-- 3D Scanning Laser Beam Sweep -->
           <div class="laser-scanner-beam"></div>
           <!-- Scanning Target Crosshairs aligned with leaf -->
-          <div class="scan-target-box">
+          <div class="scan-target-box" id="doctorScanTarget">
             <div class="target-corner tl"></div>
             <div class="target-corner tr"></div>
             <div class="target-corner bl"></div>
             <div class="target-corner br"></div>
             <div class="target-line"></div>
-            <span class="target-label">AI SCANNING LEAF</span>
+            <span class="target-label" id="targetLabelText">AI SCANNING LEAF</span>
           </div>
         </div>
       </div>
@@ -381,10 +383,15 @@
           <!-- Submit Action Bar -->
           <div class="submit-action-bar">
             <button class="btn btn-submit-analyze" id="submitBtn" disabled>
-              <span class="btn-spinner" id="btnSpinner" style="display:none;"></span>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-              <span id="submitBtnText">Phân tích bệnh với mô hình AI ngay</span>
+              <div class="analyze-progress-fill" id="analyzeProgressFill" style="display:none; width: 0%;"></div>
+              <div class="analyze-btn-inner" id="analyzeBtnInner">
+                <span class="btn-spinner" id="btnSpinner" style="display:none;"></span>
+                <svg id="submitBtnIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                <span id="submitBtnText">Phân tích bệnh với mô hình AI ngay</span>
+                <span class="analyze-percent-pill" id="analyzePercentPill" style="display:none;">0%</span>
+              </div>
             </button>
+            <div class="analyze-progress-hint" id="analyzeProgressHint" style="display:none;"></div>
           </div>
         </div>
 

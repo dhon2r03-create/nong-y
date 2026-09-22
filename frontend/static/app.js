@@ -29,6 +29,10 @@
   const submitBtn = document.getElementById('submitBtn');
   const btnSpinner = document.getElementById('btnSpinner');
   const submitBtnText = document.getElementById('submitBtnText');
+  const submitBtnIcon = document.getElementById('submitBtnIcon');
+  const analyzeProgressFill = document.getElementById('analyzeProgressFill');
+  const analyzePercentPill = document.getElementById('analyzePercentPill');
+  const analyzeProgressHint = document.getElementById('analyzeProgressHint');
   const statusBanner = document.getElementById('statusBanner');
 
   // Results Elements
@@ -424,6 +428,7 @@
     };
     reader.readAsDataURL(file);
 
+    resetAnalysisProgress();
     submitBtn.disabled = false;
     hideAllResults();
     hideStatus();
@@ -434,7 +439,7 @@
     previewImg.src = '';
     galleryInput.value = '';
     fallbackCameraInput.value = '';
-    submitBtn.disabled = true;
+    resetAnalysisProgress();
     viewPreview.style.display = 'none';
 
     const sectionImageSource = document.getElementById('sectionImageSource');
@@ -542,15 +547,114 @@
     if (plantResultCard) plantResultCard.style.display = 'none';
   }
 
+  // 7.1 Tiến trình thanh chạy % mô phỏng mượt mà khi phân tích AI
+  let analysisProgressInterval = null;
+  let currentAnalysisPercent = 0;
+
+  function startAnalysisProgress() {
+    submitBtn.disabled = true;
+    submitBtn.classList.add('is-analyzing');
+    if (btnSpinner) btnSpinner.style.display = 'inline-block';
+    if (submitBtnIcon) submitBtnIcon.style.display = 'none';
+
+    if (analyzeProgressFill) {
+      analyzeProgressFill.style.display = 'block';
+      analyzeProgressFill.style.width = '0%';
+    }
+    if (analyzePercentPill) {
+      analyzePercentPill.style.display = 'inline-flex';
+      analyzePercentPill.textContent = '0%';
+    }
+    if (analyzeProgressHint) {
+      analyzeProgressHint.style.display = 'flex';
+      analyzeProgressHint.innerHTML = '<span class="pulse-dot"></span> Đang tải ảnh và khởi tạo mạng nơ-ron AI...';
+    }
+
+    currentAnalysisPercent = 0;
+    clearInterval(analysisProgressInterval);
+
+    // Kịch bản chuyển giai đoạn chạy % tự nhiên, chân thực
+    const stages = [
+      { max: 28, step: 2.2, label: 'Đang quét ảnh lá cây...', hint: 'Đang tiền xử lý ảnh & căn chỉnh cấu trúc phiến lá...' },
+      { max: 62, step: 1.4, label: 'AI phân tích mạng nơ-ron...', hint: 'Mô hình Deep CNN đang trích xuất đặc trưng bệnh hại...' },
+      { max: 86, step: 0.75, label: 'Chẩn đoán bệnh & Heatmap...', hint: 'Đang tính toán bản đồ nhiệt Grad-CAM định vị ổ bệnh...' },
+      { max: 96, step: 0.2, label: 'Tổng hợp phác đồ điều trị...', hint: 'Đang truy vấn ngân hàng thuốc BVTV & hoàn tất kết quả...' }
+    ];
+
+    let currentStageIndex = 0;
+
+    analysisProgressInterval = setInterval(() => {
+      const stage = stages[currentStageIndex];
+      if (!stage) return;
+
+      currentAnalysisPercent += stage.step;
+      if (currentAnalysisPercent >= stage.max) {
+        currentAnalysisPercent = stage.max;
+        if (currentStageIndex < stages.length - 1) {
+          currentStageIndex++;
+        }
+      }
+
+      const rounded = Math.min(96, Math.round(currentAnalysisPercent));
+      if (analyzeProgressFill) analyzeProgressFill.style.width = `${rounded}%`;
+      if (analyzePercentPill) analyzePercentPill.textContent = `${rounded}%`;
+      if (submitBtnText) submitBtnText.textContent = stage.label;
+      if (analyzeProgressHint) {
+        analyzeProgressHint.innerHTML = `<span class="pulse-dot"></span> ${stage.hint}`;
+      }
+    }, 45);
+  }
+
+  function finishAnalysisProgress() {
+    return new Promise((resolve) => {
+      clearInterval(analysisProgressInterval);
+      currentAnalysisPercent = 100;
+
+      if (analyzeProgressFill) {
+        analyzeProgressFill.style.width = '100%';
+      }
+      if (analyzePercentPill) {
+        analyzePercentPill.textContent = '100%';
+      }
+      if (submitBtnText) submitBtnText.textContent = 'Hoàn tất phân tích!';
+      if (btnSpinner) btnSpinner.style.display = 'none';
+      if (analyzeProgressHint) {
+        analyzeProgressHint.innerHTML = '<span class="pulse-dot" style="background:#10b981; box-shadow:0 0 10px #10b981;"></span> Đã hoàn tất chẩn đoán thành công!';
+      }
+
+      // Giữ thanh 100% trong 350ms để người dùng thấy rõ kết quả trước khi mở kết quả
+      setTimeout(() => {
+        resolve();
+      }, 350);
+    });
+  }
+
+  function resetAnalysisProgress() {
+    clearInterval(analysisProgressInterval);
+    submitBtn.classList.remove('is-analyzing');
+    submitBtn.disabled = !selectedFile;
+    if (btnSpinner) btnSpinner.style.display = 'none';
+    if (submitBtnIcon) submitBtnIcon.style.display = 'inline-block';
+    if (analyzeProgressFill) {
+      analyzeProgressFill.style.width = '0%';
+      analyzeProgressFill.style.display = 'none';
+    }
+    if (analyzePercentPill) {
+      analyzePercentPill.style.display = 'none';
+    }
+    if (analyzeProgressHint) {
+      analyzeProgressHint.style.display = 'none';
+    }
+    if (submitBtnText) submitBtnText.textContent = 'Phân tích bệnh với mô hình AI ngay';
+  }
+
   // 8. Submit Phân tích
   submitBtn.addEventListener('click', async () => {
     if (!selectedFile) return;
 
-    submitBtn.disabled = true;
-    btnSpinner.style.display = 'inline-block';
-    submitBtnText.textContent = 'Đang phân tích hình ảnh...';
     hideAllResults();
     hideStatus();
+    startAnalysisProgress();
 
     const formData = new FormData();
     formData.append('file', selectedFile);
@@ -565,12 +669,17 @@
       const data = await res.json();
 
       if (!res.ok) {
+        resetAnalysisProgress();
         showStatus(data.detail || 'Có lỗi xảy ra khi phân tích ảnh.', 'error');
         return;
       }
 
+      // Đẩy tiến trình lên 100% trước khi hiển thị kết quả
+      await finishAnalysisProgress();
+
       // TRƯỜNG HỢP 1: KHÔNG PHẢI CÂY TRỒNG
       if (data.is_plant === false) {
+        resetAnalysisProgress();
         if (detectedObjectBadge) {
           detectedObjectBadge.textContent = 'Phát hiện: ' + (data.detected_object || 'Đối tượng lạ');
         }
@@ -681,11 +790,10 @@
       plantResultCard.style.display = 'block';
       plantResultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } catch (err) {
+      resetAnalysisProgress();
       showStatus('Không thể kết nối tới server. Vui lòng kiểm tra lại kết nối mạng.', 'error');
     } finally {
-      submitBtn.disabled = false;
-      btnSpinner.style.display = 'none';
-      submitBtnText.textContent = 'Phân tích bệnh cây trồng';
+      resetAnalysisProgress();
     }
   });
 
@@ -1260,9 +1368,114 @@
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
     window.innerWidth <= 768;
 
-  // 1. Tắt hoàn toàn tương tác nghiêng/lắc ảnh để ảnh hiển thị ổn định, sắc nét & không bị dịch chuyển
-  if (card3d) {
-    card3d.style.transform = 'none';
+  // 1. Tương tác ảnh 3D mượt mà, theo dõi chuyển động chuột & chạm thông minh
+  const scanTarget = document.getElementById('doctorScanTarget');
+  const targetLabelText = document.getElementById('targetLabelText');
+  const imageContainer = document.getElementById('doctorImageContainer');
+
+  if (card3d && stageWrapper) {
+    let targetRotX = 0;
+    let targetRotY = 0;
+    let targetXPercent = 29;
+    let targetYPercent = 48;
+    let isHovering = false;
+    let rAfTilt = null;
+
+    const renderCardTilt = () => {
+      if (isHovering) {
+        card3d.style.transform = `perspective(1000px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+      } else {
+        card3d.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+      }
+      rAfTilt = null;
+    };
+
+    const handlePointerMove = (clientX, clientY) => {
+      const rect = stageWrapper.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const px = Math.max(-0.5, Math.min(0.5, (clientX - rect.left) / rect.width - 0.5));
+      const py = Math.max(-0.5, Math.min(0.5, (clientY - rect.top) / rect.height - 0.5));
+
+      targetRotX = -py * 10; // Max 5 deg tilt
+      targetRotY = px * 12;
+      isHovering = true;
+
+      // Cập nhật điểm sáng lóa (Glare) & tọa độ mục tiêu quét
+      const mouseX = ((px + 0.5) * 100).toFixed(1);
+      const mouseY = ((py + 0.5) * 100).toFixed(1);
+      card3d.style.setProperty('--mouse-x', `${mouseX}%`);
+      card3d.style.setProperty('--mouse-y', `${mouseY}%`);
+
+      targetXPercent = 29 + px * 22;
+      targetYPercent = 48 + py * 22;
+      if (scanTarget) {
+        scanTarget.style.setProperty('--target-x', `${targetXPercent.toFixed(1)}%`);
+        scanTarget.style.setProperty('--target-y', `${targetYPercent.toFixed(1)}%`);
+      }
+
+      if (targetLabelText) {
+        targetLabelText.textContent = `AI SCANNING LEAF [${Math.round((px + 0.5) * 100)}%, ${Math.round((py + 0.5) * 100)}%]`;
+      }
+
+      if (!rAfTilt) {
+        rAfTilt = requestAnimationFrame(renderCardTilt);
+      }
+    };
+
+    const handlePointerLeave = () => {
+      isHovering = false;
+      targetRotX = 0;
+      targetRotY = 0;
+      if (scanTarget) {
+        scanTarget.style.setProperty('--target-x', '29%');
+        scanTarget.style.setProperty('--target-y', '48%');
+      }
+      if (targetLabelText) {
+        targetLabelText.textContent = 'AI SCANNING LEAF';
+      }
+      if (!rAfTilt) {
+        rAfTilt = requestAnimationFrame(renderCardTilt);
+      }
+    };
+
+    stageWrapper.addEventListener('pointermove', (e) => {
+      handlePointerMove(e.clientX, e.clientY);
+    }, { passive: true });
+
+    stageWrapper.addEventListener('pointerleave', handlePointerLeave, { passive: true });
+
+    // Hiệu ứng chạm / click tạo sóng xung kích laser và hướng dẫn người dùng
+    stageWrapper.addEventListener('click', (e) => {
+      const rect = stageWrapper.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      // Tạo hạt sóng ripple
+      const ripple = document.createElement('div');
+      ripple.className = 'interactive-click-ripple';
+      ripple.style.left = `${clickX}px`;
+      ripple.style.top = `${clickY}px`;
+      if (imageContainer) {
+        imageContainer.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 850);
+      }
+
+      if (typeof window.triggerParticleWarp === 'function') {
+        window.triggerParticleWarp();
+      }
+
+      // Kích hoạt rung nhẹ ảnh và gợi ý mở khám bệnh
+      card3d.style.transform = `perspective(1000px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(0.98, 0.98, 0.98)`;
+      setTimeout(() => {
+        if (isHovering) {
+          card3d.style.transform = `perspective(1000px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+        } else {
+          card3d.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        }
+      }, 150);
+
+      showToast('🌿 AI Bác Sĩ Cây Trồng đã sẵn sàng! Bấm nút "Camera" hoặc "Tải Ảnh Lá Cây" bên dưới để khám bệnh ngay.', 'info');
+    });
   }
 
   // 2. Bioluminescent 3D Floating Particles (Tối ưu cực đại, dừng hẳn khi mở modal)
