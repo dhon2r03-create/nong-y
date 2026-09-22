@@ -4184,13 +4184,132 @@ html {
 }
 
 @keyframes modalFadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% { opacity: 0; backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); }
+  100% { opacity: 1; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 }
 
 @keyframes modalFastIn {
-  0% { opacity: 0; transform: scale(0.97) translateY(8px); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
+  0% { 
+    opacity: 0; 
+    transform: perspective(1000px) rotateX(6deg) translateY(24px) scale(0.95); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: perspective(1000px) rotateX(0deg) translateY(0) scale(1); 
+  }
+}
+
+/* =====================================================================
+   HOẠT ẢNH CHUYỂN TAB & CÁC CHỨC NĂNG (SMOOTH TRANSITIONS)
+   ===================================================================== */
+@keyframes tabEnterSmooth {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes tabSlideFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(36px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes tabSlideFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-36px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Kích hoạt chuyển cảnh mượt cho các section card & panel */
+.tab-pane-enter {
+  animation: tabEnterSmooth 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  will-change: opacity, transform;
+}
+
+.anim-slide-right {
+  animation: tabSlideFromRight 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  will-change: opacity, transform;
+}
+
+.anim-slide-left {
+  animation: tabSlideFromLeft 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  will-change: opacity, transform;
+}
+
+/* Hiệu ứng tia quét nhiệt khi chuyển tab xem ảnh gốc vs Grad-CAM Heatmap */
+@keyframes heatmapScanFlash {
+  0% {
+    opacity: 0.25;
+    filter: brightness(1.7) contrast(1.3) saturate(1.5);
+    transform: scale(0.975);
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1) contrast(1) saturate(1);
+    transform: scale(1);
+  }
+}
+
+.heatmap-scan-active {
+  animation: heatmapScanFlash 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Hiệu ứng bước nhảy cho thanh Stepper */
+.stepper-step {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stepper-step.active .stepper-icon {
+  animation: stepIconBounce 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes stepIconBounce {
+  0% { transform: scale(0.7); }
+  60% { transform: scale(1.22); }
+  100% { transform: scale(1); }
+}
+
+.stepper-line {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.stepper-line.filled::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  animation: stepperFillAnim 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.6);
+}
+
+@keyframes stepperFillAnim {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(0); }
+}
+
+/* Hiệu ứng thác nước mở kết quả chẩn đoán */
+.result-card.reveal-cascade {
+  animation: tabEnterSmooth 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
 }
 
 .workspace-header {

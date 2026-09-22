@@ -415,7 +415,12 @@
       viewPreview.style.display = 'block';
 
       if (sectionImageSource) sectionImageSource.style.display = 'none';
-      if (sectionPreviewDiagnose) sectionPreviewDiagnose.style.display = 'block';
+      if (sectionPreviewDiagnose) {
+        sectionPreviewDiagnose.classList.remove('tab-pane-enter');
+        void sectionPreviewDiagnose.offsetWidth;
+        sectionPreviewDiagnose.classList.add('tab-pane-enter');
+        sectionPreviewDiagnose.style.display = 'block';
+      }
 
       setModalStep(2);
 
@@ -445,7 +450,12 @@
     const sectionImageSource = document.getElementById('sectionImageSource');
     const sectionPreviewDiagnose = document.getElementById('sectionPreviewDiagnose');
     if (sectionPreviewDiagnose) sectionPreviewDiagnose.style.display = 'none';
-    if (sectionImageSource) sectionImageSource.style.display = 'block';
+    if (sectionImageSource) {
+      sectionImageSource.classList.remove('tab-pane-enter');
+      void sectionImageSource.offsetWidth;
+      sectionImageSource.classList.add('tab-pane-enter');
+      sectionImageSource.style.display = 'block';
+    }
 
     setModalStep(1);
     hideAllResults();
@@ -519,6 +529,11 @@
       viewHeatmapImgBtn.classList.remove('active');
       displayDiagnoseImg.src = currentOriginalImgUrl;
       heatmapCaption.style.display = 'none';
+      if (displayDiagnoseImg) {
+        displayDiagnoseImg.classList.remove('heatmap-scan-active');
+        void displayDiagnoseImg.offsetWidth;
+        displayDiagnoseImg.classList.add('heatmap-scan-active');
+      }
     });
   }
 
@@ -528,6 +543,11 @@
       viewOriginalImgBtn.classList.remove('active');
       displayDiagnoseImg.src = currentHeatmapImgUrl;
       heatmapCaption.style.display = 'block';
+      if (displayDiagnoseImg) {
+        displayDiagnoseImg.classList.remove('heatmap-scan-active');
+        void displayDiagnoseImg.offsetWidth;
+        displayDiagnoseImg.classList.add('heatmap-scan-active');
+      }
     });
   }
 
@@ -544,7 +564,10 @@
 
   function hideAllResults() {
     if (nonPlantAlert) nonPlantAlert.style.display = 'none';
-    if (plantResultCard) plantResultCard.style.display = 'none';
+    if (plantResultCard) {
+      plantResultCard.classList.remove('reveal-cascade');
+      plantResultCard.style.display = 'none';
+    }
   }
 
   // 7.1 Tiến trình thanh chạy % mô phỏng mượt mà khi phân tích AI
@@ -787,8 +810,13 @@
         if (treatmentPrevention) treatmentPrevention.textContent = data.treatment.prevention || 'Chưa có thông tin.';
       }
 
-      plantResultCard.style.display = 'block';
-      plantResultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      if (plantResultCard) {
+        plantResultCard.classList.remove('reveal-cascade');
+        void plantResultCard.offsetWidth;
+        plantResultCard.classList.add('reveal-cascade');
+        plantResultCard.style.display = 'block';
+        plantResultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
     } catch (err) {
       resetAnalysisProgress();
       showStatus('Không thể kết nối tới server. Vui lòng kiểm tra lại kết nối mạng.', 'error');
@@ -1651,7 +1679,12 @@
       if (sectionDesc) sectionDesc.textContent = 'Căn chỉnh lá cây vào tâm khung ngắm và bấm nút chụp ảnh bên dưới';
       if (retakeBtn) retakeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg> 📸 Chụp lại ảnh khác`;
 
-      if (viewCamera) viewCamera.style.display = 'block';
+      if (viewCamera) {
+        viewCamera.classList.remove('anim-slide-left', 'anim-slide-right');
+        void viewCamera.offsetWidth;
+        viewCamera.classList.add('anim-slide-left');
+        viewCamera.style.display = 'block';
+      }
       if (viewUpload) viewUpload.style.display = 'none';
 
       // Khởi động Camera trực tiếp
@@ -1670,7 +1703,12 @@
 
       stopCamera();
       if (viewCamera) viewCamera.style.display = 'none';
-      if (viewUpload) viewUpload.style.display = 'block';
+      if (viewUpload) {
+        viewUpload.classList.remove('anim-slide-left', 'anim-slide-right');
+        void viewUpload.offsetWidth;
+        viewUpload.classList.add('anim-slide-right');
+        viewUpload.style.display = 'block';
+      }
 
       if (tabUploadBtn) tabUploadBtn.classList.add('active');
       if (tabLiveCameraBtn) tabLiveCameraBtn.classList.remove('active');
