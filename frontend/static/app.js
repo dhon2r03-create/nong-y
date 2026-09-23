@@ -1378,55 +1378,21 @@
   }
 
   /* =====================================================================
-     3D PLANT DOCTOR HERO & DIAGNOSIS WORKSPACE CONTROLLER
+     STATIC PLANT DOCTOR HERO & DIAGNOSIS WORKSPACE CONTROLLER
      ===================================================================== */
   const heroSection = document.getElementById('doctorHero');
   const stageWrapper = document.getElementById('doctor3dStageWrapper');
   const card3d = document.getElementById('doctor3dCard');
-  const canvas = document.getElementById('doctor3dCanvas');
 
   const tabLiveCameraBtn = document.getElementById('tabLiveCameraBtn');
   const tabUploadBtn = document.getElementById('tabUploadBtn');
 
-  // Kiểm tra thiết bị cấu hình thấp hoặc điện thoại di động
-  const isLowEndOrMobile =
-    ('hardwareConcurrency' in navigator && navigator.hardwareConcurrency <= 4) ||
-    ('deviceMemory' in navigator && navigator.deviceMemory <= 4) ||
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-    window.innerWidth <= 768;
-
-  // 1. Tương tác ảnh 3D mượt mà, theo dõi chuyển động chuột & chạm thông minh
   // Hỗ trợ nhấp đúp vào màn hình chính để bật/tắt toàn màn hình
   if (heroSection) {
     heroSection.addEventListener('dblclick', (e) => {
-      if (!e.target.closest('button, select, a, input, label, .doctor-character-wrap')) {
+      if (!e.target.closest('button, select, a, input, label')) {
         e.preventDefault();
         toggleFullScreenMode();
-      }
-    });
-  }
-
-  // 1.0 NHÂN VẬT 3D TÁCH NỀN TĨNH (STATIC CHARACTER)
-  const charWrap = document.getElementById('doctorCharacterWrap');
-  const leafGlow = document.getElementById('leafGlowFx');
-
-  if (charWrap) {
-    // Tương tác khi click hoặc chạm vào nhân vật: Nhảy reo nhẹ và phát sáng lá cây
-    charWrap.addEventListener('click', (e) => {
-      e.stopPropagation();
-
-      // Hiệu ứng nhảy reo vui nhộn (Cheer bounce)
-      charWrap.classList.remove('cheering');
-      void charWrap.offsetWidth; // Trigger reflow
-      charWrap.classList.add('cheering');
-
-      // Tỏa tia sáng xanh sinh học từ chiếc lá
-      if (leafGlow) {
-        leafGlow.classList.remove('pulse');
-        void leafGlow.offsetWidth;
-        leafGlow.classList.add('pulse');
-        setTimeout(() => leafGlow.classList.remove('pulse'), 700);
       }
     });
   }
@@ -1499,114 +1465,7 @@
     });
   }
 
-  // 2. Bioluminescent 3D Floating Particles (Tối ưu cực đại, dừng hẳn khi mở modal)
-  if (canvas) {
-    if (isLowEndOrMobile) {
-      canvas.style.display = 'none';
-    } else {
-      const ctx = canvas.getContext('2d', { alpha: true });
-      let width = (canvas.width = canvas.offsetWidth || window.innerWidth);
-      let height = (canvas.height = canvas.offsetHeight || window.innerHeight);
-
-      window.addEventListener('resize', () => {
-        if (!canvas) return;
-        width = canvas.width = canvas.offsetWidth || window.innerWidth;
-        height = canvas.height = canvas.offsetHeight || window.innerHeight;
-      }, { passive: true });
-
-      const particles = [];
-      const particleCount = 10;
-
-      for (let i = 0; i < particleCount; i++) {
-        particles.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          radius: Math.random() * 1.8 + 1.0,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: -Math.random() * 0.5 - 0.15,
-          alpha: Math.random() * 0.4 + 0.3,
-          pulseSpeed: Math.random() * 0.02 + 0.01,
-          color: '52, 211, 153'
-        });
-      }
-
-      let isHeroInView = true;
-      let isAnimRunning = false;
-      let isModalOpen = false;
-      let lastFrameTime = 0;
-      const targetFPSInterval = 1000 / 30;
-
-      const renderParticles = (currentTime) => {
-        if (!isHeroInView || document.hidden || isModalOpen) {
-          isAnimRunning = false;
-          return;
-        }
-
-        requestAnimationFrame(renderParticles);
-
-        const delta = currentTime - lastFrameTime;
-        if (delta < targetFPSInterval) return;
-        lastFrameTime = currentTime - (delta % targetFPSInterval);
-
-        ctx.clearRect(0, 0, width, height);
-
-        for (let i = 0; i < particleCount; i++) {
-          const p = particles[i];
-          p.y += p.vy;
-          p.x += p.vx;
-
-          if (p.y < -10) {
-            p.y = height + 10;
-            p.x = Math.random() * width;
-          }
-          if (p.x < -10) p.x = width + 10;
-          if (p.x > width + 10) p.x = -10;
-
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${p.color}, ${p.alpha.toFixed(2)})`;
-          ctx.fill();
-        }
-      };
-
-      const startAnimLoop = () => {
-        if (!isAnimRunning && isHeroInView && !document.hidden && !isModalOpen) {
-          isAnimRunning = true;
-          requestAnimationFrame(renderParticles);
-        }
-      };
-
-      window.stopBgAnimForModal = () => {
-        isModalOpen = true;
-      };
-      window.resumeBgAnimAfterModal = () => {
-        isModalOpen = false;
-        startAnimLoop();
-      };
-
-      if ('IntersectionObserver' in window && heroSection) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            isHeroInView = entry.isIntersecting;
-            if (isHeroInView) {
-              startAnimLoop();
-            }
-          });
-        }, { threshold: 0.05 });
-        observer.observe(heroSection);
-      }
-
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && isHeroInView) {
-          startAnimLoop();
-        }
-      });
-
-      startAnimLoop();
-    }
-  }
-
-  // 3. Smooth Modal Popup & Seamless Diagnosis Workspace Activation
+  // 2. Smooth Modal Popup & Seamless Diagnosis Workspace Activation
   const workspaceModal = document.getElementById('diagnoseWorkspaceModal');
   const closeWorkspaceBtn = document.getElementById('closeDiagnoseWorkspaceBtn');
   const workspaceBackdrop = document.getElementById('diagnoseWorkspaceBackdrop');
@@ -1637,10 +1496,6 @@
   }
 
   const openDiagnoseWorkspace = (targetMode = 'camera') => {
-    if (typeof window.stopBgAnimForModal === 'function') {
-      window.stopBgAnimForModal();
-    }
-
     activeTab = targetMode;
     setModalStep(1);
 
@@ -1707,10 +1562,6 @@
     if (workspaceModal) {
       workspaceModal.style.display = 'none';
       document.body.style.overflow = '';
-    }
-
-    if (typeof window.resumeBgAnimAfterModal === 'function') {
-      window.resumeBgAnimAfterModal();
     }
 
     const stopLiveCameraBtn = document.getElementById('stopLiveCameraBtn');

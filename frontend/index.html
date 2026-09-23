@@ -20,40 +20,16 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css?v=130" />
+  <link rel="stylesheet" href="/static/style.css?v=131" />
 </head>
 <body>
 
 <!-- =====================================================================
-     3D PLANT DOCTOR INTERACTIVE HERO SECTION (ÔNG BÁC SĨ KHÁM CÂY TRỒNG)
+     STATIC PLANT DOCTOR HERO SECTION (ÔNG BÁC SĨ KHÁM CÂY TRỒNG - ẢNH TĨNH)
      ===================================================================== -->
 <section class="doctor-3d-hero relative w-full overflow-hidden select-none" id="doctorHero">
-  <!-- Lớp background ảnh phòng khám tối giản -->
+  <!-- Lớp nền tĩnh: ảnh bác sĩ cây trồng đầy đủ nhân vật & khung cảnh -->
   <div class="doctor-hero-bg" id="doctorHeroBg"></div>
-
-  <!-- Dynamic 3D interactive particle canvas -->
-  <canvas id="doctor3dCanvas" class="doctor-3d-canvas pointer-events-none"></canvas>
-
-  <!-- Lớp nhân vật 3D tách nền tương tác chuyển động theo chuột -->
-  <div class="doctor-character-stage" id="doctorCharacterStage">
-    <div class="doctor-character-wrap" id="doctorCharacterWrap">
-      <!-- Vầng hào quang sinh học dưới chân nhân vật -->
-      <div class="doctor-shadow-aura" id="doctorShadowAura"></div>
-
-      <!-- Khung nhân vật 3D tách nền chuẩn tĩnh -->
-      <div class="doctor-character-body" id="doctorCharacterBody">
-        <!-- Ảnh nhân vật 3D tách nền trong suốt cực nét chuẩn Pixar -->
-        <img src="/static/doctor-chibi.png?v=130" 
-             alt="Bác sĩ Cây Trồng 3D" 
-             class="doctor-character-img" 
-             id="doctorCharacterImg" 
-             draggable="false" />
-
-        <!-- Hiệu ứng tia sáng ma thuật tỏa ra từ chiếc lá khi click -->
-        <div class="leaf-glow-fx" id="leafGlowFx"></div>
-      </div>
-    </div>
-  </div>
 
   <!-- Top Glass Header (Logo & Tiện ích) -->
   <header class="app-top-header" id="appTopHeader">
@@ -737,6 +713,6 @@
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=130"></script>
+<script src="/static/app.js?v=131"></script>
 </body>
 </html>

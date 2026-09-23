@@ -3323,10 +3323,7 @@ html {
 }
 
 /* =====================================================================
-   3D PLANT DOCTOR INTERACTIVE HERO SECTION (ÔNG BÁC SĨ KHÁM CÂY TRỒNG)
-   ===================================================================== */
-/* =====================================================================
-   HERO SECTION VỚI HÌNH ẢNH 3D NÔNG DÂN LÀM BACKGROUND FULL MÀN HÌNH
+   HERO SECTION VỚI HÌNH ẢNH TĨNH BÁC SĨ CÂY TRỒNG LÀM NỀN FULL MÀN HÌNH
    ===================================================================== */
 .doctor-3d-hero {
   position: relative;
@@ -3347,13 +3344,13 @@ html {
   box-sizing: border-box;
 }
 
-/* Background studio phòng khám tối giản phủ toàn màn hình */
+/* Ảnh nền tĩnh: bác sĩ cây trồng cùng khung cảnh trong một ảnh duy nhất */
 .doctor-hero-bg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  background: #082419 url('/static/doctor-bg.jpg?v=100') center center / cover no-repeat;
+  background: #082419 url('/static/doctor-3d.jpg?v=131') center center / cover no-repeat;
   pointer-events: none;
   z-index: 0;
   image-rendering: -webkit-optimize-contrast;
@@ -3373,126 +3370,6 @@ html {
   );
   pointer-events: none;
   z-index: 1;
-}
-
-/* =====================================================================
-   LỚP NHÂN VẬT 3D TÁCH NỀN TƯƠNG TÁC CHUYỂN ĐỘNG THEO CHUỘT
-   ===================================================================== */
-.doctor-character-stage {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 3;
-  pointer-events: none;
-  perspective: 1200px;
-}
-
-.doctor-character-wrap {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  pointer-events: auto;
-  cursor: pointer;
-  margin-top: 50px;
-}
-
-/* Vầng bóng & hào quang sinh học dưới chân nhân vật */
-.doctor-shadow-aura {
-  position: absolute;
-  bottom: -15px;
-  width: 220px;
-  height: 40px;
-  background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.35) 0%, rgba(5, 30, 20, 0.7) 45%, transparent 75%);
-  border-radius: 50%;
-  filter: blur(8px);
-  pointer-events: none;
-}
-
-/* Khung bao nhân vật chứa mô hình 3D tĩnh */
-.doctor-character-body {
-  position: relative;
-  display: inline-block;
-  user-select: none;
-}
-
-/* Ảnh nhân vật 3D tách nền trong suốt cực nét chuẩn Pixar (nhân vật tĩnh) */
-.doctor-character-img {
-  display: block;
-  width: auto;
-  height: min(450px, 50vh);
-  max-width: 90vw;
-  object-fit: contain;
-  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 25px rgba(16, 185, 129, 0.3));
-  user-select: none;
-  -webkit-user-drag: none;
-  transform-origin: center bottom;
-  transition: filter 0.3s ease;
-  image-rendering: -webkit-optimize-contrast;
-  position: relative;
-  z-index: 2;
-}
-
-.doctor-character-wrap:hover .doctor-character-img {
-  filter: drop-shadow(0 20px 48px rgba(0, 0, 0, 0.78)) drop-shadow(0 0 40px rgba(52, 211, 153, 0.55));
-}
-
-/* Hiệu ứng tia sáng ma thuật tỏa ra từ chiếc lá khi click nhân vật */
-.leaf-glow-fx {
-  position: absolute;
-  top: 4%;
-  left: 50%;
-  width: 92px;
-  height: 92px;
-  margin-left: -46px;
-  border-radius: 50%;
-  background: radial-gradient(circle,
-    rgba(140, 247, 190, 0.95) 0%,
-    rgba(52, 211, 153, 0.38) 45%,
-    transparent 70%);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 4;
-  filter: blur(1px);
-  will-change: transform, opacity;
-}
-
-.leaf-glow-fx.pulse {
-  animation: leafGlowPulse 0.7s cubic-bezier(0.2, 0.8, 0.3, 1);
-}
-
-@keyframes leafGlowPulse {
-  0%   { opacity: 0; transform: scale(0.25); }
-  30%  { opacity: 1; }
-  100% { opacity: 0; transform: scale(2.15); }
-}
-
-/* Animation giật nhẹ vui nhộn khi click (Bouncing cheer) */
-@keyframes characterCheer {
-  0% { transform: perspective(1200px) translateY(0) scale(1); }
-  35% { transform: perspective(1200px) translateY(-22px) scale(1.06) rotate(-2deg); }
-  65% { transform: perspective(1200px) translateY(-10px) scale(1.03) rotate(2deg); }
-  100% { transform: perspective(1200px) translateY(0) scale(1) rotate(0deg); }
-}
-
-.doctor-character-wrap.cheering {
-  animation: characterCheer 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-}
-
-/* 3D Particle Canvas */
-.doctor-3d-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  pointer-events: none;
 }
 
 /* Main HUD Overlay Container */
@@ -4124,12 +4001,6 @@ html {
     height: 100%;
     transform: none;
     background-position: center center;
-  }
-  .doctor-character-wrap {
-    margin-top: 35px;
-  }
-  .doctor-character-img {
-    height: min(350px, 44vh);
   }
   .doctor-hero-container {
     padding: 64px 12px 16px;
