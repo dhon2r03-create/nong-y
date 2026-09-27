@@ -6,13 +6,58 @@ Ho tro ca la cay bi benh nang doi mau vang, nau hoai tu, hoac hoa qua cay trong.
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 import numpy as np
 from PIL import Image
 
 # Bien toan cuc luu mo hinh tong quat ImageNet (load lazy)
 _GENERAL_MODEL = None
-_GENERAL_TRANSFORM = None
-_CATEGORIES = None
+_GENERAL_TRANSFORM = _CATEGORIES = None
+
+# Mo hinh phat hien khuon mat YuNet (OpenCV), nap lazy
+_FACE_DETECTOR = None
+_FACE_MODEL_PATH = Path(__file__).resolve().parent / "facedet_yunet.onnx"
+
+
+def _load_face_detector():
+    """Nap detector khuon mat YuNet neu co file model (can opencv-python-headless)."""
+    global _FACE_DETECTOR
+    if _FACE_DETECTOR is not None:
+        return _FACE_DETECTOR
+    try:
+        import cv2
+
+        if _FACE_MODEL_PATH.exists():
+            _FACE_DETECTOR = cv2.FaceDetectorYN.create(
+                str(_FACE_MODEL_PATH), "", (320, 320), score_threshold=0.6
+            )
+    except Exception as err:
+        print(f"[WARN] Khong the nap detector khuon mat: {err}")
+        _FACE_DETECTOR = None
+    return _FACE_DETECTOR
+
+
+def detect_human_face(image: Image.Image) -> tuple[int, float]:
+    """Tra ve (so khuon mat phat hien, diem tin cay cao nhat) trong [0, 1]."""
+    det = _load_face_detector()
+    if det is None:
+        return 0, 0.0
+    try:
+        import cv2
+
+        bgr = cv2.cvtColor(np.array(image.convert("RGB")), cv2.COLOR_RGB2BGR)
+        h, w = bgr.shape[:2]
+        if w < 32 or h < 32:
+            return 0, 0.0
+        det.setInputSize((w, h))
+        _, faces = det.detect(bgr)
+        if faces is None or len(faces) == 0:
+            return 0, 0.0
+        return len(faces), float(np.max(faces[:, -1]))
+    except Exception as err:
+        print(f"[WARN] Loi detect khuon mat: {err}")
+        return 0, 0.0
 
 
 def _load_general_classifier():
@@ -79,17 +124,20 @@ BOTANICAL_KEYWORDS = [
     "hay", "ear", "acorn", "hip", "daisy", "rose", "sunflower", "plant", "tree",
     "flower", "leaf", "strawberry", "orange", "lemon", "lime", "banana", "apple",
     "fig", "pineapple", "jackfruit", "custard_apple", "pomegranate", "corn", "mushroom",
-    "pot", "flowerpot", "vase", "greenhouse", "buckeye", "artichoke", "head_cabbage",
+    "pot", "flowerpot", "greenhouse", "buckeye", "artichoke", "head_cabbage",
     "broccoli", "cauliflower", "zucchini", "spaghetti_squash", "acorn_squash", "butternut_squash",
     "cucumber", "bell_pepper"
 ]
 
 
-def identify_non_plant_object(image: Image.Image) -> tuple[str, str, float]:
-    """Nhan dien loai doi tuong trong anh neu khong phai cay bang ImageNet MobileNetV2."""
+def identify_non_plant_object(image: Image.Image) -> tuple[str, str, float, float]:
+    """Nhan dien loai doi tuong trong anh bang ImageNet MobileNetV2.
+
+    Tra ve (obj_type, ten_tieng_viet, do_tin_cay, botanical_score).
+    """
     model, transform, categories = _load_general_classifier()
     if model is None:
-        return "UNKNOWN", "đối tượng không xác định", 0.0
+        return "UNKNOWN", "đối tượng không xác định", 0.0, 0.0
 
     try:
         import torch
@@ -128,41 +176,41 @@ def identify_non_plant_object(image: Image.Image) -> tuple[str, str, float]:
                 total_everyday_score += score
 
         if total_botanical_score >= 0.20:
-            return "BOTANICAL", "thực vật / cây cối", total_botanical_score
+            return "BOTANICAL", "thực vật / cây cối", total_botanical_score, total_botanical_score
 
         if total_clothing_score >= 0.18:
-            return "TRANG_PHUC", "quần áo / trang phục", total_clothing_score
+            return "TRANG_PHUC", "quần áo / trang phục", total_clothing_score, total_botanical_score
 
         if total_vehicle_score >= 0.15:
-            return "XE_CO", "xe cộ / phương tiện giao thông", total_vehicle_score
+            return "XE_CO", "xe cộ / phương tiện giao thông", total_vehicle_score, total_botanical_score
 
         if total_electronic_score >= 0.15:
-            return "DIEN_TU", "thiết bị điện tử / công nghệ", total_electronic_score
+            return "DIEN_TU", "thiết bị điện tử / công nghệ", total_electronic_score, total_botanical_score
 
         if total_animal_score >= 0.22:
-            return "DONG_VAT", "động vật / thú cưng", total_animal_score
+            return "DONG_VAT", "động vật / thú cưng", total_animal_score, total_botanical_score
 
         if total_furniture_score >= 0.20:
-            return "NOI_THAT", "nội thất / phòng ở", total_furniture_score
+            return "NOI_THAT", "nội thất / phòng ở", total_furniture_score, total_botanical_score
 
         if total_everyday_score >= 0.25:
-            return "DO_VAT", "đồ vật sinh hoạt", total_everyday_score
+            return "DO_VAT", "đồ vật sinh hoạt", total_everyday_score, total_botanical_score
 
         top1_idx = topk.indices[0].item()
         top1_score = float(topk.values[0].item())
         top1_label = categories[top1_idx].lower().replace(" ", "_")
 
         if any(b in top1_label for b in BOTANICAL_KEYWORDS):
-            return "BOTANICAL", "thực vật / cây cối", top1_score
+            return "BOTANICAL", "thực vật / cây cối", top1_score, total_botanical_score
 
         if top1_score >= 0.35:
             clean_name = top1_label.replace("_", " ")
-            return "DO_VAT", f"đồ vật ({clean_name})", top1_score
+            return "DO_VAT", f"đồ vật ({clean_name})", top1_score, total_botanical_score
 
     except Exception as e:
         print(f"[WARN] Loi ImageNet: {e}")
 
-    return "UNKNOWN", "đối tượng không liên quan đến cây trồng", 0.0
+    return "UNKNOWN", "đối tượng không liên quan đến cây trồng", 0.0, 0.0
 
 
 def compute_texture_metrics(image: Image.Image) -> tuple[float, float]:
@@ -247,8 +295,9 @@ def detect_plant_leaf(image: Image.Image, model_confidence: float = 1.0) -> tupl
     skin_mask = (cb >= 77) & (cb <= 127) & (cr >= 133) & (cr <= 173)
     skin_ratio = float(skin_mask.mean())
 
-    # Nhan dien doi tuong ImageNet
-    obj_type, obj_name_vi, obj_conf = identify_non_plant_object(image)
+    # Nhan dien doi tuong ImageNet + khuon mat
+    obj_type, obj_name_vi, obj_conf, botanical_score = identify_non_plant_object(image)
+    face_count, face_score = detect_human_face(image)
 
     metrics = {
         "std": round(std, 1),
@@ -260,9 +309,21 @@ def detect_plant_leaf(image: Image.Image, model_confidence: float = 1.0) -> tupl
         "detected_type": obj_type,
         "detected_name": obj_name_vi,
         "detected_conf": round(obj_conf * 100, 1),
+        "botanical_score": round(botanical_score * 100, 1),
+        "face_score": round(face_score * 100, 1),
     }
 
-    # QUY TAC 1: CHAN CON NGUOI / KHUON MAT
+    # QUY TAC 0: CHAN CON NGUOI QUA DETECTOR KHUON MAT (YuNet)
+    # Bat ca truong hop mat nguoi tren nen cay xanh ma quy tac mau sac khong thay duoc.
+    if face_count > 0:
+        metrics["detected_name"] = "con người / khuôn mặt"
+        return (
+            False,
+            "Phát hiện khuôn mặt con người trong ảnh chứ không phải cây trồng. Vui lòng hướng camera vào một chiếc lá cây cần chẩn đoán!",
+            metrics,
+        )
+
+    # QUY TAC 1: CHAN CON NGUOI / KHUON MAT THEO MAU DA
     # Con nguoi / khuon mat co ti le da nguoi dang ke va thieu pho mau thuc vat tu nhien
     is_human_skin = (
         (skin_ratio > 0.18 and green_ratio < 0.20 and plant_tone_ratio < 0.60)
@@ -275,7 +336,6 @@ def detect_plant_leaf(image: Image.Image, model_confidence: float = 1.0) -> tupl
             "Phát hiện hình ảnh có chứa con người / khuôn mặt chứ không phải cây trồng. Vui lòng hướng camera vào một chiếc lá cây cần chẩn đoán!",
             metrics,
         )
-
 
     # QUY TAC 2: CHAN QUAN AO / TRANG PHUC (ke ca quan ao mau xanh la)
     if obj_type == "TRANG_PHUC":
@@ -293,7 +353,24 @@ def detect_plant_leaf(image: Image.Image, model_confidence: float = 1.0) -> tupl
             metrics,
         )
 
-    # QUY TAC 4: CHAN DO VAT / PHONG CANH THIEU HOAN TOAN SAC THAI THUC VAT
+    # QUY TAC 4: ANH XANH LA PHAI CO KIEM CHUNG THUC VAT TU IMAGENET
+    # Vat the nhan tao mau xanh (chai nhua, thung phuy, son mau la...) cung co
+    # green_ratio cao nhu la. La that gan nhu luon duoc ImageNet gan nhan thuc vat
+    # (botanical_score >= 0.04); neu am thap va mo hinh ben khong rat chac chan
+    # thi chan de tranh nhan nham.
+    if (
+        green_ratio >= 0.15
+        and botanical_score < 0.03
+        and model_confidence < 0.80
+    ):
+        metrics["detected_name"] = "vật thể nhân tạo màu xanh lá"
+        return (
+            False,
+            "Hình ảnh chứa vật thể nhân tạo có màu xanh lá (chai nhựa, đồ vật, sơn màu) chứ không phải lá cây. Vui lòng chụp lại cận cảnh một chiếc lá!",
+            metrics,
+        )
+
+    # QUY TAC 5: CHAN DO VAT / PHONG CANH THIEU HOAN TOAN SAC THAI THUC VAT
     if plant_tone_ratio < 0.18:
         target_name = obj_name_vi if obj_type == "DO_VAT" else "đồ vật / môi trường xung quanh"
         metrics["detected_name"] = target_name
@@ -303,7 +380,7 @@ def detect_plant_leaf(image: Image.Image, model_confidence: float = 1.0) -> tupl
             metrics,
         )
 
-    # QUY TAC 5: DO TIN CAY MO HINH QUA THAP (< 35%)
+    # QUY TAC 6: DO TIN CAY MO HINH QUA THAP (< 35%)
     if model_confidence < 0.35:
         return (
             False,

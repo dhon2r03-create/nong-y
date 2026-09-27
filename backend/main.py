@@ -19,6 +19,7 @@ import time
 import urllib.request
 import uuid
 from collections import Counter, defaultdict
+from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
 import re
@@ -67,7 +68,36 @@ FRONTEND_DIR = ROOT_DIR / "frontend"
 
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
-app = FastAPI(title="Plant Disease Diagnosis App")
+def cleanup_old_uploads(max_age_days: int = 7):
+    """Xoa anh upload va heatmap Grad-CAM qua lau de uploads/ khong phinh ra vo han."""
+    if not UPLOADS_DIR.exists():
+        return
+    cutoff = time.time() - max_age_days * 86400
+    removed = 0
+    for f in UPLOADS_DIR.iterdir():
+        if f.name == ".gitkeep" or not f.is_file():
+            continue
+        try:
+            if f.stat().st_mtime < cutoff:
+                f.unlink()
+                removed += 1
+        except OSError:
+            pass
+    if removed:
+        print(f"[INFO] Da don {removed} anh upload qua hon {max_age_days} ngay.", flush=True)
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    init_db()
+    try_load_model()
+    cleanup_old_uploads()
+    # Kích hoạt worker tự động giữ Render luôn thức
+    threading.Thread(target=_keep_alive_worker, daemon=True).start()
+    yield
+
+
+app = FastAPI(title="Plant Disease Diagnosis App", lifespan=lifespan)
 
 # ---------------------------------------------------------------------------
 # Nap mo hinh (neu da huan luyen)
@@ -181,15 +211,6 @@ def health_check():
     }
 
 
-@app.on_event("startup")
-def on_startup():
-    init_db()
-    try_load_model()
-    # Kích hoạt worker tự động giữ Render luôn thức
-    threading.Thread(target=_keep_alive_worker, daemon=True).start()
-
-
-
 # ---------------------------------------------------------------------------
 # API: Danh sach cac loai cay trong ho tro
 # ---------------------------------------------------------------------------
@@ -219,6 +240,11 @@ async def predict(
         )
 
     contents = await file.read()
+    if len(contents) > 10 * 1024 * 1024:
+        raise HTTPException(
+            status_code=413,
+            detail="Anh qua lon (hon 10MB). Vui long nen anh hoac chup lai voi dung luong nho hon.",
+        )
     try:
         image = Image.open(io.BytesIO(contents)).convert("RGB")
     except Exception:
@@ -357,7 +383,7 @@ async def predict(
         "top_predictions": top_predictions,
         "image_url": case.image_path,
         "heatmap_url": heatmap_url,
-        "created_at": case.created_at.isoformat(),
+        "created_at": case.created_at.isoformat() + "Z",
         "is_filtered_by_plant": is_filtered,
     }
 
@@ -458,6 +484,7 @@ def dashboard_stats(db: Session = Depends(get_db)):
 
 @app.get("/api/cases")
 def list_cases(limit: int = 100, db: Session = Depends(get_db)):
+    limit = max(1, min(limit, 500))
     cases = (
         db.query(DiagnosisCase)
         .order_by(DiagnosisCase.created_at.desc())
@@ -474,7 +501,7 @@ def list_cases(limit: int = 100, db: Session = Depends(get_db)):
             "image_url": c.image_path,
             "latitude": c.latitude,
             "longitude": c.longitude,
-            "created_at": c.created_at.isoformat() if c.created_at else None,
+            "created_at": c.created_at.isoformat() + "Z" if c.created_at else None,
         }
         for c in cases
     ]
